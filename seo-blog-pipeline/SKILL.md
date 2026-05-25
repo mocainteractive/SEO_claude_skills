@@ -1,7 +1,7 @@
 ---
 name: seo-blog-pipeline
 description: >
-  Orchestratore del flusso completo di creazione di un articolo blog SEO. Chiama in sequenza le skill keyword-analysis, serp-analysis, brand-analysis-and-connections, content-brief-builder, draft-writer, seo-optimizer e content-reviewer. Usa questa skill quando l'utente vuole avviare il flusso completo di produzione di un articolo blog SEO dall'analisi keyword alla pubblicazione. Trigger tipici: "avvia il flusso SEO per questo topic", "crea un articolo su X per il sito Y", "procedi con il flusso seo-blog-pipeline", "voglio un articolo completo su X".
+  Orchestratore del flusso completo di creazione di un articolo blog SEO. Chiama in sequenza le skill keyword-analysis, serp-analysis, brand-analysis-and-connections, content-brief-builder, draft-writer, seo-optimizer e content-reviewer. Usa questa skill quando l'utente vuole avviare il flusso completo di produzione di un articolo blog SEO dall'analisi keyword alla pubblicazione, MA ANCHE quando chiede solo un content brief: la produzione del brief è l'obiettivo `brief` di questo flusso e richiede comunque le fasi a monte (keyword-analysis, serp-analysis, brand-analysis-and-connections), quindi una richiesta di brief deve attivare questo orchestratore e non la sola content-brief-builder. Trigger tipici: "avvia il flusso SEO per questo topic", "crea un articolo su X per il sito Y", "procedi con il flusso seo-blog-pipeline", "voglio un articolo completo su X", "crea un content brief per X", "voglio un brief per un articolo su X", "dammi il brief editoriale per X".
 ---
 
 # SEO Blog Pipeline
@@ -184,9 +184,15 @@ Questi tre stop non dipendono dalla modalità: sono problemi che invalidano le f
 
 Il pipeline può essere avviato anche in modo parziale, saltando le fasi già completate in sessioni precedenti:
 
-- Se l'utente fornisce già un output di keyword-analysis, salta la Fase 1 e parti dalla Fase 2.
+- Se l'utente fornisce già un output completo di keyword-analysis, salta la Fase 1 e parti dalla Fase 2.
 - Se l'utente fornisce già un brief editoriale completo, salta le Fasi 1-4 e parti dalla Fase 5.
 - Se l'utente fornisce già un articolo scritto, salta le Fasi 1-5 e parti dalla Fase 6.
+
+**Attenzione: fornire input grezzi non equivale a saltare una fase.** Dare delle keyword seme o l'URL del sito sono semplicemente gli input del flusso, non l'output di una fase. Le Fasi 1-3 vanno comunque eseguite. Si salta una fase solo quando l'utente fornisce l'**output completo** di quella fase (un set keyword già analizzato con volumi e intent, un'analisi SERP completa con gap e PAA, un brief editoriale finito).
+
+In particolare, **una richiesta di solo content brief NON deve mai eseguire la sola Fase 4**: esegui sempre prima le Fasi 1, 2 e 3, poi costruisci il brief (Fase 4) e fermati lì. Questo vale anche se l'utente ha già fornito keyword e/o URL.
+
+**Se l'utente fornisce delle keyword (non un'analisi keyword completa):** prima di eseguire la Fase 1 chiedi se vuole che vengano cercate anche keyword correlate o se procedere solo con quelle fornite, poi esegui la Fase 1 di conseguenza. Le Fasi 2 e 3 restano comunque obbligatorie.
 
 In ogni caso, le skill successive devono avere accesso agli output delle fasi precedenti per funzionare correttamente. Se mancano, segnalalo e chiedi all'utente di fornirli o di tornare alla fase mancante.
 
@@ -215,6 +221,8 @@ In entrambi i casi, le analisi delle fasi precedenti (keyword, SERP, brand) rest
 
 - Se il flusso gira dentro un progetto Claude con istruzioni custom o knowledge di progetto, rispettale e adatta brief e articolo: hanno precedenza sui default delle skill, ma restano subordinate alle scelte di sessione dell'utente e alla correttezza SEO. In caso di conflitto, segnalalo e chiedi.
 - Non saltare fasi senza esplicita indicazione dell'utente.
+- Una richiesta di content brief attiva sempre le Fasi 1-4, mai la sola Fase 4. Fornire keyword e/o URL non autorizza a saltare le Fasi 1-3: sono input, non output di fase.
+- Se l'utente fornisce delle keyword, chiedi se cercarne anche di correlate o procedere solo con quelle prima di eseguire la Fase 1.
 - Non avviare la scrittura (Fase 5) senza approvazione esplicita del brief.
 - Non procedere oltre la Fase 1 se l'intent è chiaramente transazionale senza conferma dell'utente.
 - Non procedere oltre il controllo di cannibalizzazione (Fase 2, Step 0) se il sito ha già un contenuto posizionato in top 50 sulla keyword primaria o su una correlata importante: ferma e chiedi all'utente se continuare, cambiare focus o aggiornare la pagina esistente.

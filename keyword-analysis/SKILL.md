@@ -17,8 +17,15 @@ L'utente fornisce uno dei seguenti:
 - Una keyword semplice ("meditazione")
 - Una frase ("come fare meditazione")
 - Un tema più ampio ("alimentazione vegana per sportivi")
+- Una o più keyword già scelte (una lista che l'utente ha già in mente)
 
-Non si parte mai da un cluster già formato: il cluster è l'output di questa skill, non l'input.
+Di norma non si parte da un cluster già formato: il cluster è l'output di questa skill. Ma l'utente può comunque fornire delle keyword di partenza già selezionate.
+
+**Se l'utente fornisce già una o più keyword**, prima di procedere chiedigli quale dei due percorsi preferisce:
+- **Cercare anche keyword correlate** (consigliato): esegui l'analisi completa qui sotto usando le sue keyword come seme e ampliando il set con varianti semantiche, domande, long‑tail e termini LSI.
+- **Procedere solo con le keyword fornite**: salta la costruzione del cluster (Step 4) e non aggiungere nuove keyword. Recupera comunque da Ahrefs volume e intent delle keyword fornite (Chiamata 1) per popolare i dati richiesti dal brief, e individua tra quelle la keyword primaria.
+
+Rispetta la scelta dell'utente. In entrambi i casi questa è solo la Fase 1: gli step successivi del flusso (serp-analysis, brand-analysis-and-connections) vanno comunque eseguiti.
 
 ---
 

@@ -12,6 +12,23 @@ Il brief è il documento di riferimento per la scrittura: i metadati, il titolo 
 
 ---
 
+## Prerequisito: non eseguire questa skill da sola
+
+Questa skill è il **quarto step** del flusso seo-blog-pipeline. Il brief si costruisce **integrando** gli output di keyword-analysis (Fase 1), serp-analysis (Fase 2) e brand-analysis-and-connections (Fase 3): senza di essi il brief sarebbe incompleto (mancherebbero cluster keyword con volumi, gap e PAA dalla SERP, controllo cannibalizzazione, TOV e link interni).
+
+Quando ti viene chiesto un content brief, **verifica di avere gli output delle Fasi 1-3 nel contesto**. Se mancano, NON costruire il brief solo con le informazioni a disposizione: esegui prima le fasi mancanti.
+- Manca l'analisi keyword → esegui `keyword-analysis` sul topic/keyword forniti.
+- Manca l'analisi SERP → esegui `serp-analysis` (incluso il controllo di cannibalizzazione dello Step 0).
+- Manca l'analisi del brand → esegui `brand-analysis-and-connections` sull'URL del sito.
+
+Una richiesta di brief equivale ad avviare il flusso seo-blog-pipeline con obiettivo `brief`: se l'orchestratore `seo-blog-pipeline` è disponibile, segui quel flusso fino alla Fase 4.
+
+**Questo vale anche se l'utente fornisce già keyword e/o URL.** Avere keyword e URL fa solo risparmiare la raccolta degli input: non sostituisce l'analisi. La serp-analysis e la brand-analysis aggiungono elementi che il brief richiede e che le keyword da sole non danno. Quindi esegui comunque le fasi a monte.
+
+Se l'utente fornisce già delle keyword, prima di lanciare la Fase 1 chiedigli se vuole che ne vengano cercate anche di correlate o se procedere solo con quelle fornite (vedi keyword-analysis).
+
+---
+
 ## Input atteso
 
 - Output di `keyword-analysis`: keyword primaria, keyword secondarie e correlate, intent
