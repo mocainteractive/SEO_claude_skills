@@ -10,6 +10,21 @@ Questa skill orchestra il flusso completo di produzione di un articolo blog SEO.
 
 ---
 
+## Istruzioni di progetto (da verificare SEMPRE all'inizio)
+
+Se il flusso viene eseguito all'interno di un progetto Claude, prima di partire controlla se il progetto contiene **istruzioni custom** e/o **knowledge di progetto** (documenti caricati: linee guida editoriali, brand book, tone of voice, glossari, liste di termini da usare o evitare, vincoli legali, requisiti di formato, ecc.).
+
+Se presenti, considerale parte integrante dei requisiti e adatta brief e articolo di conseguenza, in tutte le fasi:
+
+- Le istruzioni di progetto hanno **precedenza sui default generici** di queste skill (es. registro, formattazione, lunghezza, struttura, vocabolario, CTA, disclaimer).
+- Restano comunque subordinate a: (a) le scelte esplicite fatte dall'utente nella configurazione di sessione di questa specifica esecuzione, e (b) la correttezza SEO e i checkpoint critici del flusso.
+- Se un'istruzione di progetto è in **conflitto** con una buona pratica SEO o con una scelta di sessione, non ignorarla in silenzio: segnala il conflitto all'utente e chiedi come procedere.
+- Quando il TOV o le linee guida sono già definiti dalle istruzioni/knowledge di progetto, usali come fonte primaria nella Fase 3 (brand-analysis-and-connections), integrando l'analisi del sito solo per ciò che manca.
+
+Se non sei in un progetto o non ci sono istruzioni/knowledge, prosegui normalmente con i default delle skill.
+
+---
+
 ## Input richiesto
 
 Prima di avviare il flusso, verifica di avere:
@@ -196,6 +211,7 @@ In entrambi i casi, le analisi delle fasi precedenti (keyword, SERP, brand) rest
 
 ## Regole critiche
 
+- Se il flusso gira dentro un progetto Claude con istruzioni custom o knowledge di progetto, rispettale e adatta brief e articolo: hanno precedenza sui default delle skill, ma restano subordinate alle scelte di sessione dell'utente e alla correttezza SEO. In caso di conflitto, segnalalo e chiedi.
 - Non saltare fasi senza esplicita indicazione dell'utente.
 - Non avviare la scrittura (Fase 5) senza approvazione esplicita del brief.
 - Non procedere oltre la Fase 1 se l'intent è chiaramente transazionale senza conferma dell'utente.

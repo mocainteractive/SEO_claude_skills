@@ -23,6 +23,8 @@ L'obiettivo non è riempire una pagina con parole, ma rispondere in modo complet
 
 **Fonte integrativa (se disponibile nel contesto):** output delle skill precedenti (keyword-analysis, serp-analysis, brand-analysis-and-connections). Se presenti, usali per arricchire le scelte editoriali: sapere quali gap coprire, quali domande PAA rispondere e qual è il TOV del brand aiuta a scrivere un testo più preciso. Se non sono presenti, il brief è sufficiente.
 
+**Istruzioni e knowledge di progetto (se il flusso gira dentro un progetto Claude):** linee guida editoriali, brand book, tone of voice, glossari, termini da usare/evitare, vincoli di formato o legali. Rispettale durante la scrittura: prevalgono sui default generici di questa skill. Se sono in conflitto con il brief approvato o con una buona pratica SEO, non procedere a senso: segnala il conflitto e chiedi all'utente come comportarti.
+
 ---
 
 ## Processo di scrittura

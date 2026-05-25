@@ -18,6 +18,7 @@ Il brief è il documento di riferimento per la scrittura: i metadati, il titolo 
 - Output di `serp-analysis`: gap identificati, domande PAA, formato consigliato, analisi competitor
 - Output di `brand-analysis-and-connections`: TOV, istruzioni di scrittura, contenuti correlati, pagine strategiche da collegare
 - Topic e cliente del progetto
+- **Istruzioni e knowledge di progetto** (se il flusso gira dentro un progetto Claude): linee guida editoriali, brand book, tone of voice, glossari, termini da usare/evitare, vincoli di formato o legali. Incorporale nel brief e falle prevalere sui default generici di questa skill; in caso di conflitto con una buona pratica SEO o con una scelta di sessione, segnalalo all'utente invece di risolverlo in autonomia.
 
 ---
 
