@@ -126,6 +126,19 @@ Per ciascuna pagina da collegare indica:
 - Perché è rilevante per l'articolo
 - Suggerimento di anchor text naturale (la parola o frase nel testo su cui inserire il link)
 
+### Step 4 — Pagine esistenti da cui linkare il nuovo articolo (link in entrata)
+
+Lo Step 2 individua i contenuti da linkare **dal** nuovo articolo (link in uscita). Questo step fa il contrario: individua gli articoli del blog **già pubblicati e correlati dove conviene inserire un link che punta al nuovo articolo** (link in entrata). Serve a far ricevere al nuovo contenuto link interni da pagine già indicizzate, accelerandone il posizionamento ed evitando che nasca "orfano".
+
+Parti dai contenuti correlati identificati nello Step 2 e seleziona quelli in cui un rimando al nuovo articolo sarebbe naturale e utile per il lettore (es. articoli che toccano il topic di sfuggita e che potrebbero approfondirlo linkando il nuovo pezzo).
+
+Per ciascuno indica:
+- Titolo e URL dell'articolo esistente
+- Contesto: perché è un buon punto da cui linkare e in quale passaggio dell'articolo esistente comparirebbe il rimando
+- Anchor text suggerito: la parola o frase, **all'interno dell'articolo esistente**, su cui inserire il link verso il nuovo articolo
+
+Se il sito ha pochi contenuti correlati, segnala che le opportunità di link in entrata sono limitate.
+
 ---
 
 ## Gestione siti con pochi contenuti
@@ -167,6 +180,14 @@ Se il sito ha un blog scarso, pochi articoli o contenuti datati, la skill proced
 
 *(ripeti per ciascuna pagina strategica)*
 
+**LINK IN ENTRATA DA CREARE (verso il nuovo articolo)**
+
+*[Titolo articolo esistente] — [URL]*
+- Contesto: [perché linkare da qui e in quale passaggio dell'articolo esistente]
+- Anchor text suggerito: [parola o frase nell'articolo esistente su cui mettere il link al nuovo articolo]
+
+*(ripeti per ciascun articolo esistente da cui linkare. Se non ce ne sono di adatti, indicalo esplicitamente.)*
+
 **PAGINE NON ACCESSIBILI** *(solo se necessario)*
 [Elenco delle sezioni del sito non raggiungibili durante l'analisi. Ometti se tutte le pagine erano accessibili.]
 
@@ -182,3 +203,4 @@ Se il sito ha un blog scarso, pochi articoli o contenuti datati, la skill proced
 - Se il sito ha pochi contenuti, segnalalo ma procedi comunque con quello che è disponibile.
 - L'anchor text suggerito deve essere naturale nel contesto dell'articolo: mai anchor text generici come "clicca qui" o "scopri di più".
 - Non includere link a risorse esterne: solo link interni al sito del cliente.
+- Tieni sempre separati i link in uscita (dal nuovo articolo, Step 2 e 3) dai link in entrata da creare (verso il nuovo articolo, Step 4): sono due liste distinte nell'output, con anchor text riferiti a documenti diversi.

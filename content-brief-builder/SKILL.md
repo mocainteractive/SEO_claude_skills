@@ -16,7 +16,7 @@ Il brief è il documento di riferimento per la scrittura: i metadati, il titolo 
 
 - Output di `keyword-analysis`: keyword primaria, keyword secondarie e correlate, intent
 - Output di `serp-analysis`: gap identificati, domande PAA, formato consigliato, analisi competitor
-- Output di `brand-analysis-and-connections`: TOV, istruzioni di scrittura, contenuti correlati, pagine strategiche da collegare
+- Output di `brand-analysis-and-connections`: TOV, istruzioni di scrittura, contenuti correlati, pagine strategiche da collegare, pagine esistenti da cui linkare il nuovo articolo (link in entrata)
 - Topic e cliente del progetto
 - **Istruzioni e knowledge di progetto** (se il flusso gira dentro un progetto Claude): linee guida editoriali, brand book, tone of voice, glossari, termini da usare/evitare, vincoli di formato o legali. Incorporale nel brief e falle prevalere sui default generici di questa skill; in caso di conflitto con una buona pratica SEO o con una scelta di sessione, segnalalo all'utente invece di risolverlo in autonomia.
 
@@ -112,10 +112,13 @@ Queste istruzioni vanno nel brief come sezione separata, prima della scaletta.
 
 Raccogli in una sezione finale tutti gli elementi tecnici SEO:
 
-**Link interni**
+**Link interni (in uscita dall'articolo)**
 Lista completa dei link da inserire nell'articolo, divisi per tipo:
 - Contenuti correlati (articoli del blog): con URL e suggerimento di dove inserirli nella scaletta
 - Pagine strategiche (categorie prodotto, servizi, casi studio): con URL, anchor text suggerito e punto di inserimento
+
+**Link in entrata da creare (verso questo articolo)**
+Elenco degli articoli del blog già esistenti e correlati (dallo Step 4 di brand-analysis-and-connections) dove inserire un link che punta a questo nuovo articolo, ciascuno con URL e anchor text suggerito (la frase nell'articolo esistente su cui mettere il rimando). È un'indicazione operativa per chi pubblica, da eseguire aggiornando i vecchi articoli dopo la messa online del nuovo. Se non ci sono articoli adatti, ometti la voce.
 
 **CTA**
 Indica quante CTA inserire, dove posizionarle (dopo quale paragrafo) e il testo consigliato. Di norma almeno 2 CTA nel corpo dell'articolo più una CTA finale.
@@ -180,9 +183,13 @@ Keyword da integrare:
 
 ## NOTA SEO
 
-**Link interni:**
+**Link interni (in uscita dall'articolo):**
 - [Titolo contenuto correlato](URL) — inserire in [punto della scaletta]
 - [Titolo pagina strategica](URL) — anchor text: "[anchor]" — inserire in [punto]
+
+**Link in entrata da creare (verso questo articolo):**
+- [Titolo articolo esistente](URL) — anchor text: "[frase nell'articolo esistente su cui linkare]"
+*(elenco degli articoli del blog esistenti dove aggiungere un link verso questo nuovo articolo; ometti la voce se non ce ne sono di adatti)*
 
 **CTA:**
 - CTA 1: dopo [paragrafo] — testo consigliato: [testo]
@@ -230,6 +237,7 @@ Uguale al brief standard, con queste aggiunte:
 - Le keyword devono essere quelle fornite da keyword-analysis, affinate da serp-analysis e brand-analysis.
 - Le istruzioni di scrittura devono essere concrete e specifiche: non "scrivi in modo chiaro" ma "usa frasi brevi, una frase per concetto, evita i tecnicismi non spiegati".
 - I link interni vengono solo da brand-analysis-and-connections: mai inventare URL o suggerire landing page.
+- Includi sempre nel brief la lista dei link in entrata da creare (URL di articoli esistenti dove linkare questo nuovo articolo), ricavata dallo Step 4 di brand-analysis e tenuta separata dai link in uscita. Ometti la sezione solo se non esistono articoli adatti.
 - L'anchor text dei link deve essere naturale nel contesto dell'articolo: mai "clicca qui" o "scopri di più".
 - Le CTA devono collegarsi a pagine strategiche già identificate dalla brand-analysis.
 - Il brief deve essere autonomo: chi lo riceve deve poter scrivere l'articolo senza bisogno di ulteriori spiegazioni.

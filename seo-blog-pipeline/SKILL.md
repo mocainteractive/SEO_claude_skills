@@ -200,10 +200,11 @@ L'utente riceve un **unico articolo finale** nel formato indicato (markdown, HTM
 
 1. **Blocco "KEYWORD UTILIZZATE"** in testa: elenco delle keyword (primaria + secondarie + long‑tail) effettivamente integrate nell'articolo, ciascuna con il volume di ricerca mensile. È un blocco di metadati per chi pubblicherà l'articolo, sempre presente prima del corpo del testo.
 2. **L'articolo ottimizzato** (versione finale dalla Fase 6, comprensiva di H1, corpo e CTA finale).
-3. **Report E‑E‑A‑T** (Fase 7) come blocco separato accodato in fondo: punteggi per criterio, punteggio complessivo, confronto con i competitor della SERP, raccomandazioni di distribuzione multicanale.
+3. **Blocco "LINK INTERNI IN ENTRATA DA CREARE"** come blocco separato accodato dopo l'articolo: elenco degli URL di articoli del blog già esistenti e correlati dove inserire un link che punta a questo nuovo articolo, ciascuno con l'anchor text suggerito (dallo Step 4 di brand-analysis-and-connections). È un blocco operativo per chi pubblica: indica dove aggiungere i rimandi al nuovo contenuto aggiornando i vecchi articoli. Se non ci sono articoli adatti, indicalo in una riga.
+4. **Report E‑E‑A‑T** (Fase 7) come blocco separato accodato in fondo: punteggi per criterio, punteggio complessivo, confronto con i competitor della SERP, raccomandazioni di distribuzione multicanale.
 
 **Obiettivo `brief`**:
-L'utente riceve il **content brief editoriale** prodotto in Fase 4, nel formato indicato. Niente articolo, niente report E‑E‑A‑T (la Fase 7 non viene eseguita). Il brief deve essere autosufficiente: un copywriter umano deve poter scrivere l'articolo leggendo solo quel documento.
+L'utente riceve il **content brief editoriale** prodotto in Fase 4, nel formato indicato. Niente articolo, niente report E‑E‑A‑T (la Fase 7 non viene eseguita). Il brief include anche l'elenco dei **link in entrata da creare** (URL di articoli esistenti dove linkare il nuovo articolo). Il brief deve essere autosufficiente: un copywriter umano deve poter scrivere l'articolo leggendo solo quel documento.
 
 In entrambi i casi, le analisi delle fasi precedenti (keyword, SERP, brand) restano nella conversazione come passaggi intermedi consultabili. Non duplicare questi materiali nell'output finale.
 
