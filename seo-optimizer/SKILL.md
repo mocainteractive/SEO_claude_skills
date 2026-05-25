@@ -1,7 +1,7 @@
 ---
 name: seo-optimizer
 description: >
-  Controlla e ottimizza la bozza dell'articolo blog SEO prodotta dal draft-writer. Verifica keyword, struttura, metadati e link interni, poi corregge direttamente il testo o produce un report di modifiche in base all'entità degli interventi necessari. Usa questa skill dopo draft-writer e prima di content-reviewer. Trigger tipici: "ottimizza l'articolo per la SEO", "controlla la SEO del testo", "verifica che l'articolo sia ottimizzato", "procedi con il flusso seo-blog-pipeline". Questa skill è il sesto step del flusso seo-blog-pipeline.
+  Controlla e ottimizza la bozza dell'articolo blog SEO prodotta dal draft-writer. Verifica keyword, struttura, metadati e link interni, controlla che il testo sia scritto in modo umano e non riconoscibile come AI-generated (frasi fatte, riempitivi, ritmo robotico) riscrivendo le frasi problematiche, poi corregge direttamente il testo o produce un report di modifiche in base all'entità degli interventi necessari. Usa questa skill dopo draft-writer e prima di content-reviewer. Trigger tipici: "ottimizza l'articolo per la SEO", "controlla la SEO del testo", "rendi il testo più umano", "verifica che non sembri scritto da un'AI", "procedi con il flusso seo-blog-pipeline". Questa skill è il sesto step del flusso seo-blog-pipeline.
 ---
 
 # SEO Optimizer
@@ -98,6 +98,38 @@ H1, H2 e H3 devono avere la maiuscola solo sulla prima parola e sui nomi propri.
 
 Questi tre controlli sono di tipo binario: o il pattern è presente e va corretto, o non lo è.
 
+### Controllo 7 — Scrittura umana (de‑AI)
+
+Oltre ai tre tell binari del Controllo 6, verifica che il testo non "suoni" generato da un'AI. I modelli tendono a produrre frasi fatte, costruzioni retoriche a stampino, riempitivi privi di contenuto e un ritmo uniforme. Individua questi pattern e **riscrivi le frasi interessate** rendendole più naturali, concrete e specifiche, mantenendo significato, fatti e keyword previste.
+
+Pattern da cercare e correggere (elenco non esaustivo, usa il giudizio):
+
+**Frasi fatte e aperture/chiusure cliché**
+- "Nel mondo di oggi", "Nell'era digitale", "In un mondo sempre più [aggettivo]", "Al giorno d'oggi", "Nel panorama attuale"
+- Chiusure vuote: "In conclusione", "In sintesi", "Per concludere", "Tirando le somme", "In definitiva"
+- Premesse inutili: "È importante sottolineare/notare che", "Vale la pena ricordare che", "Va detto che", "Come ben sai"
+
+**Costruzioni retoriche tipiche dell'AI**
+- Antitesi a stampino: "Non si tratta solo di X, ma di Y", "X non è (solo) ..., è ..."
+- Regola del tre meccanica: triplette di aggettivi o sostantivi interscambiabili ("veloce, efficace e affidabile")
+- "Che tu sia un [profilo] o un [profilo], ..."
+- Domande retoriche di riempimento all'inizio dei paragrafi
+
+**Riempitivi e marketing vuoto**
+- Intensificatori generici: "fondamentale", "cruciale", "essenziale", "rivoluzionario", "all'avanguardia", "di altissimo livello", "soluzione completa", "a 360 gradi"
+- Verbi-ombrello usati a vuoto, senza un "come" concreto: "permette di", "consente di", "aiuta a"
+- Generalizzazioni senza dati né esempi: "sempre più aziende", "molti esperti concordano", "negli ultimi anni"
+
+**Ritmo e struttura robotici**
+- Paragrafi tutti della stessa lunghezza e con la stessa struttura (frase tema + due di supporto + chiusura)
+- Connettivi ripetuti in apertura di paragrafi consecutivi ("Inoltre", "Tuttavia", "Infatti")
+- Liste puntate con elementi costruiti tutti in modo identico e parallelo all'eccesso
+- Grassetto applicato a termini a caso, senza criterio
+
+Per ogni pattern trovato **riscrivi la frase**, non limitarti a segnalarla: taglia il riempitivo, sostituisci la frase fatta con un'affermazione concreta, varia la lunghezza e il ritmo delle frasi, e dove rende il testo più credibile aggiungi un dettaglio specifico o un esempio. Diversamente dal Controllo 6, questo è un controllo di giudizio: la soglia è qualitativa (il testo suona autentico quando lo leggi ad alta voce?).
+
+Mantieni invariati: significato, keyword previste, fatti e dati, struttura H2/H3, link interni.
+
 ---
 
 ## Decisione: testo corretto vs report
@@ -113,6 +145,8 @@ Dopo aver completato tutti i controlli, valuta l'entità complessiva delle modif
 - Ci sono problemi strutturali o di copertura tematica estesi
 - La meta description va riscritta interamente
 - Più link interni mancano o sono inseriti in modo scorretto
+
+**Eccezione per le riscritture de‑AI (Controllo 7):** se le uniche modifiche estese sono riscritture di frasi per renderle più umane (nessun problema strutturale, di copertura o di link), **applicale direttamente e restituisci il testo completo corretto**, anche se toccano più di 2 paragrafi. Lo scopo del controllo è consegnare il testo umanizzato, non un elenco di frasi da sistemare a mano. Riserva il report ai problemi SEO/strutturali. Se coesistono riscritture de‑AI diffuse *e* problemi strutturali, usa il report e includi le riscritture de‑AI suggerite al suo interno.
 
 ---
 
@@ -170,6 +204,9 @@ Se le modifiche sono estese, restituisci un report strutturato senza riscrivere 
 - Sezione FAQ finale: [Assente / Presente — da ridistribuire nei paragrafi]
 - Capitalizzazione titoli: [Corretta / N titoli da riscrivere — elenco]
 
+**SCRITTURA UMANA (DE‑AI)**
+- [Naturale / Pattern AI rilevati]: per ciascun pattern indica la frase originale, il tipo (frase fatta, riempitivo, antitesi a stampino, ritmo robotico, ecc.) e la riscrittura più umana proposta.
+
 **INTERVENTI RICHIESTI IN ORDINE DI PRIORITÀ**
 1. [Intervento più critico]
 2. [Intervento]
@@ -180,7 +217,9 @@ Se le modifiche sono estese, restituisci un report strutturato senza riscrivere 
 ## Regole critiche
 
 - Non modificare la struttura H2/H3 dell'articolo: questo non è il momento per cambiare l'architettura del testo.
-- Non riscrivere paragrafi interi per motivi stilistici: le correzioni devono essere motivate da criteri SEO oggettivi, non da preferenze di stile.
+- Non riscrivere paragrafi interi per pure preferenze di stile: le correzioni devono essere motivate da criteri SEO oggettivi o dalla de‑AI (Controllo 7). Fa eccezione la de‑AI, che è un intervento richiesto: lì la riscrittura a livello di frase è ammessa e dovuta, ma non spingerti a riscrivere interi paragrafi quando basta correggere le frasi problematiche.
+- I pattern di scrittura AI (frasi fatte, riempitivi, antitesi a stampino, ritmo robotico) vanno riscritti in forma umana, non solo segnalati: la de‑AI è un intervento obbligatorio, non opzionale.
+- La riscrittura de‑AI non deve mai alterare significato, fatti, dati o keyword previste, né toccare la struttura H2/H3 e i link interni.
 - La densità keyword è qualitativa, non numerica: non forzare inserimenti meccanici se il testo scorre già bene.
 - Un meta title o una meta description che contengono la keyword ma sono scritti male vanno corretti: la keyword da sola non basta.
 - I link mancanti vanno sempre segnalati o inseriti: sono indicazioni del brief e non possono essere ignorati.

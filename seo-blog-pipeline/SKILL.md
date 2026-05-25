@@ -144,8 +144,9 @@ Scrive la bozza completa dell'articolo seguendo il brief approvato. Produce:
 *Skill: `seo-optimizer`*
 
 Controlla e ottimizza la bozza prodotta nella Fase 5. Produce:
-- Testo corretto (se modifiche ≤ 2 paragrafi) oppure report di modifiche (se modifiche estese)
+- Testo corretto (se modifiche ≤ 2 paragrafi, o se le modifiche estese sono solo riscritture de‑AI) oppure report di modifiche (se modifiche estese strutturali/SEO)
 - Verifica keyword distribution, metadati, struttura, link interni
+- Controllo di scrittura umana (de‑AI): rileva frasi fatte, riempitivi e ritmo robotico tipici dei testi AI-generated e riscrive le frasi problematiche in forma umana
 
 ---
 
