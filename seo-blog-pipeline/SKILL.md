@@ -26,7 +26,7 @@ Se uno di questi elementi (1–4) manca, chiedi conferma all'utente prima di pro
 
 ## Configurazione di sessione (da chiedere SEMPRE all'inizio)
 
-Prima di partire con la Fase 1, chiedi all'utente tre cose in un'unica domanda concisa:
+Prima di partire con la Fase 1, chiedi all'utente quattro cose in un'unica domanda concisa:
 
 1. **Obiettivo finale**: dove vuole fermarsi il flusso?
    - `brief` → il flusso si ferma dopo la Fase 4 (content brief approvato). Utile quando l'articolo verrà scritto da un copywriter umano e serve solo il brief editoriale come deliverable.
@@ -42,6 +42,10 @@ Prima di partire con la Fase 1, chiedi all'utente tre cose in un'unica domanda c
    - `testo plain` (senza alcuna formattazione)
    - `documento Word (.docx)`
    - Altro formato indicato dall'utente
+
+4. **Ambito per l'internal linking**: come deve cercare i contenuti interni da collegare nell'articolo (usato nella Fase 3, brand-analysis-and-connections)?
+   - `automatico` (default): Claude mappa l'intero sito tramite robots.txt + sitemap e seleziona i contenuti correlati più rilevanti, ovunque si trovino.
+   - `cartella/sezione specifica`: l'utente indica uno o più percorsi o URL di sezione (es. `/blog/marketing/`, `/magazine/guide/`). Claude esplora in modo esaustivo quella/e sezione/i, così non perde articoli più nascosti. Utile nei siti con blog suddiviso in molte categorie, dove la scansione automatica rischia di campionare solo una parte dei contenuti. La scansione del resto del sito per le pagine strategiche (prodotti/servizi/casi studio) resta comunque attiva.
 
 Memorizza le scelte e applicale per tutto il resto della sessione. Non ripetere la domanda alle fasi successive.
 
@@ -85,7 +89,7 @@ Prima dell'analisi competitor, esegue un **controllo di cannibalizzazione** (Ste
 ### Fase 3 — BRAND ANALYSIS AND CONNECTIONS
 *Skill: `brand-analysis-and-connections`*
 
-Analizza il sito del cliente. Produce:
+Analizza il sito del cliente. Applica l'**ambito per l'internal linking** scelto nella configurazione di sessione: se l'utente ha indicato una cartella/sezione specifica, esplora quella sezione in modo esaustivo per i contenuti correlati; altrimenti procede in automatico sull'intero sito. Produce:
 - Tono di voce (registro, tono narrativo, pubblico percepito, vocabolario)
 - Contenuti correlati esistenti da collegare
 - Pagine strategiche da linkare nell'articolo (categorie prodotto, servizi, casi studio)

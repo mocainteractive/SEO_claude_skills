@@ -14,6 +14,10 @@ Questa skill analizza il sito web del progetto editoriale su tre livelli: tono d
 
 - URL del sito da analizzare (fornito dall'utente o noto dal contesto del progetto)
 - Keyword primaria e topic dell'articolo (dall'output di keyword-analysis)
+- **Ambito per l'internal linking** (dalla configurazione di sessione del flusso seo-blog-pipeline, se disponibile):
+  - `automatico` (default): esplora l'intero sito e seleziona i contenuti correlati ovunque si trovino.
+  - `cartella/sezione specifica`: uno o più percorsi/URL di sezione (es. `/blog/marketing/`) su cui concentrare in modo esaustivo la ricerca dei contenuti correlati, per non perdere articoli più nascosti nei siti con blog multi‑categoria.
+  Se questa preferenza non è nota dal contesto e la skill viene usata in autonomia, chiedila all'utente o assume `automatico`.
 
 Se il dominio non è chiaro dal contesto (ad esempio l'azienda gestisce più siti), chiedi conferma all'utente prima di procedere.
 
@@ -32,6 +36,8 @@ Per ciascuna sitemap dichiarata, esegui WebFetch sull'URL. Una sitemap può esse
 - Una **sitemap di URL** (elenco diretto di pagine). Estrai gli URL e categorizzali per pattern: about/azienda, blog/articoli, prodotti/servizi, casi studio, landing page.
 
 Usa la lista di URL ottenuta dalla sitemap come fonte primaria di verità per le chiamate successive: niente più tentativi a indovinare gli URL tipici, ma selezione mirata dalle pagine effettivamente esistenti sul sito.
+
+**Se è stato indicato un ambito per l'internal linking (cartella/sezione specifica):** dalla lista della sitemap, isola ed enumera **tutti** gli URL che ricadono sotto i percorsi indicati (es. tutti gli URL sotto `/blog/marketing/`). Questa enumerazione esaustiva è la base per la ricerca dei contenuti correlati dello Step 2: in quella sezione non limitarti a un campione, ma considera l'intero elenco. Se nessuna sitemap è disponibile, naviga la sezione partendo dalla sua pagina indice (e dalle eventuali pagine di paginazione) per raccogliere gli URL. La scansione delle pagine strategiche (prodotti/servizi/casi studio) resta sull'intero sito anche in questa modalità.
 
 Se `robots.txt` non è raggiungibile o non dichiara sitemap, prova comunque gli URL standard `/sitemap.xml`, `/sitemap_index.xml`, `/sitemap-index.xml`. Se anche questi falliscono, segnalalo nell'output e procedi con il fallback degli URL tipici descritti nelle chiamate seguenti.
 
@@ -93,6 +99,10 @@ Se dall'analisi del sito il TOV risulta vago, generico o contraddittorio tra sez
 ### Step 2 — Contenuti correlati esistenti
 
 Identifica articoli del blog già pubblicati che trattano argomenti vicini al topic dell'articolo da scrivere. Valuta la correlazione in base a quanti elementi hanno in comune con il topic (stesso settore, stesso pubblico, stessa categoria di prodotto/servizio, stesse keyword semantiche).
+
+**Ambito della ricerca:**
+- Se è stato indicato un ambito `automatico` (default): cerca i contenuti correlati su tutto il sito, usando la lista di URL della sitemap e gli slug attinenti al topic.
+- Se è stata indicata una **cartella/sezione specifica**: dai priorità all'elenco esaustivo di URL di quella sezione (raccolto nella Chiamata 0) e passali in rassegna tutti, senza fermarti a un campione di articoli recenti. È il modo per non perdere articoli più nascosti nei blog con molte categorie. Puoi comunque includere contenuti correlati molto pertinenti trovati fuori dalla sezione, segnalandolo.
 
 Per ciascun contenuto correlato indica:
 - Titolo e URL
@@ -165,6 +175,7 @@ Se il sito ha un blog scarso, pochi articoli o contenuti datati, la skill proced
 ## Regole critiche
 
 - Chiedi conferma del dominio se non è chiaro dal contesto o se l'azienda gestisce più siti.
+- Se l'utente ha indicato una cartella/sezione specifica per l'internal linking, enumera ed esamina in modo esaustivo gli articoli di quella sezione: non limitarti a un campione. È il punto chiave per non perdere contenuti nascosti nei blog multi‑categoria.
 - Non collegare mai landing page: solo pagine utili fronte SEO (categorie prodotto, servizi, casi studio, articoli).
 - Preferisci sempre le pagine di categoria prodotto alle schede del singolo prodotto.
 - Se il TOV non è rilevabile con certezza dal sito, chiedi esempi social prima di produrre l'output. Non inventare un TOV.
