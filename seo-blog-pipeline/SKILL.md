@@ -88,7 +88,7 @@ Analizza il topic fornito. Produce:
 ### Fase 2 — SERP ANALYSIS
 *Skill: `serp-analysis`*
 
-Prima dell'analisi competitor, esegue un **controllo di cannibalizzazione** (Step 0): verifica tramite Ahrefs se il sito del cliente è già posizionato sulla keyword primaria o sulle correlate più importanti. Per questo, passa a questa skill anche l'URL del sito (input globale del flusso). Poi analizza la SERP per la keyword primaria identificata nella Fase 1. Produce:
+Prima dell'analisi competitor, esegue un **controllo di cannibalizzazione** (Step 0): verifica se il sito del cliente è già posizionato sulla keyword primaria o sulle correlate più importanti, usando come fonte primaria Google Search Console (MCP gsc-moca, proprietà legata all'URL/dominio fornito a inizio chat, con `get_query_page_combinations` per la cannibalizzazione a livello di pagina) e Ahrefs come complemento/fallback. Per questo, passa a questa skill anche l'URL del sito (input globale del flusso). Poi analizza la SERP per la keyword primaria identificata nella Fase 1. Produce:
 - Esito del controllo di cannibalizzazione (pagine del sito già posizionate sul tema, se presenti)
 - Panoramica SERP con verifica intent
 - Analisi dei 5-7 competitor editoriali in prima pagina
@@ -96,7 +96,7 @@ Prima dell'analisi competitor, esegue un **controllo di cannibalizzazione** (Ste
 - Domande PAA da coprire
 - Formato consigliato per l'articolo
 
-**Checkpoint cannibalizzazione**: se il sito ha già una pagina posizionata in top 50 sulla keyword primaria o su una correlata importante, ferma il flusso e chiedi all'utente se continuare con un nuovo articolo, cambiare focus o aggiornare la pagina esistente. È un punto di stop obbligatorio in entrambe le modalità.
+**Checkpoint cannibalizzazione**: se il sito presidia già la keyword primaria o una correlata importante — pagina in top 50 su Ahrefs, oppure impression/clic su GSC, oppure più pagine in competizione sulla stessa query in GSC — ferma il flusso e chiedi all'utente se continuare con un nuovo articolo, cambiare focus o aggiornare/consolidare la pagina esistente. È un punto di stop obbligatorio in entrambe le modalità.
 
 **Checkpoint**: se la SERP è dominata da contenuti transazionali in contrasto con l'analisi keyword, avvisa l'utente e chiedi conferma prima di procedere.
 
@@ -173,7 +173,7 @@ Il flusso prevede **due checkpoint obbligatori** che restano attivi in entrambe 
 
 **Checkpoint di emergenza (sempre attivi):**
 - Se in Fase 1 l'intent risulta chiaramente transazionale, ferma il flusso e chiedi conferma.
-- Se in Fase 2 (Step 0) il sito ha già una pagina posizionata in top 50 sulla keyword primaria o su una correlata importante, ferma il flusso e chiedi se continuare, cambiare focus o aggiornare la pagina esistente.
+- Se in Fase 2 (Step 0) il sito presidia già la keyword primaria o una correlata importante — pagina in top 50 su Ahrefs, impression/clic su GSC, o più pagine in competizione sulla stessa query in GSC — ferma il flusso e chiedi se continuare, cambiare focus o aggiornare/consolidare la pagina esistente.
 - Se in Fase 2 la SERP è dominata da contenuti transazionali in contrasto con la keyword, ferma il flusso e chiedi conferma.
 - Se in Fase 3 il TOV non è rilevabile, chiedi all'utente esempi di post social prima di proseguire.
 
@@ -227,7 +227,7 @@ In entrambi i casi, le analisi delle fasi precedenti (keyword, SERP, brand) rest
 - Se l'utente fornisce delle keyword, chiedi se cercarne anche di correlate o procedere solo con quelle prima di eseguire la Fase 1.
 - Non avviare la scrittura (Fase 5) senza approvazione esplicita del brief.
 - Non procedere oltre la Fase 1 se l'intent è chiaramente transazionale senza conferma dell'utente.
-- Non procedere oltre il controllo di cannibalizzazione (Fase 2, Step 0) se il sito ha già un contenuto posizionato in top 50 sulla keyword primaria o su una correlata importante: ferma e chiedi all'utente se continuare, cambiare focus o aggiornare la pagina esistente.
+- Non procedere oltre il controllo di cannibalizzazione (Fase 2, Step 0) se il sito presidia già il tema secondo GSC (impression/clic o più pagine in competizione sulla stessa query) o Ahrefs (pagina in top 50): ferma e chiedi all'utente se continuare, cambiare focus o aggiornare/consolidare la pagina esistente. GSC è la fonte primaria, Ahrefs il fallback.
 - Se il TOV del sito non è rilevabile, non inventarlo: pausa e chiedi input social all'utente.
 - Ogni fase deve ricevere in contesto gli output di tutte le fasi precedenti.
 - Il checkpoint dopo la Fase 3 è obbligatorio: non costruire il brief senza aver mostrato il riepilogo delle analisi.
