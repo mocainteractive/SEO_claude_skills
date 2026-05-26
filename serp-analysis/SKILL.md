@@ -156,7 +156,7 @@ Combina i segnali raccolti nella Chiamata 0, dando **precedenza ai dati GSC** (p
 3. Chiedi esplicitamente come procedere, proponendo le opzioni:
    - **Continuare comunque** con un nuovo articolo (accettando il rischio, es. se l'angolo è diverso o si vuole sostituire la vecchia pagina)
    - **Cambiare focus** su una keyword/angolazione diversa (tornando a `keyword-analysis`)
-   - **Aggiornare/consolidare la pagina esistente** invece di crearne una nuova (particolarmente indicato quando GSC mostra più pagine già in competizione)
+   - **Aggiornare/consolidare la pagina esistente** invece di crearne una nuova (particolarmente indicato quando GSC mostra più pagine già in competizione). Se l'utente sceglie questa strada, il flusso non prosegue con la creazione di un nuovo articolo: passa alla skill `existing-page-optimizer` usando come URL la pagina esistente individuata.
 
 Non procedere allo Step 1 finché l'utente non ha scelto.
 
