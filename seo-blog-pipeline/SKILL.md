@@ -51,18 +51,19 @@ Prima di partire con la Fase 1, chiedi all'utente quattro cose in un'unica doman
    - `interattiva` (default): tra una fase e l'altra mostra un mini‑riepilogo (3‑5 bullet) e chiede conferma esplicita per proseguire. Adatta quando l'utente vuole supervisionare il flusso passo per passo.
    - `autonoma`: il flusso procede senza chiedere conferme intermedie, salvo i due checkpoint critici dopo la Fase 3 e dopo la Fase 4, che restano sempre obbligatori (sono i punti di non ritorno).
 
-3. **Formato finale del deliverable**: in che formato deve essere consegnato il deliverable (brief o articolo, a seconda dell'obiettivo)? Le opzioni più comuni sono:
-   - `markdown` (default, comodo per CMS che importano MD)
+3. **Formato finale del deliverable** (da chiedere SEMPRE, non assumere mai): in che formato deve essere consegnato il deliverable (brief o articolo, a seconda dell'obiettivo)? Chiedilo esplicitamente all'utente e attendi la sua risposta: non dare per scontato il markdown né alcun altro formato. Le opzioni più comuni da proporre sono:
+   - `markdown` (comodo per CMS che importano MD)
    - `html` (per incollare direttamente in editor visuale)
    - `testo plain` (senza alcuna formattazione)
    - `documento Word (.docx)`
    - Altro formato indicato dall'utente
+   Proponi pure `markdown` come opzione consigliata, ma usalo come fallback solo se l'utente dichiara di non avere preferenze. Non consegnare mai il deliverable finale senza aver prima confermato il formato con l'utente.
 
 4. **Ambito per l'internal linking**: come deve cercare i contenuti interni da collegare nell'articolo (usato nella Fase 3, brand-analysis-and-connections)?
    - `automatico` (default): Claude mappa l'intero sito tramite robots.txt + sitemap e seleziona i contenuti correlati più rilevanti, ovunque si trovino.
    - `cartella/sezione specifica`: l'utente indica uno o più percorsi o URL di sezione (es. `/blog/marketing/`, `/magazine/guide/`). Claude esplora in modo esaustivo quella/e sezione/i, così non perde articoli più nascosti. Utile nei siti con blog suddiviso in molte categorie, dove la scansione automatica rischia di campionare solo una parte dei contenuti. La scansione del resto del sito per le pagine strategiche (prodotti/servizi/casi studio) resta comunque attiva.
 
-Memorizza le scelte e applicale per tutto il resto della sessione. Non ripetere la domanda alle fasi successive.
+Memorizza le scelte e applicale per tutto il resto della sessione. Non ripetere la domanda alle fasi successive. Le quattro domande vanno poste tutte all'inizio: il formato dell'output in particolare non va mai saltato né assunto in autonomia.
 
 Se l'obiettivo è `brief`, salta le Fasi 5, 6 e 7. Al checkpoint dopo la Fase 4 consegna il brief nel formato richiesto e termina lì il flusso.
 
@@ -221,6 +222,7 @@ In entrambi i casi, le analisi delle fasi precedenti (keyword, SERP, brand) rest
 
 - Se il flusso gira dentro un progetto Claude con istruzioni custom o knowledge di progetto, rispettale e adatta brief e articolo: hanno precedenza sui default delle skill, ma restano subordinate alle scelte di sessione dell'utente e alla correttezza SEO. In caso di conflitto, segnalalo e chiedi.
 - Non saltare fasi senza esplicita indicazione dell'utente.
+- Chiedi sempre il formato dell'output all'inizio della sessione e attendi la risposta dell'utente: non assumere mai il markdown (o altro) di default. Non consegnare il deliverable finale senza aver confermato il formato.
 - Una richiesta di content brief attiva sempre le Fasi 1-4, mai la sola Fase 4. Fornire keyword e/o URL non autorizza a saltare le Fasi 1-3: sono input, non output di fase.
 - Se l'utente fornisce delle keyword, chiedi se cercarne anche di correlate o procedere solo con quelle prima di eseguire la Fase 1.
 - Non avviare la scrittura (Fase 5) senza approvazione esplicita del brief.
