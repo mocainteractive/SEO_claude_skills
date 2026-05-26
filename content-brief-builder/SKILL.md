@@ -32,7 +32,7 @@ Se l'utente fornisce già delle keyword, prima di lanciare la Fase 1 chiedigli s
 ## Input atteso
 
 - Output di `keyword-analysis`: keyword primaria, keyword secondarie e correlate, intent
-- Output di `serp-analysis`: gap identificati, domande PAA, formato consigliato, analisi competitor
+- Output di `serp-analysis`: gap identificati, domande PAA, formato consigliato, analisi competitor, presenza AI Overview e relative osservazioni per la scrittura
 - Output di `brand-analysis-and-connections`: TOV, istruzioni di scrittura, contenuti correlati, pagine strategiche da collegare, pagine esistenti da cui linkare il nuovo articolo (link in entrata)
 - Topic e cliente del progetto
 - **Istruzioni e knowledge di progetto** (se il flusso gira dentro un progetto Claude): linee guida editoriali, brand book, tone of voice, glossari, termini da usare/evitare, vincoli di formato o legali. Incorporale nel brief e falle prevalere sui default generici di questa skill; in caso di conflitto con una buona pratica SEO o con una scelta di sessione, segnalalo all'utente invece di risolverlo in autonomia.
@@ -124,6 +124,8 @@ Ricava le istruzioni di scrittura dal TOV rilevato dalla brand-analysis-and-conn
 - "Ogni H2 deve rispondere a una domanda reale che il lettore si sta ponendo"
 
 Queste istruzioni vanno nel brief come sezione separata, prima della scaletta.
+
+Se la serp-analysis ha rilevato un **AI Overview** su una o più keyword, integra le sue osservazioni in queste istruzioni di scrittura: risposta diretta ed estraibile in apertura delle sezioni chiave, copertura dei sotto-aspetti sintetizzati dall'AIO, rafforzamento dei segnali E-E-A-T (dati, fonti, autore) e struttura pensata per farsi citare. Se tra le fonti dell'AIO compaiono competitor specifici, tienine conto nelle istruzioni.
 
 ### Step 4 — Nota SEO finale
 

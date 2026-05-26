@@ -1,7 +1,7 @@
 ---
 name: serp-analysis
 description: >
-  Analizza la SERP per la keyword primaria identificata dalla skill keyword-analysis e produce indicazioni operative per il content-brief-builder. Prima dell'analisi competitor esegue un controllo di cannibalizzazione: verifica se il sito del cliente è già posizionato sulla keyword primaria o sulle correlate principali, usando come fonte primaria i dati di prima parte di Google Search Console (MCP gsc-moca, proprietà legata all'URL/dominio fornito a inizio chat) e Ahrefs come complemento/fallback; in caso affermativo ferma il flusso per decidere se continuare, cambiare focus o aggiornare la pagina esistente. Usa questa skill dopo keyword-analysis e prima di brand-analysis-and-connections. Trigger tipici: "analizza la SERP per questa keyword", "cosa fanno i competitor su questo topic", "come sono strutturati i contenuti in prima pagina", "abbiamo già un contenuto su questa keyword?", "procedi con il flusso seo-blog-pipeline". Questa skill è il secondo step del flusso seo-blog-pipeline.
+  Analizza la SERP per la keyword primaria identificata dalla skill keyword-analysis e produce indicazioni operative per il content-brief-builder. Prima dell'analisi competitor esegue un controllo di cannibalizzazione: verifica se il sito del cliente è già posizionato sulla keyword primaria o sulle correlate principali, usando come fonte primaria i dati di prima parte di Google Search Console (MCP gsc-moca, proprietà legata all'URL/dominio fornito a inizio chat) e Ahrefs come complemento/fallback; in caso affermativo ferma il flusso per decidere se continuare, cambiare focus o aggiornare la pagina esistente. Verifica inoltre, tramite DataForSEO MCP, la presenza dell'AI Overview sulla keyword primaria e sulle due secondarie più pertinenti, producendo osservazioni per la scrittura. Usa questa skill dopo keyword-analysis e prima di brand-analysis-and-connections. Trigger tipici: "analizza la SERP per questa keyword", "cosa fanno i competitor su questo topic", "come sono strutturati i contenuti in prima pagina", "abbiamo già un contenuto su questa keyword?", "c'è l'AI Overview su questa keyword?", "procedi con il flusso seo-blog-pipeline". Questa skill è il secondo step del flusso seo-blog-pipeline.
 ---
 
 # SERP Analysis
@@ -104,6 +104,28 @@ Per ogni pagina estrai:
 
 Leggi le pagine in sequenza. Se una pagina restituisce errore o contenuto non leggibile, saltala e passa alla successiva. Se più della metà delle pagine non è leggibile, segnalalo nell'output e procedi con i dati Ahrefs disponibili.
 
+### Chiamata 4 — Presenza AI Overview (DataForSEO MCP)
+
+Verifica se Google mostra un **AI Overview** sulle keyword più importanti del tema. L'AI Overview cambia il modo in cui l'articolo va scritto (vedi Step 5), quindi è un controllo da fare sempre.
+
+**Keyword da controllare:** la **keyword primaria** + le **2 keyword secondarie più pertinenti e legate al tema** (scelte dall'output di keyword-analysis per vicinanza tematica al topic dell'articolo, non solo per volume). Totale: 3 chiamate.
+
+Usa il tool `serp_organic_live_advanced` del MCP DataForSEO, una chiamata per keyword.
+
+Parametri per chiamata:
+- `keyword`: la keyword da analizzare
+- `location_name`: il paese target del flusso (default `"Italy"`; in alternativa `location_code` 2380)
+- `language_name`: la lingua target (default `"Italian"`; in alternativa `language_code` `"it"`)
+- `device`: `"desktop"` (l'AI Overview può variare per device; usa desktop come riferimento salvo diversa indicazione)
+- `load_async_ai_overview`: `true` — **importante**: Google carica spesso l'AI Overview in modo asincrono; senza questo flag l'elemento risulta presente ma vuoto. Con `true` il tool esegue la richiesta aggiuntiva per recuperarne contenuto e fonti (comporta un piccolo costo extra per chiamata).
+
+Nella risposta, cerca nell'array `items` un elemento con `type` = `ai_overview`:
+- la presenza dell'elemento = **AI Overview presente** per quella keyword; la sua assenza = non presente.
+- `references` (array di `ai_overview_reference`): le **fonti citate** dall'AI Overview, ciascuna con `domain`, `title`, `url`. Sono le pagine che Google usa per comporre la risposta.
+- i blocchi di testo dell'elemento sintetizzano **cosa risponde** Google e quali sotto-aspetti tocca.
+
+Se DataForSEO non è disponibile o la chiamata fallisce, segnalalo nell'output e prosegui senza bloccare il flusso: il controllo AI Overview è informativo, non è un checkpoint di stop.
+
 ---
 
 ## Processo di analisi
@@ -203,6 +225,22 @@ Sulla base dell'analisi, indica il formato più adatto per l'articolo da scriver
 
 Motiva la scelta in una riga, basandoti su cosa manca nella SERP o su cosa funziona meglio per l'intent e il pubblico target.
 
+### Step 5 — AI Overview: presenza e osservazioni per la scrittura
+
+Analizza i risultati della Chiamata 4 per la keyword primaria e le due secondarie più pertinenti. Per ciascuna registra se l'AI Overview è presente o assente.
+
+Se l'AI Overview **non** è presente su nessuna delle tre keyword, segnalalo in una riga e non aggiungere osservazioni.
+
+Se è presente su una o più keyword, ricava osservazioni concrete da tenere a mente in fase di scrittura. In particolare:
+
+- **L'articolo deve offrire più valore dell'AI Overview.** Quando Google risponde già in SERP, il clic organico cala: il contenuto deve dare profondità, dati, esempi o un punto di vista che la sintesi AI non offre, altrimenti non ha motivo di essere cliccato.
+- **Punta a farti citare come fonte.** Struttura il testo perché sia facilmente estraibile dall'AI Overview: risposta diretta e sintetica in apertura di sezione (BLUF), definizioni chiare, elenchi e tabelle, dati verificabili, heading formulati come la domanda dell'utente.
+- **Copri i sotto-aspetti sintetizzati dall'AIO.** Dai blocchi di testo dell'AI Overview emerge quali sfaccettature Google considera centrali: assicurati che l'articolo le tratti tutte, meglio dei competitor.
+- **Analizza le fonti citate (`references`).** I domini/pagine citati dall'AI Overview sono i competitor di fatto per la citazione: nota quali sono, se il sito del cliente è già tra questi, e cosa fanno quelle pagine che potremmo fare meglio. Se compaiono fonti diverse dai competitor organici dello Step 2, tienine conto.
+- **E-E-A-T conta di più.** Le fonti citate dagli AI Overview tendono a essere autorevoli e aggiornate: segnala di rafforzare segnali di expertise, dati recenti e attribuzione (autore, fonti).
+
+Le osservazioni vanno riportate in modo operativo: ciascuna deve dire al copywriter cosa fare concretamente. Confluiscono nel content-brief-builder come indicazioni di scrittura.
+
 ---
 
 ## Output
@@ -243,6 +281,13 @@ L'output deve essere leggibile sia dal `content-brief-builder` (skill successiva
 - [Domanda 2]
 *(domande "le persone chiedono anche" presenti in SERP. Vanno integrate come H2/H3 dell'articolo o risposte direttamente all'interno dei paragrafi pertinenti. NON vanno mai raccolte in una sezione "Domande frequenti" / "FAQ" a fine articolo. Ometti questa sezione dell'output se le PAA non sono recuperabili.)*
 
+**AI OVERVIEW**
+[Per keyword primaria + 2 secondarie più pertinenti: presente / assente (fonte: DataForSEO). Se presente almeno su una:
+- elenco delle keyword con AI Overview
+- fonti citate rilevanti (`references`: dominio + pagina), segnalando se il sito del cliente è già citato
+- osservazioni operative per la scrittura (estraibilità/risposta diretta, sotto-aspetti da coprire, E-E-A-T, opportunità di citazione)
+Se assente su tutte e tre, una riga. Se DataForSEO non era disponibile, segnalalo.]
+
 **FORMATO CONSIGLIATO**
 [Formato scelto] — [motivazione in una riga basata sui dati]
 
@@ -261,6 +306,7 @@ L'output deve essere leggibile sia dal `content-brief-builder` (skill successiva
 - Analizza solo risultati editoriali. Escludi pagine prodotto, e-commerce e directory.
 - I gap devono essere concreti: specifica sempre cosa manca e come colmarlo, mai osservazioni generiche.
 - Le domande PAA vanno recuperate dalla SERP reale, non inventate. Se non recuperabili, ometti la sezione.
+- Il controllo AI Overview (Chiamata 4 / Step 5) va eseguito sempre su keyword primaria + 2 secondarie più pertinenti, con `load_async_ai_overview: true` per recuperare contenuto e fonti. Non è un checkpoint di stop: se DataForSEO non è disponibile, segnalalo e prosegui. Le osservazioni AI Overview devono essere operative e confluire nel brief.
 - Il formato consigliato deve essere motivato dai dati, non dalla preferenza personale.
 - L'output deve essere operativo: chi lo legge capisce immediatamente cosa fare.
 - Non includere mai valutazioni sulle ads o sui risultati a pagamento.

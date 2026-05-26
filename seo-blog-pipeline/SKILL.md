@@ -94,6 +94,7 @@ Prima dell'analisi competitor, esegue un **controllo di cannibalizzazione** (Ste
 - Analisi dei 5-7 competitor editoriali in prima pagina
 - Gap di contenuto identificati
 - Domande PAA da coprire
+- Presenza AI Overview (DataForSEO) su keyword primaria + 2 secondarie più pertinenti, con osservazioni per la scrittura
 - Formato consigliato per l'articolo
 
 **Checkpoint cannibalizzazione**: se il sito presidia già la keyword primaria o una correlata importante — pagina in top 50 su Ahrefs, oppure impression/clic su GSC, oppure più pagine in competizione sulla stessa query in GSC — ferma il flusso e chiedi all'utente se continuare con un nuovo articolo, cambiare focus o aggiornare/consolidare la pagina esistente. È un punto di stop obbligatorio in entrambe le modalità.
