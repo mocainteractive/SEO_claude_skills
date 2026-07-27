@@ -128,16 +128,25 @@ Per ciascuna pagina da collegare indica:
 
 ### Step 4 — Pagine esistenti da cui linkare il nuovo articolo (link in entrata)
 
-Lo Step 2 individua i contenuti da linkare **dal** nuovo articolo (link in uscita). Questo step fa il contrario: individua gli articoli del blog **già pubblicati e correlati dove conviene inserire un link che punta al nuovo articolo** (link in entrata). Serve a far ricevere al nuovo contenuto link interni da pagine già indicizzate, accelerandone il posizionamento ed evitando che nasca "orfano".
+Lo Step 2 individua i contenuti da linkare **dal** nuovo articolo (link in uscita). Questo step fa il contrario: individua gli **articoli del blog già pubblicati** dove conviene inserire un link che punta al nuovo articolo (link in entrata). Serve a far ricevere al nuovo contenuto link interni da pagine già indicizzate, accelerandone il posizionamento ed evitando che nasca "orfano".
 
-Parti dai contenuti correlati identificati nello Step 2 e seleziona quelli in cui un rimando al nuovo articolo sarebbe naturale e utile per il lettore (es. articoli che toccano il topic di sfuggita e che potrebbero approfondirlo linkando il nuovo pezzo).
+**Due vincoli rigidi:**
 
-Per ciascuno indica:
-- Titolo e URL dell'articolo esistente
-- Contesto: perché è un buon punto da cui linkare e in quale passaggio dell'articolo esistente comparirebbe il rimando
-- Anchor text suggerito: la parola o frase, **all'interno dell'articolo esistente**, su cui inserire il link verso il nuovo articolo
+1. **Massimo 2 articoli.** Anche se ne trovi tanti candidati, seleziona solo i 2 in cui il rimando al nuovo articolo è più naturale e utile per il lettore. Meno rumore per chi pubblica, priorità sulle opportunità migliori. Se solo 1 articolo è davvero adatto, restituiscine 1; se nessuno lo è, restituisci l'elenco vuoto (indicalo).
+2. **Solo articoli del blog.** Escludi pagine prodotto, pagine servizio, pagine categoria, casi studio, landing page, "chi siamo": la lista deve contenere esclusivamente articoli editoriali del blog/magazine.
 
-Se il sito ha pochi contenuti correlati, segnala che le opportunità di link in entrata sono limitate.
+**Procedura operativa (obbligatoria).** Parti dai contenuti correlati dello Step 2 filtrati per soli articoli del blog. Scegli fino a 4 candidati; poi, per ciascuno, **leggi il testo con `WebFetch`** (se non già letto nella Chiamata 2) e identifica la **frase esatta** dell'articolo esistente dove l'inserimento del link sarebbe naturale e migliorativo (paragrafo che tocca il topic del nuovo articolo di sfuggita, o dove il lettore trarrebbe beneficio dall'approfondimento). Da questi candidati letti, seleziona i 2 migliori.
+
+Per ciascuno dei 2 articoli selezionati indica **esattamente** questi elementi:
+- **URL**: URL completo dell'articolo esistente (assoluto, `https://dominio.tld/...`, mai solo path relativo)
+- **Sezione**: heading (H2/H3) dell'articolo esistente in cui si trova la frase da modificare
+- **Frase attuale**: la **frase esatta** (copiata verbatim dall'articolo esistente) da modificare per inserire il link
+- **Frase nuova**: la **stessa frase riscritta** con il link inserito, mostrando **fra doppi asterischi o backtick l'anchor** cliccabile (es. "…grazie a **una guida completa sulla mindfulness**…")
+- **Anchor**: il testo esatto dell'anchor usato nella frase nuova (deve coincidere con la porzione evidenziata sopra)
+
+**Non aggiungere commenti, motivazioni o spiegazioni**: l'output è solo l'elenco operativo (le 2 voci come sopra), deve poter essere copiato e applicato senza altre informazioni.
+
+Se `WebFetch` non riesce a leggere uno degli articoli candidati (403, paywall, corpo troncato, contenuto vuoto), scartalo e prova il candidato successivo. Se non riesci a leggere abbastanza articoli per selezionarne 2, restituisci quelli che sei riuscito a lavorare (anche 1 o 0) e segnalalo esplicitamente.
 
 ---
 
@@ -166,27 +175,33 @@ Se il sito ha un blog scarso, pochi articoli o contenuti datati, la skill proced
 
 **CONTENUTI CORRELATI DA COLLEGARE**
 
-*[Titolo articolo] — [URL]*
-- Correlazione: [perché è correlato al topic]
-- Tipo: [approfondisce / complementare / prerequisito]
+- [URL completo con https://dominio.tld/...] - anchor: "[anchor text naturale da usare nell'articolo]" - correlazione: [approfondisce / complementare / prerequisito]
 
-*(ripeti per ciascun contenuto correlato trovato)*
+*(un bullet per contenuto correlato. URL sempre assoluto - MAI solo path relativo tipo `/blog/...`. Anchor sempre obbligatoria.)*
 
 **PAGINE STRATEGICHE DA COLLEGARE**
 
-*[Titolo pagina] — [URL]*
-- Rilevanza: [perché è pertinente per l'articolo]
-- Anchor text suggerito: [parola o frase naturale su cui inserire il link]
+- [URL completo con https://dominio.tld/...] - anchor: "[anchor text naturale]" - rilevanza: [perché è pertinente]
 
-*(ripeti per ciascuna pagina strategica)*
+*(un bullet per pagina strategica. URL sempre assoluto. Anchor sempre obbligatoria.)*
 
 **LINK IN ENTRATA DA CREARE (verso il nuovo articolo)**
 
-*[Titolo articolo esistente] — [URL]*
-- Contesto: [perché linkare da qui e in quale passaggio dell'articolo esistente]
-- Anchor text suggerito: [parola o frase nell'articolo esistente su cui mettere il link al nuovo articolo]
+*Massimo 2 voci, esclusivamente articoli del blog.*
 
-*(ripeti per ciascun articolo esistente da cui linkare. Se non ce ne sono di adatti, indicalo esplicitamente.)*
+1. **URL**: https://dominio.tld/percorso-completo-articolo-esistente
+   - **Sezione**: [heading H2/H3 in cui si trova la frase]
+   - **Frase attuale**: "[copia esatta della frase esistente da modificare]"
+   - **Frase nuova**: "[la stessa frase riscritta con il link inserito, con l'**anchor evidenziata in grassetto**]"
+   - **Anchor**: "[testo esatto dell'anchor]"
+
+2. **URL**: https://dominio.tld/percorso-completo-articolo-esistente
+   - **Sezione**: [heading H2/H3 in cui si trova la frase]
+   - **Frase attuale**: "[copia esatta della frase esistente da modificare]"
+   - **Frase nuova**: "[la stessa frase riscritta con il link inserito]"
+   - **Anchor**: "[testo esatto dell'anchor]"
+
+*(Massimo 2 voci - se ne trovi solo 1 di davvero adatta, restituisci solo quella. Se nessuna: scrivi "Nessun articolo del blog adatto per un link in entrata naturale" in una riga. Niente commenti o motivazioni: l'output è solo la lista.)*
 
 **PAGINE NON ACCESSIBILI** *(solo se necessario)*
 [Elenco delle sezioni del sito non raggiungibili durante l'analisi. Ometti se tutte le pagine erano accessibili.]
@@ -202,5 +217,8 @@ Se il sito ha un blog scarso, pochi articoli o contenuti datati, la skill proced
 - Se il TOV non è rilevabile con certezza dal sito, chiedi esempi social prima di produrre l'output. Non inventare un TOV.
 - Se il sito ha pochi contenuti, segnalalo ma procedi comunque con quello che è disponibile.
 - L'anchor text suggerito deve essere naturale nel contesto dell'articolo: mai anchor text generici come "clicca qui" o "scopri di più".
+- **URL sempre assoluti** in tutti gli output (contenuti correlati, pagine strategiche, link in entrata): scrivi sempre `https://dominio.tld/percorso-completo`, **mai** il solo path relativo (`/blog/…`, `/prodotti/…`). Chi legge l'output deve poter copiare e cliccare il link senza doverlo ricomporre.
+- **Anchor text sempre obbligatoria** in ogni output di link: per contenuti correlati (link in uscita), pagine strategiche (link in uscita) e link in entrata da creare. Non è mai facoltativa: se non riesci a proporne una naturale, l'articolo/pagina non va incluso.
 - Non includere link a risorse esterne: solo link interni al sito del cliente.
 - Tieni sempre separati i link in uscita (dal nuovo articolo, Step 2 e 3) dai link in entrata da creare (verso il nuovo articolo, Step 4): sono due liste distinte nell'output, con anchor text riferiti a documenti diversi.
+- **Link in entrata (Step 4): tre vincoli rigidi.** (a) **Massimo 2 articoli**, mai di più; se solo 1 è davvero adatto restituiscine 1, se nessuno restituisci lista vuota. (b) **Esclusivamente articoli del blog** (mai pagine prodotto, servizio, categoria, casi studio, landing, "chi siamo"). (c) Per ciascuno serve la **frase esatta** dell'articolo esistente da modificare (copiata verbatim via WebFetch) e la **frase riscritta** con il link inserito e l'anchor evidenziata: non basta "sezione X". Se WebFetch non riesce a leggere abbastanza articoli candidati, restituisci solo quelli lavorati e segnalalo.

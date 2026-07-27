@@ -49,26 +49,37 @@ Verifica:
 - Frasi non eccessivamente complesse: periodi con più di 3 subordinate consecutive o frasi superiori a 35-40 parole sono difficili da leggere su schermo. Segnalarli se presenti.
 - Copertura tematica: tutti gli H2 del brief sono stati sviluppati in modo sostanziale? Se un paragrafo è troppo superficiale (meno di 80-100 parole per un H2 che richiedeva approfondimento), segnalarlo.
 
-### Controllo 4 — Metadati
+### Controllo 4 - Metadati
 
 Verifica:
-- Meta title: contiene la keyword primaria? È nella prima parte del titolo (prima dei trattini o del nome brand)? **È entro i 55 caratteri?**
-- Meta description: contiene la keyword primaria? È scritta in italiano fluente come una frase compiuta, non come un elenco di keyword? **È entro i 160 caratteri?** Stimola il clic?
+- **H1**: contiene la keyword primaria (possibilmente nella parte iniziale)? È chiaro e leggibile? L'H1 **non ha un limite rigido di caratteri**: non segnalarlo mai come "troppo lungo" per motivi di title tag - sono elementi distinti. L'unica correzione ammessa sulla lunghezza è se supera i ~110-120 caratteri risultando illeggibile, oppure se manca la keyword primaria (in quel caso proponi una variante).
+- **Meta title**: è un elemento **distinto dall'H1**, non un doppione. Contiene la keyword primaria nella prima parte del titolo? È **simile ma non identico** all'H1 (se coincide alla lettera, va riscritto perché sfrutti diversamente lo spazio: variazione di ordine, aggiunta di keyword secondaria, elemento differenziante come "guida 2026", brand)? **È entro i 60 caratteri?**
+- **Meta description**: contiene la keyword primaria? È scritta in italiano fluente come una frase compiuta, non come un elenco di keyword? **È entro i 160 caratteri?** Stimola il clic?
 
-**Misurazione dei caratteri via script — obbligatoria.** Non stimare la lunghezza a occhio: esegui un breve script Python con la Bash tool per misurarla esattamente. Esempio:
+**Misurazione dei caratteri via script - obbligatoria.** Non stimare la lunghezza a occhio: esegui un breve script Python con la Bash tool per misurare meta title e meta description e per verificare che H1 e meta title non siano identici. Esempio:
 
 ```python
 h1 = "..."  # il titolo H1 attuale dell'articolo
 mt = "..."  # il meta title
 md = "..."  # la meta description
 
-for nome, testo, limite in [("H1", h1, 55), ("Meta title", mt, 55), ("Meta description", md, 160)]:
+# H1 non ha limite rigido; misurazione solo informativa
+print(f"H1: {len(h1)} caratteri (nessun limite rigido)")
+
+# Meta title e meta description hanno limite rigido
+for nome, testo, limite in [("Meta title", mt, 60), ("Meta description", md, 160)]:
     n = len(testo)
     stato = "OK" if n <= limite else f"SFORATO di {n - limite}"
-    print(f"{nome}: {n}/{limite} → {stato}")
+    print(f"{nome}: {n}/{limite} -> {stato}")
+
+# H1 e meta title devono essere simili ma non identici
+if h1.strip().lower() == mt.strip().lower():
+    print("PROBLEMA: H1 e Meta title coincidono. Riscrivere il meta title.")
+else:
+    print("H1 vs Meta title: distinti (OK)")
 ```
 
-Se uno dei tre sfora il limite, riscrivilo, applica la modifica al testo e ri‑esegui lo script per confermare il rientro. Riporta nel report finale solo le versioni verificate.
+Se meta title o meta description sforano il limite, riscrivili, applica la modifica al testo e ri-esegui lo script per confermare il rientro. Se H1 e meta title coincidono, riscrivi il meta title mantenendo la stessa idea centrale ma variando la formulazione (l'H1 resta com'è, salvo problemi propri). Riporta nel report finale solo le versioni verificate.
 
 Se la meta description è solo una concatenazione di keyword o è scritta in modo meccanico, va riscritta anche se tecnicamente contiene le parole giuste.
 
@@ -76,7 +87,8 @@ Se la meta description è solo una concatenazione di keyword o è scritta in mod
 
 Confronta i link indicati nella nota SEO del brief con quelli presenti nel testo:
 - Tutti i link indicati sono stati inseriti?
-- Ogni link è sull'anchor text indicato (o su una variante semanticamente equivalente)?
+- Ogni link è sull'**anchor text** indicato (o su una variante semanticamente equivalente)? L'anchor è **obbligatoria** su ogni link, mai omessa.
+- Ogni `href` è un **URL assoluto** (`https://dominio.tld/percorso-completo`)? Se qualche link punta solo a un path relativo (es. `/blog/...`), correggilo con l'URL assoluto ricavato dal dominio del sito.
 - Nessun link usa anchor text generici ("clicca qui", "scopri di più", "leggi qui")?
 - Nessun link punta a una landing page (non previsto dalla brand-analysis)?
 - I link sono inseriti in modo naturale nel testo, non spezzano il flusso?
@@ -93,10 +105,13 @@ Cerca nel testo ogni occorrenza di `-`, `–`, `—` usata come segno di interpu
 **Sezione "Domande frequenti" / "FAQ"**
 Se l'articolo contiene una sezione finale (H2 o equivalente) intitolata "Domande frequenti", "FAQ", "Le domande più comuni" o simili, e questa sezione raccoglie domande e risposte in elenco, va eliminata. Le domande vanno ridistribuite nel corpo dell'articolo: o come heading dei paragrafi esistenti, o come domande implicite a cui un paragrafo già risponde.
 
+**Titolo "Conclusione" (e sinonimi) sull'H2 finale**
+Cerca l'ultimo H2 dell'articolo. Se il suo titolo è "Conclusione", "Conclusioni", "In sintesi", "Per concludere", "Considerazioni finali", "Tirando le somme", "In definitiva", "Ultima parola" o qualunque variante equivalente vuota di significato, **riscrivilo** in forma utile alla SEO: rifocalizza la keyword primaria o l'angolo del pezzo (es. "Come iniziare oggi con [keyword]", "[Keyword]: cosa fare prima di partire", "Quali passi seguire per [obiettivo]"). Il paragrafo conclusivo e la CTA devono restare, cambia solo l'heading. Se l'H2 non esiste o è già utile, nessuna azione.
+
 **Capitalizzazione dei titoli**
 H1, H2 e H3 devono avere la maiuscola solo sulla prima parola e sui nomi propri. Se un titolo è in title case all'inglese ("Come Fare la Pasta con la Pancetta") o tutto maiuscolo ("COME FARE LA PASTA AL RAGÙ"), correggilo. Forma corretta: "Come fare la pasta con la pancetta", "Come preparare un antipasto coi carciofi".
 
-Questi tre controlli sono di tipo binario: o il pattern è presente e va corretto, o non lo è.
+Questi quattro controlli sono di tipo binario: o il pattern è presente e va corretto, o non lo è.
 
 ### Controllo 7 — Scrittura umana (de‑AI)
 
@@ -222,9 +237,12 @@ Se le modifiche sono estese, restituisci un report strutturato senza riscrivere 
 - La riscrittura de‑AI non deve mai alterare significato, fatti, dati o keyword previste, né toccare la struttura H2/H3 e i link interni.
 - La densità keyword è qualitativa, non numerica: non forzare inserimenti meccanici se il testo scorre già bene.
 - Un meta title o una meta description che contengono la keyword ma sono scritti male vanno corretti: la keyword da sola non basta.
+- **H1 e meta title sono elementi distinti**: l'H1 non ha limite rigido di caratteri (mai segnalarlo "troppo lungo" per motivi di title), il meta title sì (60). Se un H1 lungo viene passato dal draft-writer o dall'utente, non tentare di accorciarlo per far posto nel title: sono due campi separati. Se coincidono alla lettera, riscrivi solo il meta title.
 - I link mancanti vanno sempre segnalati o inseriti: sono indicazioni del brief e non possono essere ignorati.
 - Nessun link su anchor generici: se un link è stato inserito su "clicca qui" o equivalenti, va corretto.
 - I trattini come punteggiatura inline vanno sempre rimossi: è una correzione obbligatoria, non stilistica.
 - Una sezione finale "Domande frequenti" / "FAQ" va sempre smontata e ridistribuita nel corpo dell'articolo.
+- Un H2 finale intitolato "Conclusione" (o sinonimi vuoti di significato) va **sempre** riscritto in forma utile alla SEO (rifocalizzando keyword primaria o angolo del pezzo). Il paragrafo conclusivo resta, cambia solo l'heading.
+- Ogni link nel testo deve avere anchor esplicita (mai "clicca qui" e simili) e `href` con **URL assoluto** (`https://dominio.tld/...`, mai solo path relativo). Se manca uno dei due, correggi.
 - I titoli in title case o tutto maiuscolo vanno sempre corretti in "maiuscola solo sulla prima parola e sui nomi propri".
 - Se l'articolo supera tutti i controlli senza problemi significativi, dillo esplicitamente: "Nessuna modifica necessaria" è un output valido.

@@ -16,6 +16,7 @@ Riusa le skill atomiche del flusso esistente, ma con un'ottica diversa: non "cos
 
 - **Usa `existing-page-optimizer`** quando esiste già una pagina/articolo pubblicato e l'obiettivo è migliorarne il posizionamento, l'attualità o la copertura. L'utente fornisce un URL.
 - **Usa `seo-blog-pipeline`** quando l'articolo non esiste ancora e va creato da zero a partire da un topic o una keyword.
+- **Usa `ai-overview-reranker`** (in collaborazione con questa skill) quando l'obiettivo specifico è portare l'articolo come fonte citata dentro l'**AI Overview** di Google su 1‑3 keyword target. Si attiva su richiesta esplicita; questa skill la invoca automaticamente come opzione quando in Fase 1e rileva la presenza di AIO sulla keyword principale.
 
 Connessione con il flusso di creazione: il controllo di cannibalizzazione di `serp-analysis` (Step 0 del seo-blog-pipeline) può concludersi con la decisione di **aggiornare/consolidare una pagina esistente** invece di crearne una nuova. Quando l'utente sceglie quella strada, il punto di ingresso naturale è proprio questa skill, usando come URL la pagina esistente individuata.
 
@@ -90,6 +91,7 @@ Recupera l'URL dell'articolo con `WebFetch` ed estrai lo **stato attuale**:
 - Struttura: gerarchia completa degli heading (H1/H2/H3) e di cosa parla ogni sezione.
 - Lunghezza stimata in parole.
 - Argomenti coperti e profondità di ciascuno.
+- **Funzione apparente dell'articolo**: che tipo di contenuto è oggi (guida estesa, confronto, definizione, tutorial step-by-step, listicle, FAQ, raccolta dati, ibrido). La "funzione" determina i criteri di ottimizzazione: una guida estesa, una definizione e un confronto rispondono a bisogni diversi e vengono valutati da SERP e AI con criteri diversi. Se in Fase 2 emerge che la SERP target premia oggi una funzione diversa da quella dell'articolo, è un segnale forte di disallineamento.
 - **Link interni in uscita** già presenti nel corpo: destinazione e anchor text (sono i link "da" l'articolo).
 - CTA presenti e loro posizione.
 - Segnali di freschezza: data di pubblicazione/aggiornamento, dati o riferimenti temporali potenzialmente datati.
@@ -154,7 +156,7 @@ Richiama la skill **`serp-analysis`** sulla keyword principale dell'articolo (qu
 - **Competitor: bastano i primi 3** risultati editoriali organici sulla keyword principale (non 5‑7). Per ciascuno raccogli, come da `serp-analysis`: formato, struttura degli heading, lunghezza, contenuti visivi, angolazione, gap. Servono come termine di paragone per capire cosa manca al nostro articolo.
 - **Controllo consolidamento (reinterpretazione dello Step 0 cannibalizzazione).** Qui non stiamo creando una pagina nuova: la pagina è quella che vogliamo far rankare. Il rischio rilevante è l'**opposto**: che il sito abbia **altre pagine in competizione con questa** sulla stessa keyword. Usa GSC (`get_query_page_combinations` con `analyzeCannibalization: true`, oppure più pagine sulla stessa query) e Ahrefs per verificarlo. Se emergono più pagine del sito che competono sulla keyword target, è un **checkpoint**: segnalalo e chiedi se consolidare (unire i contenuti concorrenti in questo articolo, reindirizzare le pagine deboli, o de‑ottimizzarle). La decisione cambia la scaletta di modifiche.
 
-Mantieni anche, da `serp-analysis`, il controllo della presenza di **AI Overview** sulla keyword principale (DataForSEO, `serp_organic_live_advanced` con `load_async_ai_overview: true`): le osservazioni servono in Fase 2 e nella scaletta.
+Mantieni anche, da `serp-analysis`, il controllo della presenza di **AI Overview** sulla keyword principale (DataForSEO, `serp_organic_live_advanced` con `load_async_ai_overview: true`): le osservazioni servono in Fase 2 e nella scaletta. **Se l'AIO è presente** su una o più keyword target e l'obiettivo di sessione è `articolo ottimizzato`, **proponi all'utente di invocare la skill `ai-overview-reranker`**: simula il comportamento di Gemini grounded su Google Search per capire chi viene citato oggi, perché, e produce raccomandazioni concrete per portare l'articolo dentro l'AIO. Le sue raccomandazioni confluiscono nella Fase 4 di questo flusso come voci ad alta priorità della scaletta.
 
 **Checkpoint critico (consolidamento):** se il sito ha più pagine in competizione sulla keyword target, fermati e chiedi all'utente come procedere prima di continuare. È un punto di stop obbligatorio in entrambe le modalità.
 
@@ -168,10 +170,11 @@ Obiettivo: verificare che l'articolo risponda all'intento giusto e mappare cosa 
    - L'articolo è allineato all'intento della SERP → si ottimizza nel merito.
    - L'articolo è disallineato (es. è informativo ma la SERP è ormai transazionale, o viceversa) → **segnalalo come checkpoint**: forse non basta ottimizzare, va ripensato l'angolo. Chiedi conferma prima di proseguire.
    - L'intento è misto → si procede, segnalando come bilanciare le sezioni.
-2. **Cosa cercano gli utenti.** Combina tre fonti:
+2. **Cosa cercano gli utenti.** Combina quattro fonti:
    - **Query reali da GSC** (Fase 1c): è la domanda concreta che già intercetta la pagina. È la fonte più preziosa perché riflette utenti veri.
    - **Domande PAA** raccolte da `serp-analysis` sulla keyword principale.
    - **Search suggestions / correlate** (via `keyword-analysis`, Chiamata 3) per cogliere sfaccettature non ancora coperte.
+   - **Query fan-out** raccolto da `serp-analysis` (Step 6): le 8‑12 sotto-query predittive che l'AI userebbe per scomporre la keyword principale, con il cross-check di copertura sull'AIO. Le sotto-query marcate "gap citabile" indicano sfaccettature che oggi nessuno risponde in sintesi: sono opportunità prioritarie da coprire nell'articolo per emergere come fonte citabile dall'AI.
 3. **AI Overview.** Se presente sulla keyword (rilevato in Fase 1e), riporta le osservazioni operative: l'articolo deve offrire più valore della sintesi AI, essere strutturato per essere citato (risposta diretta in apertura di sezione, dati verificabili, heading formulati come la domanda), e coprire i sotto‑aspetti che l'AIO considera centrali.
 
 Output della fase: intento confermato o rivisto + una mappa di "cosa cercano gli utenti" (domande e sotto‑temi) che alimenta sia la selezione keyword (Fase 3) sia la scaletta di modifiche (Fase 4).
@@ -203,31 +206,51 @@ Distingui sempre questi **nuovi** link (Fase 3) dai link **già esistenti** rile
 
 Obiettivo: tradurre tutto ciò che è emerso in una **lista operativa e prioritizzata di interventi** sull'articolo. È il documento pivot del flusso, l'equivalente del brief ma orientato alla modifica: dice esattamente cosa cambiare, dove e perché. Sostituisce `content-brief-builder` (che serve a costruire un articolo nuovo).
 
+Se in Fase 1e è stata invocata la skill `ai-overview-reranker`, **incorpora le sue raccomandazioni di re-ranking come voci ad alta priorità della scaletta**: sono già in formato compatibile (azione, punto, perché, priorità) e mirano specificamente a portare l'articolo dentro l'AI Overview. Tieni le voci AIO‑specifiche raggruppate (o etichettate "AIO") così sono riconoscibili nel changelog di Fase 5.
+
 Costruisci la scaletta confrontando lo **stato attuale** (Fase 1a) con lo **stato ideale** (gap e formato dai competitor, intento e domande utenti dalla Fase 2, keyword target dalla Fase 3, opportunità di link dalla Fase 3).
 
-Organizza gli interventi per tipo:
+**Diagnosi preliminare obbligatoria — gap di copertura vs gap di struttura.** Prima di compilare la lista degli interventi, classifica la situazione in **una o entrambe** le categorie. Cambia radicalmente il tipo di intervento.
+
+- **Gap di copertura**: il tema si è allargato, i competitor presidiano sotto-temi che l'articolo non tocca. Le sotto-query del fan-out scoperte sono molte. L'intervento è **additivo**: aggiungere sezioni sui topic scoperti, con la profondità che la mappa competitiva indica come adeguata. La struttura esistente è OK ma incompleta.
+- **Gap di struttura**: i contenuti ci sono ma sono distribuiti male — heading che non dichiarano la sotto-domanda che risolvono, paragrafi che disperdono lo stesso concetto in punti diversi, sezioni concatenate senza che il sistema riesca a riconoscere quale porzione del bisogno coprono. L'intervento è di **riorganizzazione**: spostare blocchi, riscrivere gli heading perché dichiarino il sotto-tema, accorpare paragrafi ridondanti. Non si aggiunge: si rimette in ordine.
+- **Entrambi**: i due interventi non sono alternativi, si sommano. Si parte di solito dalla struttura per non sprecare aggiunte su un'architettura debole.
+
+Dichiara esplicitamente la diagnosi in apertura della scaletta (es. "diagnosi: prevalentemente gap di struttura su sezioni 1‑3, gap di copertura su sotto-query AIO non trattate"). È il filtro che spiega *perché* ogni intervento è del tipo che è.
+
+Organizza poi gli interventi per tipo:
 
 1. **Metadati**
-   - H1, title tag, meta description: confermare o riscrivere. Riscrivi quando non contengono la keyword primaria, quando GSC mostra CTR basso su query ad alte impression, o quando non sono orientati al clic.
-   - **Verifica via script obbligatoria**: dopo aver proposto nuovi H1/title/meta, esegui un breve script Python (Bash tool) per misurarne la lunghezza esatta (H1 ≤ 55, meta title ≤ 55, meta description ≤ 160 caratteri). Riscrivi e ri‑esegui finché rientrano. Non riportare versioni non verificate.
+   - **H1, title tag e meta description sono tre campi distinti** (non doppiare H1 e title): confermali o riscrivili. Riscrivi quando non contengono la keyword primaria, quando GSC mostra CTR basso su query ad alte impression, o quando non sono orientati al clic.
+   - **H1**: nessun limite rigido di caratteri (non è il title, non viene troncato in SERP). Se l'utente ha fornito un H1 specifico, adottalo come vincolo e non riscriverlo di iniziativa.
+   - **Meta title**: elemento distinto dall'H1, **simile ma non identico**. Limite rigido 60 caratteri.
+   - **Meta description**: limite rigido 160 caratteri.
+   - **Verifica via script obbligatoria**: dopo aver proposto nuovi meta title e meta description (e dopo aver definito o accettato l'H1), esegui un breve script Python (Bash tool) per misurare i due limiti rigidi (meta title 60, meta description 160) e verificare che H1 e meta title non coincidano. Riscrivi e ri-esegui finché tutti i controlli sono OK. Non riportare versioni non verificate. L'H1 non entra nel loop dei limiti (nessun limite rigido) ma entra nel check "H1 vs meta title distinti".
 
-2. **Struttura del contenuto** — per ogni intervento indica: **azione**, **punto** (quale sezione/H2 esistente), **perché**, **priorità** (alta/media/bassa).
-   - `AGGIUNGI`: nuove sezioni per coprire gap, PAA o sotto‑temi non trattati (e keyword target non presidiate).
-   - `ESPANDI`: sezioni troppo superficiali rispetto ai competitor o all'intento.
+2. **Struttura del contenuto** — per ogni intervento indica: **azione**, **punto** (quale sezione/H2 esistente), **perché**, **priorità** (alta/media/bassa). Usa il **query fan-out** della Fase 1e/2 come **checklist di copertura**: per ciascuna sotto-query verifica se l'articolo già la tratta; quelle scoperte diventano `AGGIUNGI`, quelle trattate male diventano `ESPANDI` o `RISCRIVI`. Le sotto-query "gap citabile" hanno priorità alta perché aprono opportunità dirette di citazione AI.
+   - `AGGIUNGI`: nuove sezioni per coprire gap, PAA, sotto-query del fan-out non trattate o sotto‑temi non coperti (e keyword target non presidiate).
+   - `ESPANDI`: sezioni troppo superficiali rispetto ai competitor, all'intento o alla sotto-query del fan-out che dovrebbero risolvere.
    - `RISCRIVI`: sezioni datate, fuori tono, deboli su keyword, o con scrittura da AI da umanizzare.
    - `UNISCI`/`RIMUOVI`: sezioni ridondanti, fuori tema, o (in caso di consolidamento) contenuti da assorbire da altre pagine del sito.
    - `RIORDINA`: se la sequenza attuale non segue l'intento o non mette in apertura la risposta diretta (utile anche per l'AI Overview).
+   - **Titoli conclusivi vietati.** Se l'ultimo H2 dell'articolo esistente si chiama "Conclusione", "Conclusioni", "In sintesi", "Per concludere", "Considerazioni finali", "Tirando le somme", "In definitiva", "Ultima parola" o simili, aggiungi una voce `RISCRIVI` sull'heading (contenuto conservato) proponendo un titolo utile alla SEO che rifocalizza la keyword primaria o l'angolo del pezzo. Vale anche per qualunque nuovo H2 finale che venga aggiunto.
    - `AGGIORNA`: dati, cifre, riferimenti temporali, screenshot datati.
 
 3. **Keyword da integrare**: per ciascuna, dove inserirla naturalmente (in quale sezione/heading). Dai priorità alle keyword "quasi in prima pagina" della Fase 3.
 
-4. **Link interni** (solo nuovi, dalla Fase 3, separati per direzione):
-   - *In uscita da aggiungere*: contenuto/pagina di destinazione + anchor text + punto di inserimento.
-   - *In entrata da creare*: articolo esistente da cui linkare + anchor text (nell'articolo esistente) verso questo articolo.
+4. **Link interni** (solo nuovi, dalla Fase 3, separati per direzione). URL sempre assoluti (`https://dominio.tld/...`, mai path relativo), anchor sempre obbligatoria:
+   - *In uscita da aggiungere*: URL completo di destinazione + anchor text + H2/H3 di inserimento.
+   - *In entrata da creare* (**massimo 2**, **solo articoli del blog**): URL completo dell'articolo esistente + sezione/heading in cui si trova la frase + **frase attuale** (copia verbatim) + **frase nuova** (riscritta con il link e l'anchor evidenziata) + anchor esatto. Se lo Step 4 di brand-analysis ne ha proposto più di 2, tieni solo le 2 migliori.
 
 5. **CTA e conversione**: CTA da aggiungere, spostare o riscrivere, collegate alle pagine strategiche della Fase 3.
 
 6. **Freschezza / E‑E‑A‑T**: segnali da rafforzare (autore, fonti, dati recenti), specie se c'è AI Overview o il topic è YMYL.
+
+**Principi trasversali alla scaletta — applicali a ogni voce che generi.**
+
+- **Heading dichiarativi.** Ogni H2/H3 deve dichiarare quale porzione del bisogno copre, in forma vicina alla domanda dell'utente: "Come configurare X" è meglio di "Configurazione"; "Quanto costa X in media nel 2026" è meglio di "Prezzi". Heading vaghi non si fanno selezionare né dai lettori né dai sistemi AI.
+- **Chunking (ogni blocco regge da solo).** Ogni sezione/paragrafo deve essere autoconsistente quando viene estratto: una definizione deve stare in piedi senza il contesto attorno, un esempio deve chiarire il punto senza rumore, una sezione deve rispondere a **una** domanda precisa. È la condizione perché AI Overview e motori generativi possano riusare quei blocchi come fonte.
+- **Information gain.** I differenziatori vs i competitor di citazione devono aggiungere qualcosa che non è già nell'indice: dato primario, esempio reale, screenshot di tool, grafico con dati propri, prospettiva specialistica, caso d'uso documentato. Una sezione che ripete in altra forma quello che già dice un AIO o un competitor non sposta la citazione.
 
 Ogni voce deve essere concreta e azionabile: non "migliorare l'introduzione" ma "riscrivere l'introduzione mettendo in apertura la risposta diretta alla query 'come fare X', inserendo la keyword primaria entro le prime 2 righe — priorità alta perché GSC mostra 1.200 impression/mese in pos. media 8".
 
@@ -251,7 +274,7 @@ Mantieni la coerenza stilistica: il testo nuovo e quello esistente devono legger
 1. **Blocco "KEYWORD UTILIZZATE"** in testa: keyword (primaria + secondarie + long‑tail) effettivamente presenti nell'articolo aggiornato, ciascuna con volume mensile.
 2. **L'articolo completo aggiornato** (versione integrale già modificata, dall'H1 alla CTA finale), pronto da incollare nel CMS.
 3. **Blocco "CHANGELOG MODIFICHE"** accodato: elenco di cosa è stato fatto, voce per voce, riprendendo la scaletta (sezioni aggiunte/espanse/riscritte/unite/rimosse/aggiornate, metadati cambiati, keyword integrate, link aggiunti). Una riga per intervento, così chi pubblica sa esattamente cosa è cambiato rispetto alla versione online.
-4. **Blocco "LINK IN ENTRATA DA CREARE"** accodato: articoli esistenti dove aggiungere un link verso questo articolo, con anchor text suggerito (dalla Fase 3). È un'azione operativa post‑pubblicazione. Se non ce ne sono di adatti, indicalo in una riga.
+4. **Blocco "LINK IN ENTRATA DA CREARE"** accodato: **massimo 2 voci**, esclusivamente **articoli del blog** (mai pagine prodotto/servizio/categoria/casi studio/landing). Per ciascuna: **URL completo** dell'articolo esistente (assoluto, `https://dominio.tld/...`, mai path relativo), **sezione/heading** in cui si trova la frase, **frase attuale** (copia esatta dall'articolo esistente), **frase nuova** (la stessa frase riscritta con il link inserito e l'anchor evidenziata), **anchor** (dalla Fase 3). L'obiettivo è che chi pubblica apra l'articolo esistente, trovi la frase attuale e la sostituisca con la frase nuova. Se non ce ne sono di adatti, indicalo in una riga.
 
 ---
 
@@ -265,6 +288,12 @@ Esegui la skill **`content-reviewer`** sull'articolo aggiornato, passandole come
 - raccomandazioni di distribuzione multicanale.
 
 Se il punteggio complessivo è sotto 5, segnala che l'articolo non è ancora pronto e indica le priorità di intervento.
+
+---
+
+### Verifica AIO post-edit (opzionale)
+
+Se in Fase 1e è stata invocata la skill `ai-overview-reranker` per produrre raccomandazioni AIO-specifiche, **dopo la Fase 5 puoi rilanciare la stessa skill in modalità verify** sullo stesso URL e sulle stesse keyword del baseline. Confronta automaticamente con l'output precedente per misurare il guadagno di citazione (l'articolo è ora citato e prima no? su quante delle 1‑3 keyword target?) e identificare eventuali gap residui su cui iterare. È un giro corto, mirato esclusivamente al posizionamento AIO.
 
 ---
 
@@ -292,10 +321,20 @@ Fornire l'URL e/o le keyword **non** equivale a saltare le fasi di analisi: sono
 ## Regole critiche
 
 - L'input centrale è l'**URL di una pagina esistente**: senza, non si parte. Questa skill non crea articoli nuovi (per quello c'è `seo-blog-pipeline`).
+- **H1 e meta title sono elementi distinti** nella scaletta di modifiche e nell'articolo aggiornato: l'H1 non ha limite rigido di caratteri (mai segnalarlo "troppo lungo" per motivi di title), il meta title sì (limite rigido 60 caratteri). Devono essere **simili ma non identici**. Se l'utente fornisce un H1 specifico o vuole mantenere l'H1 attuale, adottalo come vincolo: non riscriverlo di iniziativa.
 - GSC (`gsc-moca`) è la fonte primaria del posizionamento reale della pagina (impression, clic, CTR, posizione media); Ahrefs è complemento e fallback. Se la proprietà GSC non è accessibile, segnalalo e prosegui con Ahrefs.
 - Per l'analisi della singola pagina usa Ahrefs in `mode: "exact"` sull'URL dell'articolo, con `date_compared` per leggere il trend di posizione.
 - Tieni sempre separati i link **già esistenti** (Fase 1d, stato attuale) dai link **nuovi da creare** (Fase 3, `brand-analysis-and-connections`), e tra questi i link in uscita da quelli in entrata.
+- **URL sempre assoluti** (`https://dominio.tld/percorso-completo`) in ogni link della scaletta di modifiche, del changelog e dell'articolo aggiornato. Mai il solo path relativo (`/blog/…`). Vale sia per link in uscita che per link in entrata.
+- **Anchor text sempre obbligatoria** per ogni link, in uscita e in entrata. Non è mai facoltativa.
+- **Link in entrata: massimo 2 voci, solo articoli del blog, con frase attuale + frase nuova**. Nel deliverable di Fase 5 e nella scaletta di Fase 4 non superare mai le 2 voci (anche se lo Step 4 di brand-analysis ne fornisce di più: seleziona le 2 migliori). Mai includere pagine prodotto/servizio/categoria/casi studio/landing. Ogni voce deve avere la frase esatta esistente e la frase riscritta con il link.
+- **Vietato usare "Conclusione" (e sinonimi) come titolo di H2**: se l'articolo esistente ha un H2 finale generico ("Conclusione", "Conclusioni", "In sintesi", "Per concludere", "Considerazioni finali", "Tirando le somme", "In definitiva", "Ultima parola" o simili), la scaletta deve includere una voce `RISCRIVI` che sostituisca solo l'heading con uno utile alla SEO (rifocalizza keyword primaria o angolo del pezzo). Il contenuto conclusivo resta.
 - Dai priorità alle keyword su cui la pagina è già "quasi in prima pagina" e alle query ad alte impression/basso CTR: sono i guadagni più rapidi.
+- Prima della scaletta, **diagnostica esplicitamente** se il problema è di copertura (sotto-temi mancanti → intervento additivo) o di struttura (contenuti presenti ma distribuiti male → riorganizzazione) o entrambi. Riscrivere title/meta come riflesso quando il vero problema è di copertura o struttura raramente sposta il risultato.
+- Ogni heading H2/H3 deve **dichiarare** quale porzione del bisogno copre, in forma vicina alla domanda dell'utente. Heading vaghi (es. "Configurazione", "Approfondimenti") non si fanno selezionare né dai lettori né dai sistemi AI.
+- Applica la logica del **chunking**: ogni blocco (definizione, esempio, sezione) deve reggere autoconsistente anche quando estratto dal contesto. È la condizione perché AIO e motori generativi lo riusino come fonte.
+- I differenziatori devono mirare a **information gain**: aggiungere qualcosa che non è già nell'indice (dato primario, esempio reale, screenshot, grafico con dati propri, prospettiva specialistica). Riformulare in altra forma ciò che competitor o AIO già dicono non sposta la citazione.
+- Alt text e immagini: i sistemi AI multimodali leggono le immagini insieme al testo. L'alt text deve descrivere cosa l'immagine mostra e la sua funzione nel ragionamento della pagina, non ripetere la keyword. Immagini con dati propri, screenshot specifici o grafici originali sono information gain reale.
 - Il controllo di consolidamento (Fase 1e) è obbligatorio: se più pagine del sito competono sulla stessa keyword, fermati e chiedi come procedere.
 - Chiedi sempre il formato dell'output all'inizio e attendi la risposta: non assumere mai il markdown di default.
 - Non toccare il testo prima dell'approvazione della scaletta (Fase 4): è il checkpoint di non ritorno.

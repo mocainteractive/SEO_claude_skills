@@ -1,7 +1,7 @@
 ---
 name: serp-analysis
 description: >
-  Analizza la SERP per la keyword primaria (da keyword-analysis) e produce indicazioni operative per il content-brief-builder. Prima dei competitor esegue un controllo di cannibalizzazione: verifica se il sito del cliente è già posizionato sulla keyword o sulle correlate, usando come fonte primaria Google Search Console (MCP gsc-moca) e Ahrefs come fallback; se positivo ferma il flusso per decidere se continuare, cambiare focus o aggiornare la pagina esistente. Verifica inoltre, tramite DataForSEO MCP, la presenza dell'AI Overview sulla keyword primaria e sulle due secondarie più pertinenti, producendo osservazioni per la scrittura. Usa dopo keyword-analysis e prima di brand-analysis-and-connections; è il secondo step del flusso seo-blog-pipeline. Trigger: "analizza la SERP per questa keyword", "cosa fanno i competitor su questo topic", "abbiamo già un contenuto su questa keyword?", "c'è l'AI Overview su questa keyword?", "procedi con il flusso seo-blog-pipeline".
+  Analizza la SERP per la keyword primaria (da keyword-analysis) e produce indicazioni operative per il content-brief-builder. Esegue un controllo di cannibalizzazione (GSC primario via gsc-moca, Ahrefs fallback): se positivo ferma il flusso per decidere se continuare, cambiare focus o aggiornare la pagina esistente. Verifica tramite DataForSEO MCP la presenza dell'AI Overview su keyword primaria + 2 secondarie più pertinenti e, come estensione, genera un query fan-out (8‑12 sotto-query che l'AI scompone in parallelo) con cross-check sulla copertura dell'AIO: griglia per farsi citare e per completezza semantica. Usa dopo keyword-analysis e prima di brand-analysis-and-connections; è il secondo step del flusso seo-blog-pipeline. Trigger: "analizza la SERP per questa keyword", "cosa fanno i competitor su questo topic", "abbiamo già un contenuto su questa keyword?", "c'è l'AI Overview su questa keyword?", "genera il query fan-out per essere citato dall'AI", "procedi con il flusso seo-blog-pipeline".
 ---
 
 # SERP Analysis
@@ -241,6 +241,32 @@ Se è presente su una o più keyword, ricava osservazioni concrete da tenere a m
 
 Le osservazioni vanno riportate in modo operativo: ciascuna deve dire al copywriter cosa fare concretamente. Confluiscono nel content-brief-builder come indicazioni di scrittura.
 
+### Step 6 — Query fan-out per AI (estensione del check AI Overview)
+
+I motori basati su AI (Google AI Overview/AI Mode, Perplexity, ChatGPT Search) non rispondono a una sola query: la **scompongono in molte sotto-query parallele** (fan-out) e valutano le fonti contro l'insieme delle sotto-query. Una fonte che copre molte sfaccettature ha più probabilità di essere citata di una che ne copre poche, anche quando rankka peggio in SERP classica.
+
+Questo step **anticipa** il fan-out probabile e lo usa come griglia di completezza per la scrittura. Si esegue **sempre**, anche quando l'AI Overview è assente: vale sia per la probabilità di essere citati sia per la completezza semantica utile al ranking classico e all'E‑E‑A‑T.
+
+**Come si genera (per derivazione semantica, non con un tool).** Partendo dalla keyword primaria e dalle 2 secondarie più pertinenti, genera **8‑12 sotto-query** che un utente reale potrebbe porsi attorno al topic, distribuite tra le categorie qui sotto. Non devi coprirle tutte: scegli quelle pertinenti al topic. Le sotto-query sono **predittive**, non hanno volume e non vanno cercate sui tool.
+
+- **Definizione** — "cos'è X", "X significato", "X in breve"
+- **Come / perché** — "come fare X", "perché serve X", "come scegliere X"
+- **Confronto / alternative** — "X vs Y", "alternative a X", "X o Z"
+- **Limiti / errori comuni** — "rischi di X", "errori da evitare con X", "controindicazioni X"
+- **Prerequisiti / requisiti** — "prima di fare X", "cosa serve per X"
+- **Casi d'uso specifici** — "X per principianti", "X per [profilo]", "quando usare X"
+
+**Secondo layer di tagging — ambito di intento.** Oltre alla categoria content-type, tagga ciascuna sotto-query anche con l'**ambito di intento** che esprime: `informational`, `valutazione/comparazione`, `fiducia/affidabilità`, `transactional`, `follow-up` (cioè domande che l'utente si pone *dopo* aver ricevuto la prima risposta). Le due dimensioni sono indipendenti: una sotto-query "X vs Y" è content-type *confronto* e ambito *valutazione/comparazione*; "chi ha scritto questa guida su X" è content-type *prerequisiti* e ambito *fiducia/affidabilità*. L'ambito **fiducia/affidabilità** è particolarmente rilevante per la citazione AIO perché tocca segnali E‑E‑A‑T: vanno coperte con prove (autore, fonti, dati con provenienza), non con dichiarazioni.
+
+**Cross-check con l'AI Overview (Chiamata 4).** Se l'AIO è presente su almeno una delle keyword controllate, per ciascuna sotto-query del fan-out indica lo stato:
+
+- **AIO copre** → l'articolo deve trattarla almeno alla pari, idealmente con dato/esempio in più.
+- **AIO non copre — gap citabile** → sotto-query con buona probabilità di essere chiesta che oggi nessuno risponde in sintesi. Rispondere meglio (e in apertura della sezione, in formato estraibile) aumenta sensibilmente la probabilità di essere citati come fonte.
+
+Se l'AIO è assente su tutte e tre le keyword controllate: salta il cross-check e riporta il solo fan-out come griglia di copertura semantica.
+
+Le sotto-query del fan-out confluiscono a valle nel content-brief-builder (e nella scaletta di modifiche dell'existing-page-optimizer) come **checklist di copertura obbligatoria**: ogni sotto-query deve trovare risposta nell'articolo — come heading H2/H3, sotto-paragrafo o passaggio inline. Le sotto-query marcate "gap citabile" sono priorità.
+
 ---
 
 ## Output
@@ -288,6 +314,19 @@ L'output deve essere leggibile sia dal `content-brief-builder` (skill successiva
 - osservazioni operative per la scrittura (estraibilità/risposta diretta, sotto-aspetti da coprire, E-E-A-T, opportunità di citazione)
 Se assente su tutte e tre, una riga. Se DataForSEO non era disponibile, segnalalo.]
 
+**QUERY FAN-OUT (COPERTURA AI)**
+[8‑12 sotto-query categorizzate, generate per derivazione semantica dalla keyword primaria e dalle 2 secondarie più pertinenti. Doppio tag: content-type + ambito di intento. Formato:
+
+*Definizione*
+- [sotto-query] — ambito: [informational/valutazione/fiducia/transactional/follow-up] — [AIO copre / AIO non copre — gap citabile / —]
+
+*Come / perché*
+- [sotto-query] — ambito: [...] — [stato]
+
+*(ripeti per le categorie content-type pertinenti al topic: confronto/alternative, limiti/errori comuni, prerequisiti, casi d'uso. Non coprire tutte le categorie, solo quelle rilevanti.)*
+
+Se l'AIO era assente su tutte le keyword controllate nella Chiamata 4: ometti la colonna di stato e indica in una riga che la lista funziona come griglia di completezza semantica. Confluisce nel brief / scaletta come checklist di copertura obbligatoria; le sotto-query "gap citabile" e quelle nell'ambito **fiducia/affidabilità** sono priorità per essere citati come fonte.]
+
 **FORMATO CONSIGLIATO**
 [Formato scelto] — [motivazione in una riga basata sui dati]
 
@@ -307,6 +346,7 @@ Se assente su tutte e tre, una riga. Se DataForSEO non era disponibile, segnalal
 - I gap devono essere concreti: specifica sempre cosa manca e come colmarlo, mai osservazioni generiche.
 - Le domande PAA vanno recuperate dalla SERP reale, non inventate. Se non recuperabili, ometti la sezione.
 - Il controllo AI Overview (Chiamata 4 / Step 5) va eseguito sempre su keyword primaria + 2 secondarie più pertinenti, con `load_async_ai_overview: true` per recuperare contenuto e fonti. Non è un checkpoint di stop: se DataForSEO non è disponibile, segnalalo e prosegui. Le osservazioni AI Overview devono essere operative e confluire nel brief.
+- Lo Step 6 (query fan-out) va eseguito **sempre**, anche quando l'AI Overview è assente: la griglia di sotto-query è utile sia per la citazione AI sia per la completezza semantica. Le sotto-query si generano per derivazione (8‑12, categorizzate per quelle pertinenti al topic), non con un tool: sono predittive di come l'AI scompone la query, non volumi reali. Il cross-check di copertura va fatto solo se l'AIO è presente almeno su una delle keyword controllate.
 - Il formato consigliato deve essere motivato dai dati, non dalla preferenza personale.
 - L'output deve essere operativo: chi lo legge capisce immediatamente cosa fare.
 - Non includere mai valutazioni sulle ads o sui risultati a pagamento.

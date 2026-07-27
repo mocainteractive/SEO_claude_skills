@@ -1,7 +1,7 @@
 ---
 name: seo-blog-pipeline
 description: >
-  Orchestratore del flusso completo di creazione di un articolo blog SEO. Chiama in sequenza le skill keyword-analysis, serp-analysis, brand-analysis-and-connections, content-brief-builder, draft-writer, seo-optimizer e content-reviewer. Usa questa skill quando l'utente vuole avviare il flusso completo di produzione di un articolo blog SEO dall'analisi keyword alla pubblicazione, MA ANCHE quando chiede solo un content brief: la produzione del brief è l'obiettivo `brief` di questo flusso e richiede comunque le fasi a monte (keyword-analysis, serp-analysis, brand-analysis-and-connections), quindi una richiesta di brief deve attivare questo orchestratore e non la sola content-brief-builder. Trigger tipici: "avvia il flusso SEO per questo topic", "crea un articolo su X per il sito Y", "procedi con il flusso seo-blog-pipeline", "voglio un articolo completo su X", "crea un content brief per X", "voglio un brief per un articolo su X", "dammi il brief editoriale per X".
+  Orchestratore del flusso completo di creazione di un articolo blog SEO. Chiama in sequenza keyword-analysis, serp-analysis, brand-analysis-and-connections, content-brief-builder, draft-writer, seo-optimizer, ai-overview-reranker (opzionale, sulla bozza pre-pubblicazione) e content-reviewer. Usa questa skill quando l'utente vuole avviare il flusso completo dall'analisi keyword alla pubblicazione, MA ANCHE quando chiede solo un content brief: la produzione del brief è l'obiettivo `brief` di questo flusso e richiede comunque le fasi a monte (keyword-analysis, serp-analysis, brand-analysis-and-connections), quindi una richiesta di brief deve attivare questo orchestratore e non la sola content-brief-builder. Trigger tipici: "avvia il flusso SEO per questo topic", "crea un articolo su X per il sito Y", "procedi con il flusso seo-blog-pipeline", "voglio un articolo completo su X", "crea un content brief per X", "voglio un brief per un articolo su X", "dammi il brief editoriale per X".
 ---
 
 # SEO Blog Pipeline
@@ -34,18 +34,19 @@ Prima di avviare il flusso, verifica di avere:
 3. **Lingua target**: default italiano, salvo indicazione diversa
 4. **Paese target**: default Italia (it), usato per le chiamate Ahrefs
 5. **Brief iniziale (opzionale)**: eventuali note del cliente, angolazione preferita, vincoli editoriali. Se fornito, revisionalo e proponi miglioramenti prima di passare alla Fase 1.
+6. **H1 dell'articolo (opzionale)**: se l'utente ha già in mente l'H1, accettalo come **vincolo** e passalo a content-brief-builder come dato pre-definito. Il flusso adatta title, meta description, scaletta H2/H3 e angolo attorno all'H1 fornito, senza riscriverlo di iniziativa. Se l'H1 fornito non contiene la keyword primaria (una volta identificata in Fase 1), segnalalo all'utente e chiedi conferma prima di modificarlo.
 
-Se uno di questi elementi (1–4) manca, chiedi conferma all'utente prima di procedere. Non avviare il flusso con informazioni incomplete.
+Se uno di questi elementi (1-4) manca, chiedi conferma all'utente prima di procedere. Non avviare il flusso con informazioni incomplete. Gli elementi 5 e 6 sono opzionali.
 
 ---
 
 ## Configurazione di sessione (da chiedere SEMPRE all'inizio)
 
-Prima di partire con la Fase 1, chiedi all'utente quattro cose in un'unica domanda concisa:
+Prima di partire con la Fase 1, chiedi all'utente cinque cose in un'unica domanda concisa:
 
 1. **Obiettivo finale**: dove vuole fermarsi il flusso?
    - `brief` → il flusso si ferma dopo la Fase 4 (content brief approvato). Utile quando l'articolo verrà scritto da un copywriter umano e serve solo il brief editoriale come deliverable.
-   - `articolo completo` (default) → il flusso procede fino alla Fase 7 e consegna l'articolo finale ottimizzato e validato E‑E‑A‑T.
+   - `articolo completo` (default) → il flusso procede fino alla Fase 8 e consegna l'articolo finale ottimizzato e validato E‑E‑A‑T.
 
 2. **Modalità di esecuzione**:
    - `interattiva` (default): tra una fase e l'altra mostra un mini‑riepilogo (3‑5 bullet) e chiede conferma esplicita per proseguire. Adatta quando l'utente vuole supervisionare il flusso passo per passo.
@@ -63,9 +64,13 @@ Prima di partire con la Fase 1, chiedi all'utente quattro cose in un'unica doman
    - `automatico` (default): Claude mappa l'intero sito tramite robots.txt + sitemap e seleziona i contenuti correlati più rilevanti, ovunque si trovino.
    - `cartella/sezione specifica`: l'utente indica uno o più percorsi o URL di sezione (es. `/blog/marketing/`, `/magazine/guide/`). Claude esplora in modo esaustivo quella/e sezione/i, così non perde articoli più nascosti. Utile nei siti con blog suddiviso in molte categorie, dove la scansione automatica rischia di campionare solo una parte dei contenuti. La scansione del resto del sito per le pagine strategiche (prodotti/servizi/casi studio) resta comunque attiva.
 
-Memorizza le scelte e applicale per tutto il resto della sessione. Non ripetere la domanda alle fasi successive. Le quattro domande vanno poste tutte all'inizio: il formato dell'output in particolare non va mai saltato né assunto in autonomia.
+5. **Check AI Overview pre-pubblicazione** *(solo se l'obiettivo è `articolo completo`)*: vuoi che dopo la Fase 6 (seo-optimizer) e prima della Fase 8 (content-reviewer) la bozza venga sottoposta a un check di qualità per la citabilità AIO via `ai-overview-reranker`?
+   - `sì` → si esegue la Fase 7 (AI Overview check sulla bozza) prima della validazione E‑E‑A‑T. Misura rilevanza vs i top 5 competitor e copertura delle sotto-query del fan-out (tramite Vertex MCP: rerank + embed). Le indicazioni vanno applicate prima della Fase 8 come affinamenti puntuali. Consigliato quando l'AI Overview è presente sulla keyword (rilevato in Fase 2).
+   - `no` (default se l'AIO è assente, o se l'utente non si esprime) → si passa direttamente alla Fase 8.
 
-Se l'obiettivo è `brief`, salta le Fasi 5, 6 e 7. Al checkpoint dopo la Fase 4 consegna il brief nel formato richiesto e termina lì il flusso.
+Memorizza le scelte e applicale per tutto il resto della sessione. Non ripetere la domanda alle fasi successive. Le cinque domande vanno poste tutte all'inizio: il formato dell'output in particolare non va mai saltato né assunto in autonomia.
+
+Se l'obiettivo è `brief`, salta le Fasi 5, 6, 7 e 8. Al checkpoint dopo la Fase 4 consegna il brief nel formato richiesto e termina lì il flusso.
 
 ---
 
@@ -95,6 +100,7 @@ Prima dell'analisi competitor, esegue un **controllo di cannibalizzazione** (Ste
 - Gap di contenuto identificati
 - Domande PAA da coprire
 - Presenza AI Overview (DataForSEO) su keyword primaria + 2 secondarie più pertinenti, con osservazioni per la scrittura
+- Query fan-out (8‑12 sotto-query predittive che l'AI userebbe per scomporre la keyword) con cross-check di copertura sull'AIO: griglia di completezza per essere citati come fonte
 - Formato consigliato per l'articolo
 
 **Checkpoint cannibalizzazione**: se il sito presidia già la keyword primaria o una correlata importante — pagina in top 50 su Ahrefs, oppure impression/clic su GSC, oppure più pagine in competizione sulla stessa query in GSC — ferma il flusso e chiedi all'utente se continuare con un nuovo articolo, cambiare focus o aggiornare/consolidare la pagina esistente. È un punto di stop obbligatorio in entrambe le modalità. Se sceglie di aggiornare/consolidare la pagina esistente, non proseguire con questo flusso di creazione: passa alla skill `existing-page-optimizer`, che ottimizza un articolo già pubblicato a partire dal suo URL.
@@ -152,7 +158,31 @@ Controlla e ottimizza la bozza prodotta nella Fase 5. Produce:
 
 ---
 
-### Fase 7 — CONTENT REVIEWER
+### Fase 7 — AI OVERVIEW CHECK (opzionale)
+*Skill: `ai-overview-reranker`*
+
+Esegui questa fase **solo** se l'utente ha scelto `sì` alla domanda 5 della configurazione di sessione (o se è stata proposta esplicitamente ed accettata). Verifica se la bozza ha le qualità per essere citata come fonte dall'AI Overview, prima di entrare nella validazione E‑E‑A‑T finale.
+
+Tratta la bozza come l'articolo target della skill, usando:
+- keyword target: la primaria + le 2 secondarie più pertinenti (da Fase 1/2)
+- corpus competitor: i top competitor editoriali della Fase 2 (`serp-analysis`), già nel contesto
+- fan-out predittivo: lo Step 6 di `serp-analysis`
+
+Produce:
+- Rilevanza competitiva della bozza vs i top 5 competitor per ciascuna keyword (rerank score, posizione, delta dal top‑1)
+- Coverage map sotto-query × sezioni della bozza (gap di copertura misurati)
+- Mappa semantica via embedding (distanza dal nucleo del topic, sezioni outlier)
+- Raccomandazioni puntuali di affinamento (chunking, heading dichiarativi, information gain, sotto-query non coperte)
+
+In questa fase il ruolo non è "perché non veniamo citati" (la bozza non è ancora in SERP, GSC e DataForSEO sul singolo URL non si applicano): è **validazione qualitativa pre‑pubblicazione**, "questa bozza ha le qualità per essere citata?". Lo score di rerank e le distanze vettoriali vanno letti come direzione, non come voto: il rischio è iterare il draft all'infinito inseguendo lo score, che non è l'obiettivo.
+
+Applica le raccomandazioni con interventi puntuali (preferibilmente via `seo-optimizer` se è di entità ≤ 2 paragrafi, altrimenti via mini-iterazione su `draft-writer` per i blocchi nuovi/espansi). Poi procedi alla Fase 8.
+
+Se l'utente ha risposto `no` alla domanda 5, salta questa fase.
+
+---
+
+### Fase 8 — CONTENT REVIEWER
 *Skill: `content-reviewer`*
 
 Valida la qualità finale dell'articolo ottimizzato. Produce:
@@ -170,7 +200,7 @@ Il flusso prevede **due checkpoint obbligatori** che restano attivi in entrambe 
 
 2. **Dopo la Fase 4** (prima di scrivere): mostra il brief completo e chiedi conferma esplicita. È l'ultimo momento utile per modificare la struttura dell'articolo.
 
-**Mini‑checkpoint aggiuntivi (solo in modalità interattiva):** dopo ogni altra fase (1, 2, 5, 6), mostra un mini‑riepilogo di 3‑5 bullet di cosa è emerso e chiedi all'utente se procedere. In modalità autonoma questi mini‑checkpoint sono omessi e il flusso prosegue automaticamente.
+**Mini‑checkpoint aggiuntivi (solo in modalità interattiva):** dopo ogni altra fase (1, 2, 5, 6, 7), mostra un mini‑riepilogo di 3‑5 bullet di cosa è emerso e chiedi all'utente se procedere. In modalità autonoma questi mini‑checkpoint sono omessi e il flusso prosegue automaticamente.
 
 **Checkpoint di emergenza (sempre attivi):**
 - Se in Fase 1 l'intent risulta chiaramente transazionale, ferma il flusso e chiedi conferma.
@@ -209,11 +239,11 @@ L'utente riceve un **unico articolo finale** nel formato indicato (markdown, HTM
 
 1. **Blocco "KEYWORD UTILIZZATE"** in testa: elenco delle keyword (primaria + secondarie + long‑tail) effettivamente integrate nell'articolo, ciascuna con il volume di ricerca mensile. È un blocco di metadati per chi pubblicherà l'articolo, sempre presente prima del corpo del testo.
 2. **L'articolo ottimizzato** (versione finale dalla Fase 6, comprensiva di H1, corpo e CTA finale).
-3. **Blocco "LINK INTERNI IN ENTRATA DA CREARE"** come blocco separato accodato dopo l'articolo: elenco degli URL di articoli del blog già esistenti e correlati dove inserire un link che punta a questo nuovo articolo, ciascuno con l'anchor text suggerito (dallo Step 4 di brand-analysis-and-connections). È un blocco operativo per chi pubblica: indica dove aggiungere i rimandi al nuovo contenuto aggiornando i vecchi articoli. Se non ci sono articoli adatti, indicalo in una riga.
-4. **Report E‑E‑A‑T** (Fase 7) come blocco separato accodato in fondo: punteggi per criterio, punteggio complessivo, confronto con i competitor della SERP, raccomandazioni di distribuzione multicanale.
+3. **Blocco "LINK INTERNI IN ENTRATA DA CREARE"** come blocco separato accodato dopo l'articolo: **massimo 2 voci**, esclusivamente **articoli del blog** (mai pagine prodotto/servizio/categoria/casi studio/landing). Per ciascuna voce: **URL completo** dell'articolo esistente (assoluto, `https://dominio.tld/...`, mai il solo path relativo), **sezione/heading** in cui si trova la frase, **frase attuale** (copia esatta della frase esistente da modificare), **frase nuova** (la stessa frase riscritta con il link inserito e l'anchor evidenziata), **anchor** (testo esatto). Chi pubblica deve poter aprire l'articolo esistente, trovare la frase attuale, sostituirla con la frase nuova e avere il link a posto. Se non ci sono articoli adatti, indicalo in una riga.
+4. **Report E‑E‑A‑T** (Fase 8) come blocco separato accodato in fondo: punteggi per criterio, punteggio complessivo, confronto con i competitor della SERP, raccomandazioni di distribuzione multicanale.
 
 **Obiettivo `brief`**:
-L'utente riceve il **content brief editoriale** prodotto in Fase 4, nel formato indicato. Niente articolo, niente report E‑E‑A‑T (la Fase 7 non viene eseguita). Il brief include anche l'elenco dei **link in entrata da creare** (URL di articoli esistenti dove linkare il nuovo articolo). Il brief deve essere autosufficiente: un copywriter umano deve poter scrivere l'articolo leggendo solo quel documento.
+L'utente riceve il **content brief editoriale** prodotto in Fase 4, nel formato indicato. Niente articolo, niente check AIO (Fase 7), niente report E‑E‑A‑T (la Fase 8 non viene eseguita). Il brief include anche l'elenco dei **link in entrata da creare** (URL di articoli esistenti dove linkare il nuovo articolo). Il brief deve essere autosufficiente: un copywriter umano deve poter scrivere l'articolo leggendo solo quel documento.
 
 In entrambi i casi, le analisi delle fasi precedenti (keyword, SERP, brand) restano nella conversazione come passaggi intermedi consultabili. Non duplicare questi materiali nell'output finale.
 
@@ -227,6 +257,10 @@ In entrambi i casi, le analisi delle fasi precedenti (keyword, SERP, brand) rest
 - Una richiesta di content brief attiva sempre le Fasi 1-4, mai la sola Fase 4. Fornire keyword e/o URL non autorizza a saltare le Fasi 1-3: sono input, non output di fase.
 - Se l'utente fornisce delle keyword, chiedi se cercarne anche di correlate o procedere solo con quelle prima di eseguire la Fase 1.
 - Non avviare la scrittura (Fase 5) senza approvazione esplicita del brief.
+- **H1 e meta title sono elementi distinti** in tutti i deliverable del flusso: l'H1 non ha limite rigido di caratteri (mai segnalarlo "troppo lungo" per motivi di title), il meta title sì (limite rigido 60 caratteri). Devono essere **simili ma non identici**. Se l'utente fornisce l'H1 all'input, adottalo come vincolo e adatta title/meta/scaletta di conseguenza: non riscriverlo di iniziativa.
+- **Vietato usare "Conclusione" (e sinonimi) come titolo di H2** in ogni fase del flusso (brief, bozza, articolo finale): mai heading come "Conclusione", "Conclusioni", "In sintesi", "Per concludere", "Considerazioni finali", "Tirando le somme", "In definitiva", "Ultima parola". L'H2 finale dell'articolo deve essere utile alla SEO e rifocalizzare la keyword primaria o l'angolo del pezzo. Il paragrafo conclusivo e la CTA restano, cambia solo l'heading.
+- **URL sempre assoluti + anchor sempre obbligatoria** in tutti i link di tutti i deliverable del flusso (brief, articolo, blocco link in entrata). URL sempre `https://dominio.tld/percorso-completo`, mai il solo path relativo (`/blog/...`). Anchor mai omessa, mai generica ("clicca qui", "scopri di più").
+- **Link in entrata: massimo 2, solo articoli del blog, con frase attuale e frase nuova**. Nel blocco "LINK INTERNI IN ENTRATA DA CREARE" del deliverable finale non superare mai le 2 voci, mai includere pagine prodotto/servizio/categoria/casi studio/landing (solo blog), e per ogni voce riporta la frase esatta attuale + la frase riscritta con il link. È il livello di dettaglio minimo perché l'inserimento sia applicabile senza reinventare nulla.
 - Non procedere oltre la Fase 1 se l'intent è chiaramente transazionale senza conferma dell'utente.
 - Non procedere oltre il controllo di cannibalizzazione (Fase 2, Step 0) se il sito presidia già il tema secondo GSC (impression/clic o più pagine in competizione sulla stessa query) o Ahrefs (pagina in top 50): ferma e chiedi all'utente se continuare, cambiare focus o aggiornare/consolidare la pagina esistente. GSC è la fonte primaria, Ahrefs il fallback.
 - Se il TOV del sito non è rilevabile, non inventarlo: pausa e chiedi input social all'utente.

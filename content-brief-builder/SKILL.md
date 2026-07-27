@@ -32,7 +32,7 @@ Se l'utente fornisce già delle keyword, prima di lanciare la Fase 1 chiedigli s
 ## Input atteso
 
 - Output di `keyword-analysis`: keyword primaria, keyword secondarie e correlate, intent
-- Output di `serp-analysis`: gap identificati, domande PAA, formato consigliato, analisi competitor, presenza AI Overview e relative osservazioni per la scrittura
+- Output di `serp-analysis`: gap identificati, domande PAA, formato consigliato, analisi competitor, presenza AI Overview e relative osservazioni per la scrittura, **query fan-out** con cross-check di copertura sull'AIO (sotto-query predittive da usare come checklist di copertura)
 - Output di `brand-analysis-and-connections`: TOV, istruzioni di scrittura, contenuti correlati, pagine strategiche da collegare, pagine esistenti da cui linkare il nuovo articolo (link in entrata)
 - Topic e cliente del progetto
 - **Istruzioni e knowledge di progetto** (se il flusso gira dentro un progetto Claude): linee guida editoriali, brand book, tone of voice, glossari, termini da usare/evitare, vincoli di formato o legali. Incorporale nel brief e falle prevalere sui default generici di questa skill; in caso di conflitto con una buona pratica SEO o con una scelta di sessione, segnalalo all'utente invece di risolverlo in autonomia.
@@ -45,12 +45,11 @@ La skill produce due versioni del brief.
 
 **Brief standard** (default): usato per la maggioranza dei progetti. Contiene metadati, scaletta H2/H3 con istruzioni per paragrafo, keyword per sezione, nota SEO finale con link interni, CTA e fonti.
 
-**Brief complesso**: usato quando il topic è articolato, il cliente ha esigenze editoriali specifiche, oppure quando la serp-analysis ha prodotto un'analisi competitor dettagliata da integrare nel brief. Aggiunge: step metodologici numerati in apertura, URL suggerita, indicazioni su immagini (nome file, alt text, didascalia) per i paragrafi principali, analisi competitor sintetica in appendice.
+**Brief complesso**: usato quando il topic è articolato, il cliente ha esigenze editoriali specifiche, oppure quando la serp-analysis ha prodotto un'analisi competitor dettagliata da integrare nel brief. Aggiunge: step metodologici numerati in apertura, URL suggerita, analisi competitor sintetica in appendice.
 
 Usa il brief complesso se almeno una di queste condizioni è vera:
 - L'articolo supera i 2.000 parole stimati
 - Sono stati identificati più di 3 gap significativi nella serp-analysis
-- Il cliente ha richiesto indicazioni sulle immagini
 - Il topic richiede una struttura con più di 6 H2
 
 Altrimenti usa il brief standard.
@@ -59,32 +58,44 @@ Altrimenti usa il brief standard.
 
 ## Processo di costruzione
 
-### Step 1 — Metadati e keyword
+### Step 1 - Metadati e keyword
+
+**Se l'utente ha già fornito l'H1 dell'articolo.** Adottalo come **vincolo**, non riscriverlo. Il lavoro qui diventa: costruire meta title e meta description coerenti con l'H1 fornito, adattare la scaletta H2/H3 al taglio che l'H1 già suggerisce, verificare che l'H1 contenga la keyword primaria (se manca, **segnalalo all'utente e chiedi** conferma prima di alterarlo; non modificarlo di iniziativa). Non entrare in confusione perché l'H1 c'è già: significa solo che quel campo è pre-compilato, adatti tutto il resto attorno.
 
 **H1 / Titolo articolo**
-Deve contenere la keyword primaria, possibilmente nella parte iniziale. Deve essere chiaro, specifico e orientato al beneficio del lettore. **Massimo 55 caratteri (limite rigido).**
+Deve contenere la keyword primaria, possibilmente nella parte iniziale. Deve essere chiaro, specifico e orientato al beneficio del lettore. **Non ha un limite rigido di caratteri**: è il titolo che appare in pagina, Google lo indicizza per intero e non lo tronca in SERP (il troncamento riguarda il meta title, che è un elemento distinto). La regola è "leggibile": tipicamente 40-90 caratteri, ma può essere più lungo se il topic lo richiede.
 
 **Meta title**
-Variante dell'H1 ottimizzata per la SERP: può essere leggermente diversa dal titolo H1 per includere una keyword secondaria o un elemento differenziante. **Massimo 55 caratteri (limite rigido)**, incluso il nome del brand se previsto dal cliente (es. "Titolo | Nome Brand").
+È un elemento **distinto dall'H1**, non un doppione. È il testo che appare nel tab del browser e come titolo del risultato in SERP. Deve essere **simile ma non identico** all'H1: mantiene la keyword primaria ma può cambiare l'ordine delle parole, aggiungere una keyword secondaria, un elemento differenziante (es. "guida 2026", numero, prospettiva, "completa") o includere il nome del brand se previsto (es. "Titolo | Nome Brand"). **Massimo 60 caratteri (limite rigido)** oltre i quali Google tronca il testo in SERP. Se coincide alla lettera con l'H1, riscrivilo perché sfrutti diversamente lo spazio.
 
 **Meta description**
 Riassume il contenuto dell'articolo in modo da stimolare il clic dalla SERP. Deve contenere la keyword primaria, essere orientata al beneficio e terminare con un invito implicito all'azione. **Massimo 160 caratteri (limite rigido).**
 
-**Verifica via script — obbligatoria**
-Le stime LLM della lunghezza di una stringa sono notoriamente inaffidabili: contare caratteri "a occhio" porta quasi sempre a sforare. Dopo aver generato H1, meta title e meta description, **esegui sempre un breve script Python con la Bash tool per misurarne la lunghezza esatta**. Esempio:
+**Verifica via script - obbligatoria**
+Le stime LLM della lunghezza di una stringa sono notoriamente inaffidabili: contare caratteri "a occhio" porta quasi sempre a sforare. Dopo aver generato meta title e meta description, e dopo aver definito l'H1 (o averlo ricevuto dall'utente), **esegui sempre un breve script Python con la Bash tool** per misurare la lunghezza esatta di meta title e meta description e per verificare che H1 e meta title non siano identici. Esempio:
 
 ```python
-h1 = "Come scegliere il software di project management"
-mt = "Software project management: la guida completa | NomeBrand"
+h1 = "Come scegliere il software di project management per il tuo team"
+mt = "Software project management: la guida completa 2026 | NomeBrand"
 md = "Tutti i criteri per scegliere il software di project management giusto per il tuo team: confronto, prezzi, funzionalità chiave."
 
-for nome, testo, limite in [("H1", h1, 55), ("Meta title", mt, 55), ("Meta description", md, 160)]:
+# H1 non ha limite rigido di caratteri: misuriamo solo per informazione
+print(f"H1: {len(h1)} caratteri (nessun limite rigido)")
+
+# Meta title e meta description hanno limite rigido
+for nome, testo, limite in [("Meta title", mt, 60), ("Meta description", md, 160)]:
     n = len(testo)
     stato = "OK" if n <= limite else f"SFORATO di {n - limite}"
-    print(f"{nome}: {n}/{limite} → {stato}")
+    print(f"{nome}: {n}/{limite} -> {stato}")
+
+# Verifica che H1 e meta title siano simili ma non identici
+if h1.strip().lower() == mt.strip().lower():
+    print("PROBLEMA: H1 e Meta title coincidono. Riscrivere il meta title in modo che sia distinto ma coerente.")
+else:
+    print("H1 vs Meta title: distinti (OK)")
 ```
 
-Se uno dei tre sfora il limite, **riscrivi e ri‑esegui lo script** finché tutti e tre rientrano. Non procedere finché non rientrano. Riporta nel brief solo le versioni verificate.
+Se meta title o meta description sforano il limite, **riscrivi e ri-esegui lo script** finché rientrano. Se H1 e meta title coincidono, riscrivi il meta title (l'H1 resta com'è, salvo l'utente decida altrimenti). Non procedere finché tutti i controlli sono OK. Riporta nel brief solo le versioni verificate.
 
 **Keyword list**
 Inserisci la keyword primaria seguita dal volume mensile, poi le keyword secondarie più rilevanti con il relativo volume. Formato: `keyword — volume`. Includi le domande PAA come keyword se hanno volume o sono presenti in SERP.
@@ -93,9 +104,10 @@ Inserisci la keyword primaria seguita dal volume mensile, poi le keyword seconda
 
 Costruisci la scaletta dell'articolo partendo da:
 1. Domande PAA identificate nella serp-analysis: integrale come H2 o H3 dell'articolo, oppure come domanda implicita a cui rispondere all'interno di un paragrafo già previsto. **Non creare mai una sezione "Domande frequenti" o "FAQ" a fine articolo che le raccolga in elenco.** Le PAA devono essere risolte nel corpo del testo, non isolate in un blocco a parte.
-2. Gap di contenuto identificati nella serp-analysis (trasformali in sezioni mancanti dai competitor)
-3. Keyword long-tail dell'analisi keyword (usale come H3 o angolazione di paragrafo)
-4. Formato consigliato dalla serp-analysis (guida, tutorial, confronto, ecc.)
+2. **Query fan-out** dalla serp-analysis (Step 6): sotto-query predittive che l'AI userebbe per scomporre la keyword e generare l'AI Overview. Ogni sotto-query del fan-out deve trovare risposta nell'articolo, come heading H2/H3, sotto-paragrafo o passaggio inline. Le sotto-query marcate "AIO non copre — gap citabile" sono priorità: rispondi loro con un'apertura diretta e sintetica della sezione (formato BLUF), così aumenta la probabilità di essere citati come fonte.
+3. Gap di contenuto identificati nella serp-analysis (trasformali in sezioni mancanti dai competitor)
+4. Keyword long-tail dell'analisi keyword (usale come H3 o angolazione di paragrafo)
+5. Formato consigliato dalla serp-analysis (guida, tutorial, confronto, ecc.)
 
 **Regola di capitalizzazione di H1, H2 e H3:** scrivi sempre i titoli con la **maiuscola solo sulla prima parola** e sui nomi propri. Mai title case all'inglese ("Come Fare la Pasta con la Pancetta") e mai tutto maiuscolo ("COME FARE LA PASTA AL RAGÙ"). Esempi corretti:
 - "Come ha fatto Sinner a vincere la partita"
@@ -110,7 +122,7 @@ Per ciascun H2 e H3 scrivi:
 
 **Introduzione**: scrivi sempre istruzioni specifiche per l'apertura dell'articolo: che tipo di aggancio usare (problema, domanda, dato, scenario), cosa anticipare al lettore, tono con cui iniziare (in linea con il TOV rilevato dalla brand-analysis).
 
-**Conclusione / CTA finale**: indica come chiudere l'articolo e quale CTA inserire, collegata alle pagine strategiche identificate dalla brand-analysis-and-connections.
+**Sezione finale / CTA**: indica come chiudere l'articolo e quale CTA inserire, collegata alle pagine strategiche identificate dalla brand-analysis-and-connections. **Il titolo dell'H2 conclusivo NON deve mai contenere parole generiche** come "Conclusione", "Conclusioni", "In sintesi", "Per concludere", "Considerazioni finali", "Tirando le somme", "In definitiva", "Ultima parola" o simili: sono heading vuoti di significato e non aiutano la SEO. Proponi invece un H2 finale che rifocalizza la keyword primaria o l'angolo del pezzo (es. "Come iniziare oggi con [keyword]", "[Keyword]: cosa fare prima di partire", "Quali passi seguire per [obiettivo]"). Il titolo deve essere utile al lettore e ricco di significato semantico.
 
 ### Step 3 — Istruzioni di scrittura generali
 
@@ -137,13 +149,10 @@ Lista completa dei link da inserire nell'articolo, divisi per tipo:
 - Pagine strategiche (categorie prodotto, servizi, casi studio): con URL, anchor text suggerito e punto di inserimento
 
 **Link in entrata da creare (verso questo articolo)**
-Elenco degli articoli del blog già esistenti e correlati (dallo Step 4 di brand-analysis-and-connections) dove inserire un link che punta a questo nuovo articolo, ciascuno con URL e anchor text suggerito (la frase nell'articolo esistente su cui mettere il rimando). È un'indicazione operativa per chi pubblica, da eseguire aggiornando i vecchi articoli dopo la messa online del nuovo. Se non ci sono articoli adatti, ometti la voce.
+**Massimo 2 articoli del blog** (dallo Step 4 di brand-analysis-and-connections). Per ciascuno riporta URL completo, sezione, **frase esatta attuale** e **frase riscritta con il link**, oltre all'anchor. È un'indicazione operativa per chi pubblica: deve poter aprire l'articolo esistente, trovare la frase attuale, sostituirla con la frase nuova e ottenere il link inserito, senza dover reinventare nulla. Se non ci sono articoli adatti, ometti la voce.
 
 **CTA**
 Indica quante CTA inserire, dove posizionarle (dopo quale paragrafo) e il testo consigliato. Di norma almeno 2 CTA nel corpo dell'articolo più una CTA finale.
-
-**Ottimizzazione immagini** *(solo brief complesso)*
-Per i paragrafi principali indica: nome file suggerito, alt text ottimizzato con keyword, didascalia.
 
 **URL suggerita** *(solo brief complesso)*
 Formato: `/keyword-primaria-slug` — breve, leggibile, senza stop words.
@@ -203,12 +212,28 @@ Keyword da integrare:
 ## NOTA SEO
 
 **Link interni (in uscita dall'articolo):**
-- [Titolo contenuto correlato](URL) — inserire in [punto della scaletta]
-- [Titolo pagina strategica](URL) — anchor text: "[anchor]" — inserire in [punto]
+- [URL completo con https://dominio.tld/...] - anchor: "[anchor text naturale]" - inserire in: [H2/H3 o punto della scaletta]
+- [URL completo con https://dominio.tld/...] - anchor: "[anchor text naturale]" - inserire in: [H2/H3 o punto della scaletta]
+
+*(un bullet per link. URL sempre assoluto - MAI solo path relativo. Anchor sempre obbligatoria.)*
 
 **Link in entrata da creare (verso questo articolo):**
-- [Titolo articolo esistente](URL) — anchor text: "[frase nell'articolo esistente su cui linkare]"
-*(elenco degli articoli del blog esistenti dove aggiungere un link verso questo nuovo articolo; ometti la voce se non ce ne sono di adatti)*
+
+*Massimo 2 voci, esclusivamente articoli del blog.*
+
+1. **URL**: https://dominio.tld/percorso-completo-articolo-esistente
+   - **Sezione**: [heading H2/H3 in cui si trova la frase]
+   - **Frase attuale**: "[copia esatta della frase esistente da modificare]"
+   - **Frase nuova**: "[la stessa frase riscritta con il link inserito - **anchor evidenziata in grassetto**]"
+   - **Anchor**: "[testo esatto dell'anchor]"
+
+2. **URL**: https://dominio.tld/percorso-completo-articolo-esistente
+   - **Sezione**: [heading H2/H3 in cui si trova la frase]
+   - **Frase attuale**: "[copia esatta della frase esistente da modificare]"
+   - **Frase nuova**: "[la stessa frase riscritta con il link inserito]"
+   - **Anchor**: "[testo esatto dell'anchor]"
+
+*(Solo articoli del blog, massimo 2. Se solo 1 è davvero adatta, restituisci solo la voce 1. Se nessuna, scrivi "Nessun articolo del blog adatto per un link in entrata naturale" in una riga.)*
 
 **CTA:**
 - CTA 1: dopo [paragrafo] — testo consigliato: [testo]
@@ -231,17 +256,11 @@ Uguale al brief standard, con queste aggiunte:
 - **Step 1 — Tema dell'articolo:** [descrizione del topic, angolazione, obiettivo]
 - **Step 2 — Scelta delle parole chiave:** vedi in Keywords
 - **Step 3 — Forma del contenuto e spunti dalle ricerche:** [formato scelto e motivazione da serp-analysis, gap da coprire]
-- **Step 4 — Ottimizzazione immagini:** ottimizzare ogni immagine con alt text rilevante, es. "[esempio alt text]"
-- **Step 5 — Link interni:** vedi scaletta
-- **Step 6 — Ottimizzazioni SEO:** le keyword sono inserite naturalmente nel testo? Sono presenti nei titoli? Sono presenti link a pagine strategiche? Le immagini hanno alt text? *(fase da verificare post bozza)*
-- **Step 7 — Call to action:** vedi in fondo all'articolo
-- **Step 8 — URL suggerita:** /[slug]
-- **Step 9 — Metadati:** vedi Meta title e Meta description sopra
-
-**Nella scaletta**, per i paragrafi principali aggiungi:
-- *Nome file immagine:* [nome-file-descrittivo.jpg]
-- *Alt text:* [descrizione ottimizzata con keyword]
-- *Didascalia:* [testo didascalia]
+- **Step 4 — Link interni:** vedi scaletta
+- **Step 5 — Ottimizzazioni SEO:** le keyword sono inserite naturalmente nel testo? Sono presenti nei titoli? Sono presenti link a pagine strategiche? *(fase da verificare post bozza)*
+- **Step 6 — Call to action:** vedi in fondo all'articolo
+- **Step 7 — URL suggerita:** /[slug]
+- **Step 8 — Metadati:** vedi Meta title e Meta description sopra
 
 **In appendice**, dopo la nota SEO, aggiungi:
 
@@ -253,13 +272,21 @@ Uguale al brief standard, con queste aggiunte:
 ## Regole critiche
 
 - H1, meta title, meta description e struttura H2/H3 sono fissi: il copywriter non deve modificarli.
+- **H1 e meta title sono due elementi distinti**: l'H1 è il titolo in pagina (nessun limite rigido di caratteri, va scritto "leggibile"), il meta title è il titolo del risultato in SERP (**limite rigido 60 caratteri**). Devono essere **simili ma non identici**: se coincidono alla lettera, riscrivi il meta title. Solo il meta title e la meta description sono soggetti alla verifica del limite via script.
+- **Se l'utente ha già fornito l'H1**, adottalo come vincolo e adatta title/meta/scaletta di conseguenza. Non riscrivere l'H1 di iniziativa. Se manca la keyword primaria nell'H1 fornito, segnalalo e chiedi conferma prima di modificarlo.
 - Le keyword devono essere quelle fornite da keyword-analysis, affinate da serp-analysis e brand-analysis.
 - Le istruzioni di scrittura devono essere concrete e specifiche: non "scrivi in modo chiaro" ma "usa frasi brevi, una frase per concetto, evita i tecnicismi non spiegati".
 - I link interni vengono solo da brand-analysis-and-connections: mai inventare URL o suggerire landing page.
 - Includi sempre nel brief la lista dei link in entrata da creare (URL di articoli esistenti dove linkare questo nuovo articolo), ricavata dallo Step 4 di brand-analysis e tenuta separata dai link in uscita. Ometti la sezione solo se non esistono articoli adatti.
+- **Link in entrata: massimo 2 voci, solo articoli del blog, sempre con frase esatta attuale + frase riscritta con il link**. Non riportare più di 2 voci anche se lo Step 4 di brand-analysis ne fornisce di più (in quel caso segnala la discordanza). Mai pagine prodotto/servizio/categoria/casi studio/landing: sono ammessi solo articoli del blog/magazine.
 - L'anchor text dei link deve essere naturale nel contesto dell'articolo: mai "clicca qui" o "scopri di più".
 - Le CTA devono collegarsi a pagine strategiche già identificate dalla brand-analysis.
 - Il brief deve essere autonomo: chi lo riceve deve poter scrivere l'articolo senza bisogno di ulteriori spiegazioni.
 - Non includere nel brief elementi non derivati dalle skill precedenti: niente keyword inventate, niente link non verificati, niente istruzioni di stile non fondate sull'analisi del brand.
 - Mai prevedere nella scaletta una sezione finale di tipo "Domande frequenti", "FAQ" o equivalenti come raccolta di domande e risposte. Le PAA si integrano come heading o si risolvono nel corpo dei paragrafi.
+- Le sotto-query del **query fan-out** (serp-analysis Step 6) vanno coperte tutte nella scaletta: come heading, come sotto-paragrafo o come passaggio inline. Le sotto-query marcate "gap citabile" (non coperte dall'AIO) sono priorità: per ciascuna prevedi una risposta diretta e in apertura della sezione corrispondente, così aumenta la probabilità di essere citati come fonte dall'AI.
+- **Vietato usare "Conclusione" (e sinonimi) come titolo di H2/H3**: mai proporre nella scaletta heading come "Conclusione", "Conclusioni", "In sintesi", "Per concludere", "Considerazioni finali", "Tirando le somme", "In definitiva", "Ultima parola" o simili. L'H2 finale dell'articolo deve essere ricco di significato e utile alla SEO: rifocalizza la keyword primaria o l'angolo del pezzo (es. "Come iniziare oggi con [keyword]", "[Keyword]: cosa fare prima di partire").
+- **URL sempre assoluti** in tutti i link della Nota SEO: sempre `https://dominio.tld/percorso-completo`, mai il solo path relativo (`/blog/…`). L'utente deve poter copiare e cliccare il link senza doverlo ricomporre.
+- **Anchor text sempre obbligatoria** per ogni link della Nota SEO: sia in uscita (contenuti correlati + pagine strategiche) sia in entrata. Non è mai facoltativa.
+- **Link in entrata: massimo 2 voci, solo articoli del blog, sempre con frase esatta attuale + frase riscritta con il link**. Non riportare più di 2 voci anche se lo Step 4 di brand-analysis ne fornisce di più (in quel caso segnala la discordanza). Mai pagine prodotto/servizio/categoria/casi studio/landing: sono ammessi solo articoli del blog/magazine.
 - H1, H2 e H3 sempre con maiuscola solo sulla prima parola e sui nomi propri. Mai title case né maiuscolo integrale.
