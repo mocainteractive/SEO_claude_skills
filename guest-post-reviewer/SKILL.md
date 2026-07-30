@@ -51,7 +51,7 @@ Scorri i sette blocchi in ordine. Per ciascun punto segna l'esito (OK / da corre
 - **Coerenza anchor ↔ pagina target.** L'anchor promette ciò che la pagina mantiene: chi clicca trova quel tipo di risorsa.
 - **Posizione naturale.** Il link cade dove il discorso lo richiede, non forzato per stare in alto. Se i link sono più d'uno, verifica che la densità rispetto alla lunghezza non sia eccessiva.
 - **Due URL: paragrafi distinti e ordine (blocco critico).** Se ci sono un URL principale e un secondo URL, verifica che **non** stiano nello stesso paragrafo (devono essere in due paragrafi diversi) e che l'**URL principale sia più in alto** del secondo nel testo. Se i due link sono nello stesso paragrafo, o se il secondo URL compare prima/sopra del principale, è un **fail bloccante**: indica la posizione e come correggere.
-- **Citazione del brand variata.** Il brand non è nominato sempre con la stessa formula; le menzioni alternano nome, forme e menzioni generiche (dalla brand-analysis).
+- **Citazione del brand variata (anti-impronta).** Il brand non è nominato sempre con la stessa costruzione (es. sempre "[anchor] sviluppate da [Brand]: …"). La menzione adiacente al link va bene, ma se è **l'unica** modalità usata, o se la formula si ripete identica, segnalalo: suggerisci di alternare (paragrafo dedicato, menzione generica, esempio/caso pratico). Se sono fornite bozze precedenti, verifica che la modalità di menzione non sia sempre la stessa anche tra articoli diversi.
 - **Link esterni secondo la scelta di sessione.** Con `solo cliente`: nel testo non ci sono link diversi da quelli del cliente; un link estraneo è un fail bloccante. Con `ammetti fonti autorevoli`: eventuali link esterni sono ammessi solo se verso fonti autorevoli e informative e realmente utili; segnala come intervento (o fail, se commerciale/competitor) i link non autorevoli, non utili, o che competono con quello del cliente.
 
 ### Step 4 — Voce umana (de‑AI)
@@ -61,6 +61,7 @@ Scorri i sette blocchi in ordine. Per ciascun punto segna l'esito (OK / da corre
 - **Niente sezione "Domande frequenti" / "FAQ"** in fondo: le domande vanno integrate nel corpo.
 - **Titoli capitalizzati correttamente**: maiuscola solo sulla prima parola e sui nomi propri, mai title case, mai tutto maiuscolo.
 - **Niente ritmo robotico**: paragrafi tutti della stessa lunghezza, ripetizioni degli stessi termini, elenchi ovunque.
+- **Niente pattern ripetitivi (anti-impronta)**: verifica che il link non sia sempre nella stessa posizione (es. sempre nel primo paragrafo), che i paragrafi abbiano lunghezze variabili e che la menzione del brand non usi sempre lo stesso schema. Se sono fornite bozze precedenti, controlla che questi tre elementi (posizione del link, lunghezza dei paragrafi, modalità di menzione) non si ripetano identici tra articoli: sono impronte che rendono i guest post riconoscibili come artificiali. Segnala come intervento ogni monotonia rilevata.
 
 ### Step 5 — Affidabilità dei dati
 
@@ -104,6 +105,7 @@ Segnala come intervento ogni punto non soddisfatto; se il testo sembra generato 
 | SEO non forzata | [OK / da correggere] | [...] |
 | Naturalezza del link | [OK / da correggere] | [...] |
 | Voce umana (de‑AI) | [OK / da correggere] | [...] |
+| Varietà / anti-pattern (posizione link, lunghezza paragrafi, modalità menzione) | [OK / da correggere] | [...] |
 | Affidabilità dati | [OK / da correggere] | [...] |
 | Rispetto note utente | [OK / da correggere / non applicabile] | [...] |
 | Autoverifica finale (originalità, non promozionale, publish-ready, umano) | [OK / da correggere] | [...] |
@@ -128,6 +130,7 @@ Segnala come intervento ogni punto non soddisfatto; se il testo sembra generato 
 - Con due URL, il posizionamento è vincolante: mai nello stesso paragrafo e URL principale sempre più in alto del secondo. La violazione è un fail bloccante.
 - La lunghezza va confrontata con l'intervallo target del portale (media dei guest post esistenti; in assenza di misura, default 500‑900 parole): fuori intervallo è un intervento da segnalare.
 - Autoverifica finale: l'articolo deve essere originale (nessuna frase/struttura/angolo copiati dalle bozze precedenti), non promozionale, senza ripetizioni concettuali, leggere come umano e essere pubblicabile senza revisioni sostanziali. Un testo che sembra generato da AI o non originale va corretto prima della consegna.
+- Anti-impronta: segnala come intervento i pattern ripetitivi (link sempre nella stessa posizione, paragrafi tutti uguali di lunghezza, menzione del brand sempre con la stessa costruzione), verificandoli anche rispetto alle bozze precedenti quando disponibili.
 - Il tono di voce del portale ospitante è il riferimento: un pezzo ben scritto ma che stona con il portale va segnalato.
 - Distingui i fail bloccanti (impediscono la consegna) dagli interventi consigliati (migliorie): non trattarli allo stesso modo.
 - Verifica la coerenza anchor ↔ pagina target usando la pagina reale, non un'ipotesi: se l'anchor promette qualcosa che la pagina non offre, è da correggere.

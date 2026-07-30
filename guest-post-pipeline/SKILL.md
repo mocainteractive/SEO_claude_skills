@@ -43,7 +43,8 @@ Prima di avviare la Fase 1, raccogli queste informazioni in un'unica richiesta c
 
 Elementi opzionali (chiedili se pertinenti, ma non sono obbligatori):
 - **Cluster semantico / query** (opzionale): un insieme di keyword o query che l'articolo dovrebbe rafforzare. Se fornito, passalo alla Fase 3: va usato come **campo semantico, non come checklist** (nessun obbligo di usarle tutte, sinonimi e variazioni, mai stuffing).
-- **Bozze precedenti** (opzionale): articoli già scritti in passato per lo stesso cliente/tema (forniti dall'utente o presenti a livello di progetto). Se presenti, passali alle Fasi 3 e 4: servono solo a capire cosa è già stato trattato per differenziarsi, mai da copiare (né frasi, né struttura, né angoli).
+- **Bozze precedenti** (opzionale): articoli già scritti in passato per lo stesso cliente/tema (forniti dall'utente o presenti a livello di progetto). Se presenti, passali alle Fasi 3 e 4: servono solo a capire cosa è già stato trattato per differenziarsi, mai da copiare (né frasi, né struttura, né angoli). Servono anche a variare i pattern (posizione del link, lunghezza dei paragrafi, modalità di menzione) rispetto ai pezzi precedenti.
+- **Indicazioni di posizionamento** (opzionale): l'utente può indicare manualmente dove inserire il link o la menzione (es. "link nel secondo paragrafo", "menzione in un paragrafo dedicato, staccato dal link"). Se fornite, passale alla Fase 3 e rispettale.
 - **Modalità di esecuzione**: `interattiva` (default, mostra un mini‑riepilogo dopo ogni fase e chiede conferma) o `autonoma` (procede senza conferme intermedie, salvo i checkpoint obbligatori descritti sotto).
 
 Se manca uno degli elementi 1–8, chiedilo prima di procedere (le domande 7 e 8 vanno sempre poste; la 7 può avere risposta "nessuna nota", la 8 ha default "solo cliente"). Non avviare il flusso con informazioni incomplete. In particolare, non inventare mai la pagina target, l'anchor o il portale.
@@ -102,6 +103,7 @@ Controllo finale della bozza. Verifica:
 - Affidabilità dei dati: statistiche con fonte o marcate `[DATO DA VERIFICARE]`, nessun dato inventato
 - Rispetto delle note dell'utente (termini da evitare assenti, vincoli onorati)
 - Autoverifica finale: articolo originale (nessuna ripresa dalle bozze precedenti), non promozionale, senza ripetizioni concettuali, che legge come umano e pubblicabile senza revisioni sostanziali
+- Assenza di pattern ripetitivi (anti-impronta): posizione del link, lunghezza dei paragrafi e modalità di menzione del brand variate (anche rispetto alle bozze precedenti)
 
 Produce un verdetto (pronto / da correggere) con lista puntuale di interventi.
 

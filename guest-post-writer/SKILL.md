@@ -57,6 +57,8 @@ Prima di scrivere, ragiona sulla strategia del link, usando la nota di coerenza 
   - **Ordine di priorità**: l'**URL principale** va sempre inserito **più in alto** nel testo rispetto al secondo URL. Il secondo URL non deve mai comparire prima (né sopra) del principale.
   Se il numero di link è alto rispetto alla lunghezza dell'articolo, segnalalo: troppi link verso lo stesso dominio in un pezzo breve è un segnale innaturale.
 - **Punto di caduta**: individua per ogni link il passaggio dell'articolo in cui l'aggancio tematico con la pagina target (dalla brand-analysis) rende il collegamento credibile.
+- **Posizione indicata dall'utente**: se l'utente ha fornito indicazioni manuali sul posizionamento (es. "link nel secondo paragrafo", "menzione in un paragrafo dedicato"), rispettale. In assenza di indicazioni scegli tu, ma **evita di mettere il link sempre nella stessa posizione** (es. sempre nel primo paragrafo): variala rispetto ai guest post precedenti dello stesso cliente, se noti.
+- **Modalità della menzione del brand (da variare)**: pianifica come citare il brand senza usare sempre la stessa costruzione. La menzione **adiacente al link** (brand vicino all'anchor) va benissimo ed è spesso la più naturale, ma non deve essere l'unica formula usata sempre. Alterna tra: (a) menzione adiacente al link; (b) menzione in un **paragrafo dedicato** al brand, separato dal punto in cui cade il link; (c) menzione generica ("l'azienda", "il produttore") prima o dopo il nome; (d) brand introdotto come esempio o caso pratico dentro il discorso. Dentro lo stesso articolo non ripetere la stessa formula; se l'utente lo chiede, dedica un paragrafo a sé alla menzione, staccato dal link.
 
 ### Step 2 — Scaletta
 
@@ -87,6 +89,8 @@ Scrivi nell'ordine: introduzione, H2 in sequenza con i relativi H3, chiusura. Ri
 **Niente trattini come punteggiatura.** L'uso del trattino (`-`, `–`, `—`) come punteggiatura tra clausole o per inciso è uno dei segnali più riconoscibili di testo AI. Va evitato in modo assoluto: usa virgola, punto e virgola o punto, oppure riscrivi la frase. I trattini restano legittimi solo nelle parole composte ("post‑vendita") e negli intervalli numerici.
 
 **Frasi di lunghezza variabile.** Alterna frasi brevi e dirette con altre più articolate. Non tutte dello stesso stampo.
+
+**Niente pattern ripetitivi (anti-impronta).** I guest post diventano riconoscibili come artificiali quando ripetono sempre gli stessi schemi. Evita in particolare tre monotonie: (1) il **link sempre nella stessa posizione** (es. sempre nel primo paragrafo); (2) i **paragrafi tutti della stessa lunghezza**, alternane invece di brevi e più estesi; (3) la **menzione del brand sempre con la stessa costruzione** (es. sempre "[anchor] sviluppate da [Brand]: …"). Varia questi tre elementi sia dentro l'articolo sia rispetto ai guest post precedenti dello stesso cliente, se noti.
 
 **Grassetto con criterio.** Il grassetto evidenzia i concetti chiave, non decora. Massimo 1‑2 elementi in grassetto per paragrafo, mai intere frasi, mai per far notare le keyword. Adegua l'uso del grassetto a quanto è consueto sul portale.
 
@@ -170,7 +174,8 @@ Dopo il testo, aggiungi:
 - Con due URL: mai nello stesso paragrafo (paragrafi distinti) e l'URL principale sempre più in alto del secondo, mai sotto.
 - La lunghezza dell'articolo deve rientrare nell'intervallo target rilevato dalla host-site-analysis (media dei guest post del portale); in assenza di target misurato, sopra le ~300‑400 parole senza eccessi.
 - Usa l'anchor richiesta; se non scorre nel punto esatto, usa la variante più vicina e segnalalo. Se l'anchor è a rischio sovra-ottimizzazione, segnala e proponi alternative, ma non deciderla al posto dell'utente.
-- Varia le forme di citazione del brand: mai ripetere sempre la stessa formula.
+- Varia le forme di citazione del brand: mai ripetere sempre la stessa formula (né dentro l'articolo né rispetto ai guest post precedenti). La menzione adiacente al link va bene, ma alterna anche paragrafo dedicato, menzione generica ed esempio/caso pratico; se l'utente lo chiede, dedica un paragrafo a sé alla menzione.
+- Evita pattern ripetitivi che rendono i guest post riconoscibili: varia la posizione del link (non sempre nello stesso punto), la lunghezza dei paragrafi e la modalità di menzione. Se l'utente indica manualmente la posizione del link o della menzione, rispettala.
 - Non inventare dati o statistiche: usa fonti verificabili (citandole nella Nota strategica) o marca `[DATO DA VERIFICARE]`.
 - Voce umana: niente aperture/chiusure da AI, niente trattini come punteggiatura, frasi di lunghezza variabile, grassetto e liste con criterio.
 - Mai una sezione finale "Domande frequenti" / "FAQ": le domande si integrano nel corpo.
