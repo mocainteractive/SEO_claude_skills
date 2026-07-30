@@ -14,7 +14,7 @@ Il metro di giudizio è duplice: l'articolo deve essere **un buon pezzo editoria
 
 ## Input atteso
 
-- **Bozza dell'articolo** (output di `guest-post-writer`), compresa la Nota strategica.
+- **Bozza dell'articolo** (output di `guest-post-writer`): il solo testo dell'articolo (il writer non produce più note o legende). Le informazioni su link, anchor e struttura si ricavano dall'articolo stesso e dalla scaletta/piano del link mostrati in fase di scrittura.
 - **Output di `host-site-analysis`**: per verificare che il testo rispetti il tono di voce e il formato del portale.
 - **Output di `guest-post-brand-analysis`**: per verificare la coerenza anchor ↔ pagina target e le forme di citazione del brand.
 - **Pagina/e target e anchor** richieste dall'utente.
@@ -37,6 +37,7 @@ Scorri i sette blocchi in ordine. Per ciascun punto segna l'esito (OK / da corre
 - **Scorre?** Il testo è leggibile, con frasi di lunghezza variabile, senza riempitivi né frasi vuote che suonano autorevoli ma non dicono nulla.
 - **Rispetta il TOV del portale?** Registro, persona grammaticale (tu/voi/impersonale), tono, lessico e formato coincidono con quanto rilevato dalla host-site-analysis. Un pezzo che stona con il portale è un fail.
 - **Lunghezza in linea con la richiesta?** Il conteggio parole dell'articolo è vicino al **numero di parole indicato dall'utente** (o dentro l'intervallo richiesto). Questo è il riferimento prioritario; la media del portale vale solo se l'utente ha scelto "basati sul portale". Se l'articolo è sensibilmente più corto o più lungo del richiesto, segnalalo come intervento (indica il conteggio attuale e il target).
+- **Deliverable pulito?** L'output è **solo l'articolo**: nessuna legenda o intestazione iniziale (niente lunghezza richiesta/consegnata, niente elenco keyword, niente metadati), nessuna Nota strategica, nota o commento dopo il testo. La formattazione è in bianco e nero, senza colori su paragrafi o testo (il rosso è ammesso eventualmente solo sull'anchor del link). Se trovi legende, note o colori non ammessi, segnalali come intervento.
 
 ### Step 2 — SEO non forzata
 
@@ -65,7 +66,7 @@ Scorri i sette blocchi in ordine. Per ciascun punto segna l'esito (OK / da corre
 
 ### Step 5 — Affidabilità dei dati
 
-- **Dati verificabili.** Ogni dato/statistica citato ha una fonte reale (indicata nella Nota strategica) oppure è marcato `[DATO DA VERIFICARE]`.
+- **Dati verificabili.** Ogni dato/statistica citato ha una fonte reale (attribuita nel testo) oppure è marcato `[DATO DA VERIFICARE]` inline; nessun dato preciso senza fonte.
 - **Nessun dato inventato.** Se trovi un dato preciso senza fonte e non marcato, è un **fail bloccante**: va verificato o marcato.
 
 ### Step 6 — Rispetto delle note dell'utente

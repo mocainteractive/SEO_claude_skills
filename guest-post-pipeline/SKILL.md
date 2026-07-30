@@ -89,7 +89,7 @@ Scrive la bozza dell'articolo. Si articola in due momenti con un checkpoint in m
 
 **Checkpoint (obbligatorio):** mostra la scaletta e il piano del link all'utente e chiedi conferma esplicita prima di scrivere il testo completo. È l'ultimo momento per correggere struttura o strategia del link.
 
-**3b — Stesura.** Approvata la scaletta, la skill scrive il testo completo: H1, introduzione, paragrafi H2/H3, grassetto con criterio, e inserimento del/i link in modo naturale seguendo le linee guida di link building. La lunghezza dell'articolo rispetta il **numero di parole indicato dall'utente** (domanda 9); la struttura (numero e profondità delle sezioni) è costruita per quella lunghezza, non è uno scheletro fisso allungato o accorciato. La struttura deve inoltre **variare da un articolo all'altro** (numero di H2/H3, presenza o meno di liste, tipo di attacco, ritmo): evita di produrre pezzi strutturalmente simili tra loro. **Se ci sono due URL**, non vanno mai nello stesso paragrafo (paragrafi distinti) e l'URL principale va sempre più in alto del secondo, mai sotto. Se attivata la ricerca dati, ancora le statistiche a fonti verificabili. Produce anche una "Nota strategica" per chi pubblica.
+**3b — Stesura.** Approvata la scaletta, la skill scrive il testo completo: H1, introduzione, paragrafi H2/H3, grassetto con criterio, e inserimento del/i link in modo naturale seguendo le linee guida di link building. La lunghezza dell'articolo rispetta il **numero di parole indicato dall'utente** (domanda 9); la struttura (numero e profondità delle sezioni) è costruita per quella lunghezza, non è uno scheletro fisso allungato o accorciato. La struttura deve inoltre **variare da un articolo all'altro** (numero di H2/H3, presenza o meno di liste, tipo di attacco, ritmo): evita di produrre pezzi strutturalmente simili tra loro. **Se ci sono due URL**, non vanno mai nello stesso paragrafo (paragrafi distinti) e l'URL principale va sempre più in alto del secondo, mai sotto. Se attivata la ricerca dati, ancora le statistiche a fonti verificabili. L'output è **solo l'articolo**, senza note o legende.
 
 ### Fase 4 — GUEST POST REVIEWER
 *Skill: `guest-post-reviewer`*
@@ -138,12 +138,13 @@ Il flusso può partire da uno stato avanzato se l'utente fornisce output già pr
 
 ## Output finale
 
-L'utente riceve **un unico articolo finale** nel formato indicato (markdown, HTML, testo plain, .docx o altro), composto da:
+L'utente riceve **esclusivamente l'articolo finale**, pronto per la pubblicazione, nel formato indicato (markdown, HTML, testo plain, .docx o altro): H1, introduzione, H2/H3 con testo, grassetto, link del cliente inserito/i in modo naturale, scritto nel tono di voce del portale ospitante e nella lingua richiesta.
 
-1. **L'articolo** (H1, introduzione, H2/H3 con testo, grassetto, link del cliente inserito/i in modo naturale), scritto nel tono di voce del portale ospitante e nella lingua richiesta.
-2. **Blocco "NOTA STRATEGICA"** accodato in fondo, per chi pubblica: dove cade ogni link e su quale anchor, perché la posizione è naturale, le forme di citazione del brand usate, eventuali dati inseriti con relativa fonte (o i `[DATO DA VERIFICARE]` rimasti), e l'esito del controllo finale.
+L'output **non** contiene: legende o intestazioni iniziali (niente lunghezza richiesta o consegnata, niente elenco keyword, niente metadati), "Nota strategica", note al revisore, commenti, riepiloghi o l'esito del controllo. Solo l'articolo, dall'H1 alla chiusura.
 
-Le analisi delle Fasi 1 e 2 restano nella conversazione come passaggi consultabili: non duplicarle nell'output finale.
+**Formattazione — prevale sulle impostazioni grafiche dell'account/progetto:** solo bianco e nero (testo nero su sfondo bianco); nessun colore su paragrafi o testo; il rosso è ammesso eventualmente solo sull'anchor del link; grassetto in nero secondo i criteri di scrittura.
+
+Le analisi delle Fasi 1 e 2 e l'esito del controllo (Fase 4) restano nella conversazione come passaggi consultabili, ma non fanno parte del deliverable: non duplicarli nell'output finale.
 
 ---
 
@@ -155,6 +156,8 @@ Le analisi delle Fasi 1 e 2 restano nella conversazione come passaggi consultabi
 - Il link non va **mai** inserito in una frase commerciale ("visita il sito", "scopri i prodotti", "leggi la guida"): cade su un'anchor che ha già senso semantico nel testo.
 - Non inventare mai la pagina target, l'anchor, il portale o il topic: sono input dell'utente.
 - Chiedi sempre il formato dell'output all'inizio e attendi la risposta: non assumere il markdown di default.
+- Il deliverable è **solo l'articolo pubblicabile**: nessuna legenda o intestazione iniziale (niente lunghezza richiesta/consegnata, niente keyword, niente metadati), nessuna Nota strategica, nota o commento. L'esito del controllo resta in chat, non nel deliverable.
+- Formattazione del deliverable: solo bianco e nero (prevale sulle impostazioni grafiche dell'account/progetto). Nessun colore su paragrafi o testo; rosso ammesso eventualmente solo sull'anchor del link.
 - Il check di coerenza dopo la Fase 2 e il checkpoint sulla scaletta (Fase 3) sono obbligatori in entrambe le modalità.
 - Non consegnare un articolo con un fail bloccante irrisolto (link in frase commerciale, SEO forzata, dato inventato).
 - Non inventare dati o statistiche: usa fonti verificabili o marca `[DATO DA VERIFICARE]`.

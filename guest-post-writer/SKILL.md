@@ -37,8 +37,8 @@ Se manca una delle fonti primarie, segnalalo e chiedi all'utente di fornirla o d
 
 Se nella configurazione di sessione è attiva la ricerca dati, puoi usare `WebSearch` e `WebFetch` per **ancorare a fonti verificabili** eventuali dati, statistiche o riferimenti che rafforzano l'articolo (le linee guida di link building premiano i contenuti con dati reali e citabili). Regole:
 
-- Usa un dato solo se hai trovato una **fonte reale e riscontrabile**. Cita la fonte nella Nota strategica.
-- Se un dato utile non è verificabile con gli strumenti disponibili, **non inventarlo**: inserisci un segnaposto `[DATO DA VERIFICARE]` nel testo e segnalalo nella Nota strategica, così l'utente può compilarlo a mano.
+- Usa un dato solo se hai trovato una **fonte reale e riscontrabile**. Se serve attribuirlo, cita la fonte in modo naturale dentro il testo (es. "secondo [ente/studio]"), senza aggiungere note fuori dall'articolo.
+- Se un dato utile non è verificabile con gli strumenti disponibili, **non inventarlo**: preferisci generalizzare o ometterlo. Solo come ultima risorsa inserisci un segnaposto `[DATO DA VERIFICARE]` inline, così l'utente può compilarlo prima di pubblicare.
 - Non trasformare l'articolo in una rassegna di statistiche: i dati servono dove aggiungono valore, non come riempitivo.
 
 Se la ricerca dati non è attiva, scrivi senza dati esterni e usa `[DATO DA VERIFICARE]` dove un dato rafforzerebbe il testo.
@@ -114,17 +114,15 @@ Questo è il cuore del guest post. Regole non negoziabili:
 - **Contesto editoriale, non forzatura.** Il link va dove il discorso lo richiede, non incastrato a forza per posizionarlo in alto. Se una posizione più alta è naturale, meglio; ma la naturalezza viene prima della posizione.
 - **Cita il brand con varietà.** Usa le forme di citazione dalla brand-analysis: alterna nome del brand, menzione generica, eventuali varianti. Non ripetere sempre la stessa formula. Valuta se nominare il brand prima o dopo il link a seconda di cosa scorre meglio.
 - **Due URL: paragrafi distinti e ordine di priorità.** Se ci sono un URL principale e un secondo URL, non vanno mai nello stesso paragrafo (devono stare in due paragrafi diversi) e il principale va sempre più in alto del secondo nel testo, mai sotto.
-- **Link esterni secondo la scelta di sessione.** Con `solo cliente`, nell'articolo va esclusivamente il/i link del cliente: nessun altro link, esterno o interno al portale. Con `ammetti fonti autorevoli`, puoi inserire **pochi** link verso fonti informative autorevoli, ma **solo** se realmente utili al lettore, mai commerciali, mai verso competitor del cliente, e mai in modo da oscurare o competere con il link del cliente. In entrambi i casi, nessun link interno al portale salvo indicazione esplicita dell'utente. Se citi un dato con fonte, la fonte va indicata nella Nota strategica, non necessariamente come link nel corpo (a meno che il portale non usi abitualmente link alle fonti e l'utente lo consenta).
-
-### Step 5 — Nota strategica
-
-Dopo il testo, prepara una nota per chi pubblica e per il controllo successivo.
+- **Link esterni secondo la scelta di sessione.** Con `solo cliente`, nell'articolo va esclusivamente il/i link del cliente: nessun altro link, esterno o interno al portale. Con `ammetti fonti autorevoli`, puoi inserire **pochi** link verso fonti informative autorevoli, ma **solo** se realmente utili al lettore, mai commerciali, mai verso competitor del cliente, e mai in modo da oscurare o competere con il link del cliente. In entrambi i casi, nessun link interno al portale salvo indicazione esplicita dell'utente. Se citi un dato con fonte, attribuiscila in modo naturale nel testo; non aggiungere un link alla fonte a meno che il portale non usi abitualmente link alle fonti e la scelta sui link esterni lo consenta.
 
 ---
 
 ## Output
 
-L'output è il testo completo dell'articolo, formattato con gli heading corretti (H1, H2, H3), pronto per la revisione, seguito dalla Nota strategica.
+L'output è **esclusivamente l'articolo pubblicabile**, formattato con gli heading corretti (H1, H2, H3). Inizia direttamente con l'H1 e finisce con la chiusura del pezzo: **nessuna legenda o intestazione iniziale** (niente lunghezza richiesta o consegnata, niente elenco keyword, niente metadati) e, dopo il testo, **nessuna "Nota strategica", nota al revisore, commento o riepilogo**. Solo l'articolo, pronto per essere pubblicato.
+
+**Formattazione — prevale sulle impostazioni grafiche dell'account/progetto:** usa solo **bianco e nero** (testo nero su sfondo bianco). Non applicare colori ai paragrafi né al testo. Il **rosso** è ammesso eventualmente **solo sull'anchor del link**, mai sui paragrafi. Nessun'altra evidenziazione cromatica. Il grassetto resta consentito (in nero) secondo i criteri di scrittura.
 
 Struttura:
 
@@ -150,20 +148,7 @@ Struttura:
 [Chiusura nel tono del portale]
 ```
 
-Dopo il testo, aggiungi:
-
----
-
-**NOTA STRATEGICA**
-- Link inseriti: [per ogni link: anchor usata → URL pagina target — in quale paragrafo/sezione cade]
-- Perché la posizione è naturale: [una riga per link]
-- Anchor: [usata come richiesta / variata rispetto alla richiesta, con motivo] [eventuale nota su rischio di sovra-ottimizzazione segnalato]
-- Forme di citazione del brand usate: [elenco delle menzioni usate nel testo]
-- Dati e fonti: [dati inseriti con relativa fonte verificata / segnaposti [DATO DA VERIFICARE] rimasti]
-- Rispetto del TOV del portale: [persona grammaticale, registro, lunghezza rispettati]
-- Scostamenti o segnalazioni: [eventuali problemi da portare all'attenzione dell'utente]
-
----
+Non aggiungere nulla dopo la chiusura: l'articolo è l'intero deliverable.
 
 ## Regole critiche
 
@@ -177,7 +162,7 @@ Dopo il testo, aggiungi:
 - Usa l'anchor richiesta; se non scorre nel punto esatto, usa la variante più vicina e segnalalo. Se l'anchor è a rischio sovra-ottimizzazione, segnala e proponi alternative, ma non deciderla al posto dell'utente.
 - Varia le forme di citazione del brand: mai ripetere sempre la stessa formula (né dentro l'articolo né rispetto ai guest post precedenti). La menzione adiacente al link va bene, ma alterna anche paragrafo dedicato, menzione generica ed esempio/caso pratico; se l'utente lo chiede, dedica un paragrafo a sé alla menzione.
 - Evita pattern ripetitivi che rendono i guest post riconoscibili: varia la posizione del link (non sempre nello stesso punto), la lunghezza dei paragrafi e la modalità di menzione. Se l'utente indica manualmente la posizione del link o della menzione, rispettala.
-- Non inventare dati o statistiche: usa fonti verificabili (citandole nella Nota strategica) o marca `[DATO DA VERIFICARE]`.
+- Non inventare dati o statistiche: usa fonti verificabili (attribuendole in modo naturale nel testo); se un dato è incerto, generalizza o ometti, e solo come ultima risorsa marca `[DATO DA VERIFICARE]` inline.
 - Voce umana: niente aperture/chiusure da AI, niente trattini come punteggiatura, frasi di lunghezza variabile, grassetto e liste con criterio.
 - Mai una sezione finale "Domande frequenti" / "FAQ": le domande si integrano nel corpo.
 - Titoli con maiuscola solo sulla prima parola e sui nomi propri: mai title case, mai tutto maiuscolo.
@@ -188,4 +173,5 @@ Dopo il testo, aggiungi:
 - Se sono fornite bozze precedenti, usale solo per capire cosa è già trattato: non copiarne frasi, non replicarne la struttura, non ripetere gli stessi angoli. L'articolo deve essere originale e portare valore nuovo.
 - Struttura sempre l'articolo con introduzione, sviluppo per H2/H3 e chiusura naturale, con paragrafi brevi e leggibili, ma **varia l'impianto articolo per articolo** (numero e profondità delle sezioni, tipo di attacco, forma): niente scheletro fisso ripetuto, la struttura si adatta al topic e alla lunghezza richiesta.
 - Produci sempre prima la scaletta con il piano del link e attendi conferma prima della stesura completa.
-- Aggiungi sempre la Nota strategica dopo il testo: serve al controllo finale e a chi pubblica.
+- L'output è **solo l'articolo pubblicabile**: nessuna legenda o intestazione iniziale (niente lunghezza richiesta/consegnata, niente elenco keyword, niente metadati), nessuna Nota strategica, nota al revisore, commento o riepilogo dopo il testo. Si parte dall'H1 e si finisce con la chiusura del pezzo.
+- Formattazione: solo bianco e nero, prevale sulle impostazioni grafiche dell'account/progetto. Nessun colore su paragrafi o testo; il rosso è ammesso eventualmente solo sull'anchor del link. Il grassetto (in nero) resta consentito secondo i criteri di scrittura.
