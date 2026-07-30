@@ -22,6 +22,10 @@ Il principio guida è che stiamo scrivendo **un articolo vero**, non un contenit
 - **Lingua** dell'articolo.
 - **Note e indicazioni per la scrittura fornite dall'utente** (se presenti): termini o espressioni da evitare, termini/claim obbligatori, argomenti da non toccare, competitor da non citare, vincoli legali o di compliance, tono/angolazione richiesti, e ogni altra istruzione specifica. Hanno **valore vincolante** e prevalgono sui default generici di questa skill (restano subordinate solo alla correttezza SEO/link building e alle altre scelte esplicite dell'utente). Applicale in ogni parte del testo: se un termine è "da evitare", non deve comparire da nessuna parte, nemmeno nei titoli o nell'anchor. Se una nota è in conflitto con una buona pratica di link building o con il TOV del portale, segnalalo e chiedi invece di procedere a senso.
 
+**Fonti opzionali (se fornite):**
+- **Cluster semantico / query**: un insieme di keyword o query che l'articolo deve **rafforzare**. Vanno usate come **campo semantico, non come checklist**: non c'è obbligo di usarle tutte, si inseriscono solo dove coerenti con il discorso, privilegiando sinonimi e variazioni naturali. Mai keyword stuffing.
+- **Bozze precedenti**: articoli già scritti in passato per lo stesso cliente/tema (forniti dall'utente o presenti a livello di progetto). Servono **solo a capire cosa è già stato trattato**, per differenziarsi: non copiarne frasi, non replicarne la struttura, non ripetere gli stessi angoli narrativi. Il nuovo articolo deve essere originale e portare valore nuovo.
+
 **Istruzioni e knowledge di progetto (se il flusso gira dentro un progetto Claude):** rispettale, ma ricorda che il tono di voce primario è quello del **portale ospitante**. In caso di conflitto tra istruzioni di progetto e TOV del portale, segnalalo e chiedi.
 
 Se manca una delle fonti primarie, segnalalo e chiedi all'utente di fornirla o di eseguire la fase mancante.
@@ -70,7 +74,13 @@ Scrivi nell'ordine: introduzione, H2 in sequenza con i relativi H3, chiusura. Ri
 
 **Criteri di qualità (voce umana, non da AI):**
 
-**Rispondere a un bisogno, non riempire.** Ogni paragrafo risponde a una domanda reale del lettore. La lunghezza del pezzo deve rientrare nell'**intervallo target rilevato dalla host-site-analysis** (la media in parole dei guest post già presenti sul portale): l'articolo non deve essere né sensibilmente più corto né più lungo dei contributi già ospitati. Dentro quel target, non gonfiare: se una sezione si esaurisce in poche righe, si chiude. In assenza di un target misurato, resta sopra le ~300‑400 parole ed evita gli eccessi non richiesti.
+**Rispondere a un bisogno, non riempire.** Ogni paragrafo risponde a una domanda reale del lettore. La lunghezza del pezzo deve rientrare nell'**intervallo target rilevato dalla host-site-analysis** (la media in parole dei guest post già presenti sul portale): l'articolo non deve essere né sensibilmente più corto né più lungo dei contributi già ospitati. Dentro quel target, non gonfiare: se una sezione si esaurisce in poche righe, si chiude. In assenza di un target misurato, usa come default **500‑900 parole** (minimo 500, massimo 900) ed evita gli eccessi non richiesti.
+
+**Struttura chiara.** Introduzione, sviluppo per H2 (con H3 dove serve), chiusura naturale. Paragrafi brevi e leggibili. Dove aiutano il lettore, includi esempi d'uso realistici, casi pratici o spiegazioni comparative: rendono il pezzo concreto e credibile.
+
+**Accuratezza: solo informazioni verificabili.** Quando descrivi il brand, il prodotto o la pagina target, basati **solo** su ciò che è verificabile dalla pagina linkata e dall'analisi del brand. Non inventare dati, numeri o caratteristiche. Se un'informazione non è certa, **generalizza o omettila** invece di rischiare un'affermazione falsa.
+
+**Cluster semantico come campo, non checklist.** Se è stato fornito un cluster di keyword/query, rafforzalo inserendo i termini solo dove scorrono naturalmente, privilegiando sinonimi e variazioni. Nessun obbligo di usarli tutti. In caso di conflitto tra ottimizzazione SEO e qualità editoriale, **privilegia sempre la qualità del testo**.
 
 **Niente aperture e chiusure da AI.** Vietate frasi come "Nel mondo di oggi…", "In un contesto sempre più…", "È fondamentale sottolineare che…", "In conclusione, come abbiamo visto…". Attacca nel modo in cui attaccano gli articoli del portale.
 
@@ -166,5 +176,10 @@ Dopo il testo, aggiungi:
 - Mai una sezione finale "Domande frequenti" / "FAQ": le domande si integrano nel corpo.
 - Titoli con maiuscola solo sulla prima parola e sui nomi propri: mai title case, mai tutto maiuscolo.
 - Le keyword vanno integrate, non forzate: un testo che suona ottimizzato SEO è ottimizzato male.
+- In caso di conflitto tra ottimizzazione SEO e qualità editoriale, privilegia sempre la qualità del testo.
+- Il cluster semantico (se fornito) si usa come campo semantico, non come checklist: nessun obbligo di usare tutte le query, sinonimi e variazioni naturali, mai stuffing.
+- Accuratezza: descrivi brand/prodotto/pagina solo con informazioni verificabili dalla pagina linkata e dall'analisi del brand. Non inventare dati, numeri o caratteristiche; se un dato è incerto, generalizza o ometti.
+- Se sono fornite bozze precedenti, usale solo per capire cosa è già trattato: non copiarne frasi, non replicarne la struttura, non ripetere gli stessi angoli. L'articolo deve essere originale e portare valore nuovo.
+- Struttura sempre l'articolo con introduzione, sviluppo per H2/H3 e chiusura naturale, con paragrafi brevi e leggibili.
 - Produci sempre prima la scaletta con il piano del link e attendi conferma prima della stesura completa.
 - Aggiungi sempre la Nota strategica dopo il testo: serve al controllo finale e a chi pubblica.

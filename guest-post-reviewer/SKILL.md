@@ -19,6 +19,8 @@ Il metro di giudizio è duplice: l'articolo deve essere **un buon pezzo editoria
 - **Output di `guest-post-brand-analysis`**: per verificare la coerenza anchor ↔ pagina target e le forme di citazione del brand.
 - **Pagina/e target e anchor** richieste dall'utente.
 - **Note e indicazioni per la scrittura fornite dall'utente** (se presenti): termini da evitare, termini/claim obbligatori, argomenti da non toccare, competitor da non citare, vincoli legali o di compliance, tono/angolazione richiesti.
+- **Cluster semantico / query** (se fornito): per verificare che sia stato rafforzato come campo semantico, non come checklist forzata.
+- **Bozze precedenti** (se fornite): per verificare che l'articolo non ne copi frasi, struttura o angoli e sia realmente originale.
 
 Se manca l'analisi del portale, la verifica del tono di voce sarà limitata: segnalalo. Se manca l'analisi del brand, il controllo di coerenza anchor ↔ target va fatto sulla base della pagina target fornita dall'utente.
 
@@ -26,7 +28,7 @@ Se manca l'analisi del portale, la verifica del tono di voce sarà limitata: seg
 
 ## Processo di controllo
 
-Scorri i sei blocchi in ordine. Per ciascun punto segna l'esito (OK / da correggere) e, se da correggere, l'intervento preciso.
+Scorri i sette blocchi in ordine. Per ciascun punto segna l'esito (OK / da correggere) e, se da correggere, l'intervento preciso.
 
 ### Step 1 — Qualità editoriale
 
@@ -75,6 +77,17 @@ Se l'utente ha fornito note e indicazioni per la scrittura, verifica che siano s
 
 Se non sono state fornite note, salta questo blocco e segnalo come non applicabile.
 
+### Step 7 — Autoverifica finale (publish-ready)
+
+Simula il controllo di un editore umano prima della pubblicazione. Verifica che l'articolo:
+- **Sia originale**: nessuna frase copiata, e — se sono fornite bozze precedenti — nessuna ripresa di struttura o angoli già usati. Nessun contenuto che sembri riciclato.
+- **Non sia promozionale**: nessun tono da comunicato o da vetrina, coerente con un pezzo editoriale neutro e informativo.
+- **Non abbia ripetizioni concettuali evidenti**: lo stesso concetto non viene ribadito più volte con parole diverse.
+- **Sia pubblicabile da un editore umano senza revisioni sostanziali**: se servirebbero interventi pesanti prima della pubblicazione, indicali.
+- **Legga come scritto da una persona reale**: nessun "sapore AI". L'obiettivo è che il testo superi i detector di contenuti AI e risulti umano (fraseggio vario, niente formule fatte, ritmo naturale). Questo blocco rafforza lo Step 4.
+
+Segnala come intervento ogni punto non soddisfatto; se il testo sembra generato da AI o non originale, è un problema serio da correggere prima della consegna.
+
 ---
 
 ## Output
@@ -93,6 +106,7 @@ Se non sono state fornite note, salta questo blocco e segnalo come non applicabi
 | Voce umana (de‑AI) | [OK / da correggere] | [...] |
 | Affidabilità dati | [OK / da correggere] | [...] |
 | Rispetto note utente | [OK / da correggere / non applicabile] | [...] |
+| Autoverifica finale (originalità, non promozionale, publish-ready, umano) | [OK / da correggere] | [...] |
 
 **FAIL BLOCCANTI** *(solo se presenti)*
 - [Elenco dei problemi che impediscono la consegna: link in frase commerciale, SEO forzata, dato inventato, articolo-marchetta, TOV del portale non rispettato, due URL nello stesso paragrafo o secondo URL sopra il principale, termine "da evitare" presente o altra nota vincolante dell'utente violata. Per ciascuno: la frase/punto esatto e l'intervento richiesto.]
@@ -112,7 +126,8 @@ Se non sono state fornite note, salta questo blocco e segnalo come non applicabi
 - Anche la SEO forzata (keyword stuffing, sovra-ottimizzazione dell'anchor) e i dati inventati sono fail bloccanti: un articolo con un fail bloccante non è pronto.
 - Le note vincolanti dell'utente vanno verificate: un termine "da evitare" presente nel testo (o altra istruzione vincolante violata) è un fail bloccante.
 - Con due URL, il posizionamento è vincolante: mai nello stesso paragrafo e URL principale sempre più in alto del secondo. La violazione è un fail bloccante.
-- La lunghezza va confrontata con l'intervallo target del portale (media dei guest post esistenti): fuori intervallo è un intervento da segnalare.
+- La lunghezza va confrontata con l'intervallo target del portale (media dei guest post esistenti; in assenza di misura, default 500‑900 parole): fuori intervallo è un intervento da segnalare.
+- Autoverifica finale: l'articolo deve essere originale (nessuna frase/struttura/angolo copiati dalle bozze precedenti), non promozionale, senza ripetizioni concettuali, leggere come umano e essere pubblicabile senza revisioni sostanziali. Un testo che sembra generato da AI o non originale va corretto prima della consegna.
 - Il tono di voce del portale ospitante è il riferimento: un pezzo ben scritto ma che stona con il portale va segnalato.
 - Distingui i fail bloccanti (impediscono la consegna) dagli interventi consigliati (migliorie): non trattarli allo stesso modo.
 - Verifica la coerenza anchor ↔ pagina target usando la pagina reale, non un'ipotesi: se l'anchor promette qualcosa che la pagina non offre, è da correggere.

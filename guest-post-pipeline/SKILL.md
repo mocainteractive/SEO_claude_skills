@@ -40,10 +40,14 @@ Prima di avviare la Fase 1, raccogli queste informazioni in un'unica richiesta c
 6. **Formato dell'output** (da chiedere SEMPRE, non assumere mai): in che formato va consegnato l'articolo finale? Proponi `markdown` (consigliato per import su CMS), `HTML` (per editor visuale), `testo plain`, `documento Word (.docx)` o altro formato indicato dall'utente. Non consegnare mai il deliverable senza aver confermato il formato.
 7. **Note e indicazioni per la scrittura** (da chiedere SEMPRE): ci sono note, indicazioni, vincoli o cose a cui stare attenti nella scrittura? In particolare: termini o espressioni da evitare, termini o claim da usare (o obbligatori), argomenti da non toccare, tono o angolazione preferiti, vincoli legali o di compliance, nomi di competitor da non citare, refusi ricorrenti da evitare, e qualsiasi altra istruzione specifica del cliente o del portale. È una domanda sempre presente: se l'utente non ha nulla da segnalare, accetta "nessuna nota" e prosegui. Riporta queste note per intero alle fasi di scrittura (Fase 3) e controllo (Fase 4): hanno valore vincolante e, dove sono in conflitto con un default generico delle skill, prevalgono (restano subordinate solo alla correttezza SEO/link building e alle scelte esplicite dell'utente). Se una nota è in conflitto con una buona pratica di link building o con il TOV del portale, segnala il conflitto e chiedi.
 
-Domanda opzionale sulla modalità:
+Elementi opzionali (chiedili se pertinenti, ma non sono obbligatori):
+- **Cluster semantico / query** (opzionale): un insieme di keyword o query che l'articolo dovrebbe rafforzare. Se fornito, passalo alla Fase 3: va usato come **campo semantico, non come checklist** (nessun obbligo di usarle tutte, sinonimi e variazioni, mai stuffing).
+- **Bozze precedenti** (opzionale): articoli già scritti in passato per lo stesso cliente/tema (forniti dall'utente o presenti a livello di progetto). Se presenti, passali alle Fasi 3 e 4: servono solo a capire cosa è già stato trattato per differenziarsi, mai da copiare (né frasi, né struttura, né angoli).
 - **Modalità di esecuzione**: `interattiva` (default, mostra un mini‑riepilogo dopo ogni fase e chiede conferma) o `autonoma` (procede senza conferme intermedie, salvo i checkpoint obbligatori descritti sotto).
 
 Se manca uno degli elementi 1–7, chiedilo prima di procedere (la domanda 7 va sempre posta, ma la sua risposta può essere "nessuna nota"). Non avviare il flusso con informazioni incomplete. In particolare, non inventare mai la pagina target, l'anchor o il portale.
+
+**Principio guida di tutto il flusso:** in caso di conflitto tra ottimizzazione SEO e qualità editoriale, privilegia sempre la qualità del testo. L'articolo deve poter essere pubblicato da un editore umano senza revisioni sostanziali, risultare originale e leggere come scritto da una persona reale.
 
 Memorizza le scelte e applicale per tutta la sessione. Non ripetere le domande alle fasi successive.
 
@@ -96,6 +100,7 @@ Controllo finale della bozza. Verifica:
 - Voce umana (de‑AI): niente trattini come punteggiatura, niente aperture da AI, niente sezione FAQ finale, titoli con capitalizzazione corretta
 - Affidabilità dei dati: statistiche con fonte o marcate `[DATO DA VERIFICARE]`, nessun dato inventato
 - Rispetto delle note dell'utente (termini da evitare assenti, vincoli onorati)
+- Autoverifica finale: articolo originale (nessuna ripresa dalle bozze precedenti), non promozionale, senza ripetizioni concettuali, che legge come umano e pubblicabile senza revisioni sostanziali
 
 Produce un verdetto (pronto / da correggere) con lista puntuale di interventi.
 
