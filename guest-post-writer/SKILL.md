@@ -109,7 +109,7 @@ Questo è il cuore del guest post. Regole non negoziabili:
 - **Contesto editoriale, non forzatura.** Il link va dove il discorso lo richiede, non incastrato a forza per posizionarlo in alto. Se una posizione più alta è naturale, meglio; ma la naturalezza viene prima della posizione.
 - **Cita il brand con varietà.** Usa le forme di citazione dalla brand-analysis: alterna nome del brand, menzione generica, eventuali varianti. Non ripetere sempre la stessa formula. Valuta se nominare il brand prima o dopo il link a seconda di cosa scorre meglio.
 - **Due URL: paragrafi distinti e ordine di priorità.** Se ci sono un URL principale e un secondo URL, non vanno mai nello stesso paragrafo (devono stare in due paragrafi diversi) e il principale va sempre più in alto del secondo nel testo, mai sotto.
-- **Solo i link del cliente.** Non inserire altri link (esterni o interni al portale), salvo diversa indicazione esplicita dell'utente. Se citi un dato con fonte, la fonte va indicata nella Nota strategica, non necessariamente come link nel corpo (a meno che il portale non usi abitualmente link alle fonti e l'utente lo consenta).
+- **Link esterni secondo la scelta di sessione.** Con `solo cliente`, nell'articolo va esclusivamente il/i link del cliente: nessun altro link, esterno o interno al portale. Con `ammetti fonti autorevoli`, puoi inserire **pochi** link verso fonti informative autorevoli, ma **solo** se realmente utili al lettore, mai commerciali, mai verso competitor del cliente, e mai in modo da oscurare o competere con il link del cliente. In entrambi i casi, nessun link interno al portale salvo indicazione esplicita dell'utente. Se citi un dato con fonte, la fonte va indicata nella Nota strategica, non necessariamente come link nel corpo (a meno che il portale non usi abitualmente link alle fonti e l'utente lo consenta).
 
 ### Step 5 — Nota strategica
 
@@ -166,7 +166,7 @@ Dopo il testo, aggiungi:
 - L'articolo deve essere un pezzo editoriale vero e utile: se toglierne il link lo priva di ogni senso, riscrivilo.
 - Scrivi nel tono di voce e nel formato del **portale ospitante**, replicando la persona grammaticale (tu/voi/impersonale) rilevata dalla host-site-analysis.
 - Il link non va **mai** in una frase commerciale ("visita il sito", "scopri i prodotti", "leggi la guida", "clicca qui"): cade su un'anchor con senso semantico proprio, in un contesto informativo.
-- Nell'articolo va **solo** il/i link del cliente indicati dall'utente. Nessun altro link, salvo indicazione esplicita.
+- Link esterni secondo la scelta di sessione: `solo cliente` = esclusivamente il/i link del cliente; `ammetti fonti autorevoli` = pochi link a fonti autorevoli e informative solo se realmente utili (mai commerciali, mai competitor, mai a scapito del link del cliente).
 - Con due URL: mai nello stesso paragrafo (paragrafi distinti) e l'URL principale sempre più in alto del secondo, mai sotto.
 - La lunghezza dell'articolo deve rientrare nell'intervallo target rilevato dalla host-site-analysis (media dei guest post del portale); in assenza di target misurato, sopra le ~300‑400 parole senza eccessi.
 - Usa l'anchor richiesta; se non scorre nel punto esatto, usa la variante più vicina e segnalalo. Se l'anchor è a rischio sovra-ottimizzazione, segnala e proponi alternative, ma non deciderla al posto dell'utente.

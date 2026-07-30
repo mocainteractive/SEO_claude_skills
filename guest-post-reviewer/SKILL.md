@@ -52,7 +52,7 @@ Scorri i sette blocchi in ordine. Per ciascun punto segna l'esito (OK / da corre
 - **Posizione naturale.** Il link cade dove il discorso lo richiede, non forzato per stare in alto. Se i link sono più d'uno, verifica che la densità rispetto alla lunghezza non sia eccessiva.
 - **Due URL: paragrafi distinti e ordine (blocco critico).** Se ci sono un URL principale e un secondo URL, verifica che **non** stiano nello stesso paragrafo (devono essere in due paragrafi diversi) e che l'**URL principale sia più in alto** del secondo nel testo. Se i due link sono nello stesso paragrafo, o se il secondo URL compare prima/sopra del principale, è un **fail bloccante**: indica la posizione e come correggere.
 - **Citazione del brand variata.** Il brand non è nominato sempre con la stessa formula; le menzioni alternano nome, forme e menzioni generiche (dalla brand-analysis).
-- **Solo i link del cliente.** Nel testo non ci sono link diversi da quelli richiesti dall'utente (salvo indicazione esplicita).
+- **Link esterni secondo la scelta di sessione.** Con `solo cliente`: nel testo non ci sono link diversi da quelli del cliente; un link estraneo è un fail bloccante. Con `ammetti fonti autorevoli`: eventuali link esterni sono ammessi solo se verso fonti autorevoli e informative e realmente utili; segnala come intervento (o fail, se commerciale/competitor) i link non autorevoli, non utili, o che competono con quello del cliente.
 
 ### Step 4 — Voce umana (de‑AI)
 
