@@ -60,7 +60,7 @@ Leggendo gli articoli rappresentativi, individua:
 ### Step 3 — Formato e struttura
 
 Sempre dagli articoli, ricava:
-- **Lunghezza di riferimento (target in parole)**: calcola la **media in parole dei guest post già presenti** sul portale individuati nell'integrazione strumenti (o, se non distinguibili, degli articoli dello stesso tipo). Indica la media, il numero di articoli su cui è calcolata e un intervallo target (es. media ± 10‑15%). Questo valore è la **lunghezza a cui il nuovo articolo dovrà attenersi**: né più corto né più lungo dei contributi già ospitati, così da risultare in linea con quel portale. Se non è stato possibile misurare alcun contenuto, dichiaralo e usa come default un intervallo di **500‑900 parole** (minimo 500, massimo 900), segnalando che è una stima non basata su dati del portale.
+- **Lunghezza di riferimento (target in parole)**: calcola la **media in parole dei guest post già presenti** sul portale individuati nell'integrazione strumenti (o, se non distinguibili, degli articoli dello stesso tipo). Indica la media, il numero di articoli su cui è calcolata e un intervallo di riferimento (es. media ± 10‑15%). Questo valore è un **dato di contesto e un fallback**: la lunghezza effettiva del nuovo articolo è quella indicata dall'utente a inizio flusso (configurazione di sessione), che ha **priorità**. La media del portale si usa come lunghezza solo se l'utente ha scelto esplicitamente "basati sul portale". Se non è stato possibile misurare alcun contenuto, dichiaralo e usa come default un intervallo di **500‑900 parole** (minimo 500, massimo 900), segnalando che è una stima non basata su dati del portale.
 - **Struttura degli heading**: usa H2/H3? Quanti? Titoli descrittivi o creativi?
 - **Elementi ricorrenti**: grassetto (quanto, su cosa), liste puntate/numerate (frequenti o rare), citazioni, box, immagini, tabelle.
 - **Tipo di articolo prevalente**: news, guida/how-to, approfondimento, intervista, listicle, opinione. È il modello a cui l'articolo dovrà somigliare.
@@ -95,7 +95,7 @@ Questo serve a inserire il link del cliente in un modo coerente con le abitudini
 - Lessico: [tecnicismi sì/no, come vengono trattati, livello di linguaggio]
 
 **FORMATO**
-- Lunghezza target: [media ~X parole su N guest post/articoli misurati → intervallo target ~X‑Y parole] *(il nuovo articolo deve stare in questo intervallo; se non misurabile, indicare "stima non basata su dati del portale")*
+- Lunghezza media del portale (contesto/fallback): [media ~X parole su N guest post/articoli misurati → intervallo ~X‑Y parole] *(la lunghezza effettiva la decide l'utente a inizio flusso; questo dato è fallback se sceglie "basati sul portale". Se non misurabile, indicare "stima non basata su dati del portale")*
 - Struttura heading: [uso di H2/H3, numero, stile dei titoli]
 - Elementi ricorrenti: [grassetto, liste, citazioni, immagini, tabelle]
 - Tipo di articolo prevalente: [news/guida/approfondimento/listicle/intervista/opinione]
@@ -118,7 +118,7 @@ Questo serve a inserire il link del cliente in un modo coerente con le abitudini
 - La persona grammaticale (tu/voi/impersonale) va rilevata e replicata esattamente: è uno degli scarti più evidenti tra un pezzo nativo e un guest post posticcio.
 - Non inventare lo stile del portale: se gli articoli non sono leggibili, chiedi all'utente di incollarne 2‑3 rappresentativi.
 - Analizza articoli il più possibile vicini per tipo e tema a quello che scriveremo: uno stile campionato da articoli non pertinenti è fuorviante.
-- Misura sempre la lunghezza in parole dei guest post già presenti (o, se non distinguibili, degli articoli dello stesso tipo) e calcolane la media: è la lunghezza target del nuovo articolo. Il pezzo non deve essere né sensibilmente più corto né più lungo dei contributi già ospitati dal portale.
+- Misura sempre la lunghezza in parole dei guest post già presenti (o, se non distinguibili, degli articoli dello stesso tipo) e calcolane la media: serve come contesto e fallback. La lunghezza effettiva del nuovo articolo è però quella indicata dall'utente a inizio flusso, che ha priorità; la media del portale si usa solo se l'utente sceglie "basati sul portale".
 - Non valutare l'autorevolezza SEO del portale né se sia un buon sito partner: non è il compito di questa skill (quella scelta è a monte, fatta dall'utente).
 - Le indicazioni di stile devono essere operative e sintetiche: sono istruzioni per chi scrive, non una descrizione del sito.
 - Se il portale è in una lingua diversa da quella richiesta per l'articolo, segnalalo subito: è un'incongruenza da chiarire con l'utente.

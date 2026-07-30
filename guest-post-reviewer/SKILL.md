@@ -36,7 +36,7 @@ Scorri i sette blocchi in ordine. Per ciascun punto segna l'esito (OK / da corre
 - **Non è una marchetta?** Il brand è trattato con misura, senza aggettivi promozionali gratuiti, senza toni da comunicato stampa. L'articolo non è auto-referenziale.
 - **Scorre?** Il testo è leggibile, con frasi di lunghezza variabile, senza riempitivi né frasi vuote che suonano autorevoli ma non dicono nulla.
 - **Rispetta il TOV del portale?** Registro, persona grammaticale (tu/voi/impersonale), tono, lessico e formato coincidono con quanto rilevato dalla host-site-analysis. Un pezzo che stona con il portale è un fail.
-- **Lunghezza in linea col portale?** Il conteggio parole dell'articolo rientra nell'**intervallo target** rilevato dalla host-site-analysis (media dei guest post già presenti). Se l'articolo è sensibilmente più corto o più lungo, segnalalo come intervento (indica il conteggio attuale e il target).
+- **Lunghezza in linea con la richiesta?** Il conteggio parole dell'articolo è vicino al **numero di parole indicato dall'utente** (o dentro l'intervallo richiesto). Questo è il riferimento prioritario; la media del portale vale solo se l'utente ha scelto "basati sul portale". Se l'articolo è sensibilmente più corto o più lungo del richiesto, segnalalo come intervento (indica il conteggio attuale e il target).
 
 ### Step 2 — SEO non forzata
 
@@ -61,7 +61,7 @@ Scorri i sette blocchi in ordine. Per ciascun punto segna l'esito (OK / da corre
 - **Niente sezione "Domande frequenti" / "FAQ"** in fondo: le domande vanno integrate nel corpo.
 - **Titoli capitalizzati correttamente**: maiuscola solo sulla prima parola e sui nomi propri, mai title case, mai tutto maiuscolo.
 - **Niente ritmo robotico**: paragrafi tutti della stessa lunghezza, ripetizioni degli stessi termini, elenchi ovunque.
-- **Niente pattern ripetitivi (anti-impronta)**: verifica che il link non sia sempre nella stessa posizione (es. sempre nel primo paragrafo), che i paragrafi abbiano lunghezze variabili e che la menzione del brand non usi sempre lo stesso schema. Se sono fornite bozze precedenti, controlla che questi tre elementi (posizione del link, lunghezza dei paragrafi, modalità di menzione) non si ripetano identici tra articoli: sono impronte che rendono i guest post riconoscibili come artificiali. Segnala come intervento ogni monotonia rilevata.
+- **Niente pattern ripetitivi (anti-impronta)**: verifica che il link non sia sempre nella stessa posizione (es. sempre nel primo paragrafo), che i paragrafi abbiano lunghezze variabili, che la menzione del brand non usi sempre lo stesso schema e che l'**impianto strutturale non sia il solito scheletro** (stesso numero di sezioni, stesso tipo di attacco, stessa forma). Se sono fornite bozze precedenti, controlla che questi elementi (posizione del link, lunghezza dei paragrafi, modalità di menzione, struttura complessiva) non si ripetano identici tra articoli: sono impronte che rendono i guest post riconoscibili come artificiali e seriali. Segnala come intervento ogni monotonia rilevata.
 
 ### Step 5 — Affidabilità dei dati
 
@@ -128,9 +128,9 @@ Segnala come intervento ogni punto non soddisfatto; se il testo sembra generato 
 - Anche la SEO forzata (keyword stuffing, sovra-ottimizzazione dell'anchor) e i dati inventati sono fail bloccanti: un articolo con un fail bloccante non è pronto.
 - Le note vincolanti dell'utente vanno verificate: un termine "da evitare" presente nel testo (o altra istruzione vincolante violata) è un fail bloccante.
 - Con due URL, il posizionamento è vincolante: mai nello stesso paragrafo e URL principale sempre più in alto del secondo. La violazione è un fail bloccante.
-- La lunghezza va confrontata con l'intervallo target del portale (media dei guest post esistenti; in assenza di misura, default 500‑900 parole): fuori intervallo è un intervento da segnalare.
+- La lunghezza va confrontata con il numero di parole indicato dall'utente (priorità); la media del portale è solo fallback se l'utente ha scelto "basati sul portale", altrimenti default 500‑900 parole. Fuori dal richiesto è un intervento da segnalare.
 - Autoverifica finale: l'articolo deve essere originale (nessuna frase/struttura/angolo copiati dalle bozze precedenti), non promozionale, senza ripetizioni concettuali, leggere come umano e essere pubblicabile senza revisioni sostanziali. Un testo che sembra generato da AI o non originale va corretto prima della consegna.
-- Anti-impronta: segnala come intervento i pattern ripetitivi (link sempre nella stessa posizione, paragrafi tutti uguali di lunghezza, menzione del brand sempre con la stessa costruzione), verificandoli anche rispetto alle bozze precedenti quando disponibili.
+- Anti-impronta: segnala come intervento i pattern ripetitivi (link sempre nella stessa posizione, paragrafi tutti uguali di lunghezza, menzione del brand sempre con la stessa costruzione, stesso scheletro strutturale), verificandoli anche rispetto alle bozze precedenti quando disponibili.
 - Il tono di voce del portale ospitante è il riferimento: un pezzo ben scritto ma che stona con il portale va segnalato.
 - Distingui i fail bloccanti (impediscono la consegna) dagli interventi consigliati (migliorie): non trattarli allo stesso modo.
 - Verifica la coerenza anchor ↔ pagina target usando la pagina reale, non un'ipotesi: se l'anchor promette qualcosa che la pagina non offre, è da correggere.
