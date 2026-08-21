@@ -1,216 +1,183 @@
 ---
 name: link-building-scouting
 description: >
-  Scouting e qualificazione di siti editori (publisher) per la link building: dato un cliente e un topic da coprire, produce una shortlist ordinata di siti su cui pubblicare un guest post o ottenere una menzione, con disponibilità e prezzo reali da Getfluence, metriche di autorità e pertinenza tematica, filtrata per budget e soglie. È la fase di discovery + qualificazione che sta a monte del flusso guest-post-pipeline: gli fornisce i siti ospitanti candidati. Usa questa skill quando l'utente vuole trovare dove fare link building. Trigger tipici: "trova siti per link building", "scouting publisher per il cliente X", "shortlist guest post con budget Y", "su quali siti pubblico un guest post per X", "quali siti sono a catalogo Getfluence", "dammi una lista di siti dove comprare un link". NON scrive l'articolo (per quello c'è guest-post-pipeline) e NON valuta il tono di voce del singolo portale (host-site-analysis): serve a decidere DOVE pubblicare, non COSA scrivere.
+  Ricerca di opportunità di link building per un cliente, guidata da Ahrefs e arricchita con Getfluence. Analizza a fondo il dominio del cliente, mappa i suoi backlink e quelli dei competitor (che chiede sempre all'utente) e individua portali di settore (o generalisti, su richiesta) che accettano guest post e che NON linkano ancora il cliente (link gap). Per ogni prospect dà le metriche Ahrefs rilevanti per la link building e, dove il dominio è a catalogo Getfluence, anche il prezzo. È la fase di prospecting a monte di guest-post-pipeline, a cui fornisce i siti ospitanti candidati. Trigger tipici: "trova opportunità di link building per X", "scouting publisher / guest post per X", "dove prendo backlink per X", "analizza i backlink dei competitor e trovami siti nuovi", "link gap analysis per X". NON scrive l'articolo (c'è guest-post-pipeline) né valuta il tono del portale (host-site-analysis): individua DOVE ottenere link, non COSA scrivere.
 ---
 
 # Link Building Scouting
 
-Questa skill costruisce la **shortlist di siti editori** su cui il cliente può ottenere un backlink (guest post o menzione), partendo da un cliente e da un topic e arrivando a una tabella ordinata con **prezzo e disponibilità reali** presi da Getfluence, **metriche di autorità**, **pertinenza tematica** e un **punteggio trasparente** che bilancia qualità e costo.
+Questa skill produce una **mappa di opportunità di link building** per un cliente: parte da un'analisi approfondita del dominio, ricostruisce il profilo backlink del cliente e dei competitor, e individua **portali candidati** dove ottenere un guest post o una menzione — portali di settore (o generalisti, su richiesta) che **accettano contributi esterni** e su cui **il cliente non è ancora linkato**. Per ogni candidato fornisce le metriche Ahrefs che contano per la link building e, dove disponibile, il prezzo di pubblicazione da Getfluence.
 
-Produce indicazioni operative e decisionali — non un report descrittivo. Il destinatario è chi deve decidere dove investire il budget di link building e poi passare i siti scelti al flusso di scrittura.
+Produce indicazioni operative e decisionali — non un report descrittivo. Il destinatario è chi deve decidere dove investire l'attività di link building e poi passare i siti scelti alla scrittura.
 
-**Posizione nel flusso Moca:** questa skill **precede** `guest-post-pipeline` (e le sue fasi `guest-post-brand-analysis` / `host-site-analysis`). Lo scouting decide *dove* pubblicare; la pipeline decide *cosa* scrivere e produce l'articolo.
-
----
-
-## Principio che regge tutta la skill (leggilo prima di iniziare)
-
-**Getfluence non scopre siti per argomento.** Risponde solo su domini che gli passi tu: dice se un dominio noto è a catalogo, a che prezzo e con quali metriche. Non esiste una query "dammi siti di cucina" su Getfluence.
-
-Di conseguenza la skill lavora in due tempi:
-1. **La scoperta dei domini candidati la fai TU** con Ahrefs (e SERP / lista del cliente). Questo è il vero lavoro creativo dello scouting.
-2. **Getfluence serve solo a verificare disponibilità e prezzo** sui domini che hai già scoperto.
-
-Se inverti l'ordine o ti aspetti che Getfluence "trovi" i siti, la skill fallisce. Tienilo presente in ogni fase.
-
-Un secondo principio: **l'assenza di un sito dal catalogo Getfluence NON è un giudizio di qualità.** Significa solo "non acquistabile via Getfluence in questo momento". Un sito ottimo può non esserci (magari si tratta direttamente, o è su un altro marketplace). Comunicalo sempre così all'utente, senza sminuire quei domini.
+**Posizione nel flusso Moca:** questa skill **precede** `guest-post-pipeline` (e le sue fasi `guest-post-brand-analysis` / `host-site-analysis`). Lo scouting individua *dove* ottenere link; la pipeline decide *cosa* scrivere e produce l'articolo.
 
 ---
 
-## Come pensa questa skill (l'approccio giusto)
+## Come nasce la lista dei candidati (il modello mentale)
 
-La link building moderna non è "comprare più link possibile". Le guide di settore (Ahrefs, Semrush, SEOZoom) convergono su un punto: **conta la qualità e la pertinenza, non la quantità**, e l'epicentro dell'autorevolezza si è spostato dal singolo link all'**ecosistema del brand** — menzioni, coerenza tematica, presenza nelle fonti che contano (incluse le AI Overview). Tienilo a mente quando qualifichi e ordini i siti:
+Getfluence **non scopre siti per argomento**: via MCP espone solo `search_offers`, che verifica domini che gli passi. Quindi **la scoperta dei candidati è responsabilità della skill, e il motore è Ahrefs** (più la ricerca di footprint e la SERP). Getfluence interviene **dopo**, come arricchimento: per i domini candidati dice se sono a catalogo e a che prezzo. Un dominio non a catalogo **resta comunque nella lista**, semplicemente senza prezzo Getfluence — non è un giudizio di qualità, è solo "non acquistabile lì".
 
-- **La pertinenza tematica pesa più dell'autorità nuda.** Un sito verticale e in-topic vale più di un generalista fortissimo ma fuori tema.
-- **Le metriche di terze parti (DR, DA, AS, TF/CF) si possono manipolare.** Da sole non bastano: vanno sempre incrociate con la **performance reale** (traffico organico, keyword posizionate, stabilità). Un DR alto con traffico ~0 è un campanello d'allarme, non un pregio.
-- **Anche una menzione o un link nofollow su una fonte autorevole e in-topic ha valore** (brand association, traffico referral, presenza tra le fonti AI): non scartarli a priori.
-- **Meglio pochi link sani e pertinenti che molti scadenti.** L'obiettivo della shortlist è la qualità azionabile, non il numero.
-
-I criteri di valutazione dettagliati (i 6 segnali di qualità, come leggere le metriche senza farti ingannare, la checklist dei red flag/link tossici, il ruolo delle menzioni, i benchmark di budget e la mappa criterio→strumento) sono in **`references/qualita-link-building.md`**. Leggilo prima delle fasi di **qualificazione (Fase 3)** e **scoring (Fase 4)**.
+Tre idee guida:
+- **Il cliente non deve essere già linkato.** L'opportunità è dove c'è un *gap*: portali che linkano i competitor (o sono a tema) ma non ancora il cliente.
+- **Pertinenza prima di tutto.** Un portale verticale e in-topic vale più di un generalista fortissimo ma fuori tema.
+- **Le metriche di terze parti si leggono con giudizio.** DR/traffico/TF ecc. sono screening, non verdetti: vanno incrociati con la performance reale (traffico organico, keyword, stabilità). I criteri di dettaglio sono in **`references/qualita-link-building.md`** (6 segnali di qualità, come leggere le metriche, red flag/link tossici, menzioni, budget, mappa criterio→strumento): leggilo prima della qualificazione e dello scoring.
 
 ---
 
 ## Istruzioni di progetto (verifica SEMPRE all'inizio)
 
-Se lavori dentro un progetto Claude, controlla se ci sono **istruzioni custom** o **knowledge di progetto** (linee guida di link building del cliente, settori vietati, publisher in blocklist/whitelist, tetti di spesa, requisiti di brand safety). Se presenti:
-- hanno **precedenza** sui default di questa skill (soglie, criteri di scoring, filtri);
-- restano subordinate alle scelte esplicite fatte dall'utente in questa sessione e ai vincoli di budget dichiarati;
-- se un'istruzione di progetto è in conflitto con una buona pratica (es. accettare siti con red flag di trust), non ignorarla in silenzio: segnala il conflitto e chiedi come procedere.
-
-Se non sei in un progetto o non ci sono istruzioni, procedi con i default della skill.
+Se lavori dentro un progetto Claude, controlla se ci sono **istruzioni custom** o **knowledge di progetto** (linee guida di link building del cliente, settori vietati, publisher in blocklist/whitelist, tetti di spesa, brand safety). Se presenti hanno **precedenza** sui default di questa skill, restano subordinate alle scelte esplicite dell'utente in sessione, e in caso di conflitto con una buona pratica vanno segnalate, non ignorate. Se non ci sono, procedi con i default.
 
 ---
 
-## Strumenti richiesti
+## Strumenti
 
-- **Getfluence** (MCP `getfluence`) — availability + prezzo + metriche per dominio. Tool: `check_getfluence_status`, `search_offers`. **Necessario** per la fase di availability/pricing; senza, la skill può solo fare discovery e stimare metriche via Ahrefs (dichiaralo all'utente).
-- **Ahrefs** (MCP `Ahrefs`) — motore di **discovery** dei domini candidati e di **validazione** delle metriche. È lo strumento principale della fase 1. Prima di usare un tool Ahrefs per la prima volta chiama `doc` per lo schema esatto; ricorda che i valori monetari Ahrefs sono in **centesimi di USD** (dividi per 100).
-- **Semrush** (opzionale, se collegato in sessione) — overview dominio / keyword organiche / competitor, come fonte complementare o di conferma incrociata su pertinenza e traffico. Se non è disponibile, **non è un problema**: usa Ahrefs. Non bloccare il flusso per l'assenza di Semrush.
-- (GA4/GSC sono disponibili ma poco rilevanti per lo scouting: ignorali salvo richiesta specifica.)
+- **Ahrefs** (MCP `Ahrefs`) — **motore principale**: analisi del cliente, profili backlink (cliente e competitor), metriche dei prospect. Prima di usare un tool Ahrefs per la prima volta chiama `doc` per lo schema esatto. I valori monetari Ahrefs sono in **centesimi di USD** (dividi per 100). Se una risposta indica `render_with`, usa il tool di render indicato.
+- **Getfluence** (MCP `getfluence`) — **arricchimento** prezzo/disponibilità sui domini candidati. Tool: `check_getfluence_status`, `search_offers`. Se non è configurato/collegato, la skill funziona lo stesso: produce la mappa opportunità **senza** la colonna prezzo, dichiarandolo.
+- **Ricerca web** (WebSearch) — per la **ricerca di footprint** dei siti che accettano guest post (vedi Fase 4). Se non disponibile, salta quel canale e dichiaralo.
+- **Semrush** (opzionale, se collegato) — conferma incrociata su backlink/traffico/competitor. Se non c'è, usa Ahrefs.
 
 ### Sanity check iniziale
-Chiama `check_getfluence_status` una volta all'inizio. Se le credenziali non sono configurate o il server non risponde, avvisa l'utente e chiedi se vuole comunque procedere con la sola discovery Ahrefs (shortlist senza prezzi reali) o fermarsi. Non lanciarti in decine di chiamate se il connettore è giù.
+All'avvio chiama `check_getfluence_status` (se il MCP c'è). Se risponde, potrai arricchire con i prezzi; se non risponde, prosegui comunque avvisando che mancheranno i prezzi Getfluence. Non bloccare il lavoro per l'assenza di Getfluence: è arricchimento, non prerequisito.
 
 ---
 
 ## Domande iniziali obbligatorie
 
-Fai queste domande **sempre e rigorosamente** prima di partire. Sono i parametri che rendono lo scouting utile invece che generico: senza budget e soglie qualunque lista è inservibile. Se l'utente ne salta qualcuna, insisti — proponi i default indicati tra parentesi ma chiedi conferma.
+Fai queste domande **sempre e rigorosamente** prima di partire. Se l'utente ne salta qualcuna, insisti (proponi i default tra parentesi ma chiedi conferma).
 
-1. **Cliente e pagina/e target da linkare** (URL) e **topic da coprire**: di cosa deve parlare l'articolo/menzione che ospiterà il link. Serve a guidare discovery e pertinenza.
-2. **Lingua e mercato/geo** di interesse (default: italiano / Italia `it`).
-3. **Budget**: massimo € per singolo link e/o budget totale, e **numero di siti desiderati** nella shortlist.
-4. **Soglie minime di metriche** (default proposti: DR ≥ 30, Trust Flow ≥ 15, traffico organico ≥ 5.000/mese). Adattali al mercato: su nicchie piccole o lingue minori possono essere troppo alte.
-5. **Requisito di pertinenza tematica**: settori/nicchie ammessi e, se ci sono, quelli da escludere (brand safety).
-6. **Eventuale lista di domini già candidati** dal cliente (verranno uniti ai candidati scoperti da te).
-7. **Competitor di riferimento noti** (URL): accelerano molto la discovery. Se l'utente non li ha, li ricavi tu da Ahrefs (`site-explorer-organic-competitors`) partendo dal sito del cliente e/o dal topic.
+1. **Dominio del cliente** + **pagina/e target** da rafforzare (URL) e **topic/settore** di interesse.
+2. **Competitor di riferimento** (URL): **sempre richiesti esplicitamente** all'utente — sono la fonte principale del bacino di prospect. Se l'utente non li ha, proponi di individuarli tu con Ahrefs (`site-explorer-organic-competitors`) e falli confermare prima di procedere.
+3. **Ambito dei portali**: solo **verticali/di settore** o anche **generalisti**? (default: prioritizza i verticali, includi i generalisti solo se autorevoli e in-topic).
+4. **Mercato e lingua** (default: Italia / italiano `it`).
+5. **Preferenze di scoring** — *domanda obbligatoria*: l'utente ha preferenze su **come ordinare/pesare i prospect** (es. dare più peso a traffico organico, DR, pertinenza tematica, prezzo Getfluence, o un ordinamento specifico), oppure **nessuna preferenza** e uso il default? Il default è: pertinenza tematica come fattore dominante, poi autorità reale (traffico + DR), poi efficienza di prezzo dove c'è Getfluence. Registra la risposta e applicala nella Fase 6.
+6. **Eventuali soglie/budget** (opzionali): soglie minime di metriche (es. DR ≥ 30, traffico ≥ 5.000) e/o tetto € per link. Se fornite, filtrano/pesano; se non fornite, elenca tutto ordinato per valore.
+7. **Blocklist/whitelist** eventuali (domini da escludere o da includere comunque).
 
-Riepiloga i parametri raccolti prima di procedere, così l'utente vede su quali criteri stai per lavorare.
+Riepiloga i parametri raccolti prima di procedere.
 
 ---
 
 ## Flusso operativo
 
-### Fase 1 — Discovery dei domini candidati (Ahrefs + lista utente)
+### Fase 1 — Analisi approfondita del dominio del cliente (Ahrefs)
 
-Obiettivo: costruire una **lista unica e deduplicata di domini candidati** il più ampia e pertinente possibile. Più il bacino è buono qui, migliore sarà la shortlist finale. Usa più angoli di scoperta e poi unisci:
+Inquadra il cliente e il suo contesto SEO, così da giudicare la pertinenza dei prospect più avanti.
+- **Autorità e traffico**: `site-explorer-domain-rating` (DR) e `site-explorer-metrics` (`target` = dominio, `mode` `subdomains`, `date` odierna, `country` del mercato) → DR, `org_traffic`, `org_keywords`, `org_keywords_1_3`.
+- **Temi presidiati**: `site-explorer-organic-keywords` (`order_by` per traffico/volume, `limit` ~25) e `site-explorer-top-pages` → di cosa "parla" davvero il sito e quali pagine attraggono traffico/link.
+- **Sintesi profilo backlink**: `site-explorer-backlinks-stats` per la fotografia (referring domains, backlink totali, dofollow ecc.).
+Restituisci una sintesi breve: settore reale, temi forti, livello di autorità, pagine chiave. Serve da metro per la pertinenza.
 
-**a) Referring domains dei competitor** — chi già linka i competitor è un publisher che accetta contenuti nel settore.
-Per ogni competitor noto o individuato, usa `site-explorer-referring-domains`:
-- `target`: il dominio del competitor, `mode`: `subdomains`
-- `select`: `domain,domain_rating,traffic_domain,links_to_target,is_spam`
-- `order_by`: `domain_rating:desc`
-- `where`: filtra già qui per alzare la qualità, es. `domain_rating ≥` soglia e `is_spam = false`
-- `limit`: 50–100 per competitor
-Nota unità: `traffic_domain` costa più unità API per riga — se vuoi risparmiare, prima gira senza e recuperalo solo per la rosa ristretta.
+### Fase 2 — Backlink esistenti del cliente (Ahrefs)
 
-**b) Chi posiziona per le keyword del topic** — chi ranka in prima pagina sul topic è un sito a tema e potenzialmente ospitante.
-Usa `serp-overview` sulla keyword primaria del topic (e 1–2 correlate), `country` coerente col mercato, e raccogli i domini dei risultati organici. In alternativa/complemento, `site-explorer-organic-competitors` sul sito del cliente per trovare siti tematicamente affini.
+Ricostruisci **chi già linka il cliente**: `site-explorer-referring-domains` (`target` = dominio cliente, `mode` `subdomains`, `select`: `domain,domain_rating,traffic_domain,dofollow_links,is_spam`, `order_by` `domain_rating:desc`, `limit` alto per coprire il profilo).
+Questo insieme è l'**inventario dei referring domain del cliente** e, soprattutto, la **lista di esclusione** per il prospecting: i domini che già linkano il cliente **non sono opportunità nuove**.
 
-**c) Chi linka le pagine più linkate dei competitor (outreach mirato)** — è la tattica che Ahrefs e Semrush indicano come più fruttuosa. Trova le pagine dei competitor che attraggono più backlink con `site-explorer-pages-by-backlinks` (target = competitor); poi, sulle 2–3 pagine top, usa `site-explorer-referring-domains` per estrarre **chi già linka contenuti simili ai nostri**: sono i prospect più caldi. Stesso principio partendo dalle pagine in cima alla SERP del topic (dai risultati del punto b).
+### Fase 3 — Backlink dei competitor (Ahrefs)
 
-**d) Lista fornita dal cliente** (domanda 6) — includila sempre così com'è.
+Per **ciascun competitor** confermato in intake, estrai i referring domains con `site-explorer-referring-domains` (stessi `select` della Fase 2, `order_by` `domain_rating:desc`, filtra già `is_spam=false` e `domain_rating ≥` soglia se fornita). Chi linka i competitor è un publisher che **accetta contenuti/link nel settore**: è il bacino primario di prospect.
+Tattica ad alto rendimento (Ahrefs/Semrush): individua le **pagine dei competitor più linkate** con `site-explorer-pages-by-backlinks`, poi sulle 2–3 top usa `site-explorer-referring-domains` per catturare **chi linka contenuti simili ai nostri**.
 
-**e) (Opzionale) Semrush** — se collegato, usa la sua vista competitor/organic (Backlink Gap, Bulk Analysis) per aggiungere domini che Ahrefs non ha intercettato.
+### Fase 4 — Prospecting: costruzione della lista candidati
 
-**Consolidamento:** normalizza i domini (togli `http(s)://`, `www.`, path → dominio registrabile), **deduplica**, ed escludi da subito: il dominio del cliente e dei competitor, aggregatori/social/e-commerce marketplace non pertinenti, e i domini in eventuale blocklist di progetto. Il risultato è la **lista candidati** per la Fase 2.
+Unisci le fonti, poi **sottrai i già-linkati**:
+- **a) Link gap competitor** — referring domains dei competitor (Fase 3) **meno** i referring domains del cliente (Fase 2). È il cuore: portali che linkano i competitor ma non ancora il cliente.
+- **b) Chi ranka sul topic** — `serp-overview` sulla keyword primaria del topic (e 1–2 correlate), `country` coerente: raccogli i domini editoriali in prima pagina non già linkati al cliente.
+- **c) Ricerca di footprint (WebSearch)** — allarga il bacino ai siti che dichiarano di accettare contributi. Query tipo: `"scrivi per noi" <settore>`, `"guest post" <settore>`, `"collabora con noi" <settore>`, `"linee guida guest post" <settore>`, adattate alla lingua/mercato. Raccogli i domini pertinenti, escludi i già-linkati.
 
-### Fase 2 — Availability + pricing (Getfluence)
+**Segnale "accetta guest post"** per ogni candidato, da annotare:
+- **footprint esplicito** (trovato in c) → forte;
+- **presente su Getfluence** (Fase 5) → forte (vende pubblicazioni);
+- **è referring domain editoriale di un competitor** (a) → medio (accetta link esterni).
 
-Passa la lista candidati a `search_offers`. **In batch**: Getfluence accetta più domini in una sola chiamata, e più domini = una sola richiesta HTTP. Non fare un loop di chiamate singole (bruci il rate limit inutilmente).
+**Consolidamento**: normalizza (togli `http(s)://`, `www.`, path → dominio registrabile), **deduplica**, escludi cliente/competitor, social/aggregatori/marketplace non pertinenti, blocklist di progetto e — filtro chiave — **tutti i domini che già linkano il cliente**. Applica l'ambito richiesto (solo verticali o anche generalisti). Ottieni la **lista prospect**.
 
-Ricetta `search_offers`:
-- `domains`: **array** di domini candidati (obbligatorio). Passane molti in una chiamata.
-- `search_type`: `"wide"` (**consigliato** — copre dominio e sottodomini via `registrableDomainSearch`). Usa `"strict"` solo se ti serve il match esatto del dominio/sottodominio, `"flexible"` per matching più permissivo sull'URL.
-- `page`: parti da `1`; se la risposta è paginata (Hydra) e ti servono più risultati, richiedi le pagine successive.
+### Fase 5 — Arricchimento Getfluence (prezzo/disponibilità)
 
-Gestione del risultato:
-- Per ogni dominio **presente a catalogo** ottieni: `url`, `formatType` (es. `article-website`), **`price`** (già in €), le metriche SEO (`organicTraffic`, `trustFlow`, `citationFlow`, `domainAuthority`, `authorityScore`, `domainRating`), `id`, `createdAt`. In coda la risposta può includere i **crediti API rimanenti**: annotali e, se sono bassi, avvisa l'utente.
-- I domini **non presenti** semplicemente non compaiono. Mettili da parte in un elenco separato "non a catalogo Getfluence" (≠ scadenti, vedi principio iniziale).
-- Il `price` è un **"a partire da"** per un nuovo articolo o una menzione in un articolo esistente: può variare in fase di trattativa. Dillo nell'output.
+Passa **tutta la lista prospect** a `search_offers` in **batch** (più domini in un'unica chiamata; più domini = una sola richiesta HTTP). Non fare loop di chiamate singole.
+- `domains`: array dei prospect (obbligatorio). `search_type`: `"wide"` (consigliato). `page`: da `1`, pagina se la risposta è paginata (Hydra).
+- Per i domini **a catalogo** ottieni `url`, `formatType`, **`price`** (già in €, "a partire da"), metriche (`organicTraffic`, `trustFlow`, `citationFlow`, `domainAuthority`, `authorityScore`, `domainRating`), `id`, `createdAt`; in coda eventuali **crediti API rimanenti** (annotali, avvisa se bassi).
+- I domini **non a catalogo** restano nella lista **senza prezzo** (colonna vuota / "n.d.").
+- **Rate limit / 429**: ~4 req/s + quote; su `429` non ritentare a raffica, usa backoff (2s/4s/8s) e avvisa se la quota è esaurita. Il batch è la difesa principale.
 
-**Rate limit e 429.** Il limite è ~4 richieste/secondo più quote giornaliera e mensile. Il server traduce già `401/403/429` in messaggi chiari. Se ricevi un `429`, **non ritentare a raffica**: aspetta e riprova con backoff (es. 2s, 4s, 8s), e se persiste segnala all'utente che la quota è esaurita e proponi di riprendere più tardi o di ridurre il batch. Batchare i domini è la difesa principale: preferisci 1 chiamata da 40 domini a 40 chiamate da 1.
+### Fase 6 — Metriche, qualificazione e scoring
 
-### Fase 3 — Qualificazione e filtri
+Per ogni prospect componi la **scheda** con le metriche Ahrefs rilevanti per la LB (usa `doc` per gli schemi esatti; recupera le metriche costose solo sulla rosa che serve). Set di default (confermato):
+- **Domain Rating** (`site-explorer-domain-rating`);
+- **Traffico organico** e keyword (`site-explorer-metrics`: `org_traffic`, `org_keywords`);
+- **Referring domains** del prospect (`site-explorer-backlinks-stats` o il campo relativo);
+- **Pertinenza tematica** (top keyword/temi via `site-explorer-organic-keywords`) → **Alta / Media / Bassa** con motivazione di una riga;
+- **`is_spam` / red flag** e, sul link verso il competitor, se è **dofollow** (dai dati di Fase 3);
+- **Prezzo Getfluence** se presente (Fase 5).
 
-Sui soli domini a catalogo. Le metriche restituite da Getfluence (`organicTraffic`, `trustFlow`, `citationFlow`, `domainAuthority`, `authorityScore`, `domainRating`) bastano per i primi due filtri **senza spendere unità Ahrefs**; riserva Ahrefs ai controlli profondi (pertinenza, salute) sulla rosa già scremata. Consulta `references/qualita-link-building.md` per i criteri di dettaglio. Applica in quest'ordine:
+Applica i controlli di **salute/trust** e la **checklist red flag** del reference (§2–§3): DR alto + traffico ~0, `citationFlow` ≫ `trustFlow`, crolli di traffico, pattern "sito contenitore"/link farm. Non scartano da soli, ma abbassano la priorità o escludono se gravi.
 
-1. **Budget**: scarta chi supera il tetto per singolo link. Tieni conto del budget totale nel comporre la shortlist (Fase 4).
-2. **Soglie metriche** (domanda 4): applica i minimi su DR e traffico organico come filtri primari; usa TF come soglia di trust. Non essere rigido al punto da svuotare la lista: se restano pochissimi siti, segnala all'utente che le soglie sono probabilmente troppo alte per il mercato e proponi di allentarle.
-3. **Pertinenza tematica** (il criterio con più peso — vedi §1 del reference): distingue un buon link da uno inutile. Verifica di cosa parla **davvero** il sito con `site-explorer-organic-keywords` (`target` = dominio, `mode` `subdomains`, `country` coerente, `order_by` per traffico/volume, `limit` ~20–30) e, se utile, `site-explorer-top-pages` (quali contenuti fanno traffico). Valuta se il topic del cliente è coerente con i temi presidiati e se il sito è **verticale** o **generalista/contenitore**. Classifica in **Alta / Media / Bassa** con motivazione di una riga (es. "Alta — ranka su 'ricette dolci', 'dessert'; topic cliente = pasticceria"). Euristica: "cercherei questo link anche se Google non esistesse?".
-4. **Salute e trust del dominio** (sulla rosa ristretta): controlla che la performance sia reale e stabile, non gonfiata. Segnali da verificare/annotare (vedi §2–§3 del reference):
-   - **DR alto + traffico ~0** → autorità probabilmente artificiale (red flag forte).
-   - **`citationFlow` ≫ `trustFlow`** (rapporto TF/CF basso) → profilo link ampio ma poco affidabile.
-   - **Traffico instabile / crolli** → possibile penalizzazione: se serve, `site-explorer-metrics-history` o `site-explorer-domain-rating-history`; crescita innaturale di referring domains con `site-explorer-refdomains-history`.
-   - **Pattern "sito contenitore"/link farm** → nessuna redazione riconoscibile, esiste solo per ospitare link; conferma con `site-explorer-linked-anchors-external` / `site-explorer-linked-domains` (linka in uscita molti domini commerciali con anchor a corrispondenza esatta?).
-   Nessun segnale da solo è una condanna, ma più segnali insieme abbassano il punteggio o escludono il dominio.
-5. **Tipologia di offerta (menzione/nofollow)**: se l'offerta Getfluence è una **menzione in un articolo esistente** anziché un nuovo articolo, o comporta un nofollow, **non penalizzarla a priori** — su una fonte autorevole e in-topic ha comunque valore (brand association, referral, AI Overview). Pesala su pertinenza e autorità come le altre, annotando la tipologia (vedi §4 del reference).
+**Scoring** — applica la preferenza raccolta in intake (domanda 5):
+- se l'utente ha indicato pesi/priorità, **usa quelli** e dichiaralo;
+- altrimenti default: **pertinenza (peso maggiore)** → **autorità reale** (traffico organico + DR) → **efficienza di prezzo** dove c'è Getfluence (**€ per 1.000 di traffico organico** `price/(organicTraffic/1000)` e/o **€ per punto DR** `price/domainRating`) → **trust/salute**.
+Se sono state date soglie/budget, filtra di conseguenza. **Spiega sempre come hai ordinato.**
 
-### Fase 4 — Scoring & ranking
+### Fase 7 — Output
 
-Ordina i siti sopravvissuti con un punteggio **trasparente**. Rispetta due regole d'oro delle guide: **la pertinenza pesa più dell'autorità nuda**, e **la performance reale conta più della metrica di autorità dichiarata** (che è manipolabile). Non sommare mai ingenuamente metriche di provider diversi: scegline poche primarie e usa le altre come check.
-
-Rubrica suggerita (adatta i pesi al caso, ma tieni la pertinenza in testa):
-- **Pertinenza tematica (~40%)** — Alta/Media/Bassa dalla Fase 3. È il fattore dominante: un sito Bassa pertinenza, per quanto economico e autorevole, va in fondo o escluso; un sito Alta pertinenza a prezzo ragionevole va in cima anche se non è il più forte in assoluto.
-- **Autorità reale (~30%)** — **traffico organico** e ampiezza/qualità delle keyword posizionate come segnale primario di performance, con **DR** a supporto. Preferisci un sito con traffico solido a uno con DR più alto ma traffico modesto.
-- **Efficienza di spesa (~20%)** — calcola **€ per 1.000 di traffico organico** (`price / (organicTraffic/1000)`) e **€ per punto DR** (`price / domainRating`). Più basso = più efficiente; è ciò che rende comparabili siti di prezzo diverso.
-- **Trust / salute (~10%)** — TF/CF sani e assenza di red flag confermano; i campanelli della Fase 3 abbassano il punteggio.
-
-Costruisci un punteggio complessivo 0–100 (o un ranking ordinale) e **spiega in output come l'hai calcolato**. Non serve una formula esoterica: serve che l'utente capisca perché il sito #1 è il #1.
-
-### Fase 5 — Output
-
-Presenta la shortlist come **tabella ordinata** dal miglior candidato al peggiore, seguita dai riepiloghi. Vedi il formato qui sotto.
+Presenta i risultati come da formato qui sotto.
 
 ---
 
 ## Formato di output
 
-Usa questa struttura.
-
 ### 1. Parametri dello scouting
-Una riga di riepilogo: cliente, topic, mercato/lingua, budget (per link + totale), soglie applicate, n° siti richiesti. Così i criteri sono trasparenti.
+Riga di sintesi: cliente, topic/settore, competitor usati, mercato/lingua, ambito (verticali/generalisti), preferenza di scoring applicata, eventuali soglie/budget.
 
-### 2. Shortlist qualificata
-Tabella ordinata per punteggio (migliore in alto):
+### 2. Analisi del cliente
+Sintesi della Fase 1: DR, traffico organico, temi/keyword forti, pagine chiave, fotografia del profilo backlink (n° referring domains, ecc.).
 
-| # | Dominio | Prezzo € | DR | TF/CF | DA | AS | Traffico org. | Pertinenza | € per punto DR | Punteggio | Note |
-|---|---------|---------|----|-------|----|----|--------------|-----------|----------------|-----------|------|
+### 3. Profilo backlink dei competitor
+Per competitor: n° referring domains, esempi di publisher rilevanti che li linkano, e i temi/pagine che attraggono più link. Evidenzia il **potenziale link gap** (quanti domini linkano i competitor ma non il cliente).
 
-- **Prezzo €**: dal `price` Getfluence, indicando che è "a partire da".
-- **TF/CF**: Trust Flow / Citation Flow (es. `28/35`).
-- **Pertinenza**: Alta / Media / Bassa + motivazione breve (può stare in Note se la tabella è stretta). È il fattore che pesa di più nell'ordinamento.
-- **€ per punto DR**: efficienza di spesa; se più significativo per il caso, affianca o sostituisci con **€ per 1k di traffico organico**.
-- **Note**: red flag di trust/salute, **tipologia di offerta** (nuovo articolo vs menzione, follow/nofollow), o altre osservazioni.
+### 4. Opportunità di link building (tabella prospect)
+Ordinata secondo lo scoring scelto (migliore in alto). Solo domini su cui il cliente **non è ancora linkato**.
 
-### 3. Riepilogo budget
-- Costo totale della shortlist proposta e come si colloca rispetto al budget totale.
-- Numero di siti proposti vs richiesti; costo medio per link; ventaglio prezzi (min–max).
-- Se il budget non basta per il numero di siti desiderato alle soglie date, dillo e proponi opzioni (alzare budget, abbassare soglie, meno siti ma migliori).
+| # | Dominio | Pertinenza | DR | Traffico org. | Ref. domains | Guest post | Prezzo € (Getfluence) | Cliente linkato | Note |
+|---|---------|-----------|----|--------------|--------------|-----------|-----------------------|-----------------|------|
 
-### 4. Candidati non acquistabili via Getfluence
-Elenco dei domini scoperti in Fase 1 ma **non a catalogo**, con una riga che ricorda che l'assenza non è un giudizio di qualità e che, se interessano, possono essere valutati per contatto diretto o su altri canali.
+- **Pertinenza**: Alta/Media/Bassa + motivo (in Note se stretto). Fattore dominante di default.
+- **Guest post**: segnale di accettazione (footprint / Getfluence / linka competitor).
+- **Prezzo € (Getfluence)**: `price` se a catalogo ("a partire da"), altrimenti "n.d." (non su Getfluence, ≠ scadente).
+- **Cliente linkato**: sempre "No" per costruzione — colonna di garanzia che è un'opportunità nuova.
+- **Note**: TF/CF e red flag di salute, tipologia offerta (articolo nuovo vs menzione, follow/nofollow), fonte del prospect.
 
-### 5. Prossimo passo
-Suggerisci esplicitamente l'**handoff a `guest-post-pipeline`** per i siti scelti: la pipeline analizzerà cliente e portale ospitante e scriverà l'articolo con il link naturale. Indica che i siti della shortlist sono i "siti ospitanti candidati" da passare a quel flusso.
+### 5. Riepilogo e prossimi passi
+- Numeri: quanti prospect totali, quanti a catalogo Getfluence (con range prezzi), quanti verticali vs generalisti.
+- Se erano dati budget/soglie: come si colloca la lista, e una **shortlist consigliata** entro budget.
+- **Handoff a `guest-post-pipeline`** per i siti scelti (sono i "siti ospitanti candidati" da passare alla scrittura).
 
 ---
 
 ## Principi di qualità (tienili sempre)
 
-- **Assenza da Getfluence ≠ sito scadente.** Ripetilo in output ogni volta che elenchi i non-a-catalogo.
-- **La pertinenza batte l'autorità nuda.** Un link tematicamente coerente su un sito medio vale più di un link fuori tema su un sito fortissimo. È il criterio con più peso nello scoring.
-- **Le metriche di terze parti si manipolano.** DR/DA/AS/TF/CF sono screening rapidi, non verdetti: incrociali sempre con la performance reale (traffico organico, keyword, stabilità). DR alto + traffico ~0 = red flag. E non sommare metriche di provider diversi (scale diverse): scegline 1–2 primarie, le altre come check.
-- **Le menzioni e i nofollow hanno valore.** Non scartare una fonte autorevole e in-topic solo perché offre una menzione o un nofollow: pesano su brand association, referral e presenza nelle AI Overview.
-- **Qualità, non quantità.** Meglio pochi siti sani e pertinenti che molti scadenti; link scadenti o su network/contenitori sono un rischio (penalizzazioni), non un affare.
-- **Sanity check del budget.** Confronta il budget dichiarato con i benchmark di mercato (§5 del reference): se è irrealistico per le soglie richieste, dillo e proponi alternative.
-- **Rispetta i rate limit.** Batch dei domini in `search_offers`, niente loop di chiamate singole, backoff sui `429`. Su Ahrefs, recupera le metriche costose (traffico, refdomains, history) solo sulla rosa che serve.
-- **Rendi trasparenti criteri e filtri.** Mostra soglie applicate, come hai calcolato il punteggio, e quanti domini sono caduti a ogni filtro. Una shortlist di cui non si capisce la logica non è azionabile.
-- **Lingua di lavoro: italiano**, coerente con le altre skill Moca.
+- **Solo opportunità nuove.** Escludi sempre i domini che già linkano il cliente: l'output è il *gap*, non l'esistente.
+- **Getfluence è arricchimento, non filtro.** I domini non a catalogo restano in lista senza prezzo; l'assenza non è un giudizio di qualità.
+- **La pertinenza batte l'autorità nuda.** Un link in-topic su un sito medio vale più di uno fuori tema su un sito fortissimo.
+- **Metriche di terze parti con giudizio.** DR/DA/AS/TF/CF sono screening, non verdetti: incrociali con la performance reale (traffico, keyword, stabilità). DR alto + traffico ~0 = red flag. Non sommare metriche di provider diversi.
+- **Le menzioni e i nofollow hanno valore** (brand association, referral, AI Overview): non scartarli a priori.
+- **Rispetta i rate limit.** Batch su `search_offers`, backoff sui `429`; su Ahrefs recupera le metriche costose solo sulla rosa che serve.
+- **Trasparenza.** Mostra fonti dei prospect, criterio di scoring applicato e quanti domini cadono a ogni filtro.
+- **Lingua di lavoro: italiano.**
 
 ---
 
 ## Esempio end-to-end (caso fittizio)
 
-**Input utente:** «Cliente: *Dolci del Sole*, pasticceria artigianale, pagina target `dolcidelsole.it/panettone-artigianale`. Topic: panettone e lievitati natalizi. Mercato: Italia, italiano. Budget: max 300 €/link, totale 1.000 €, voglio 4 siti. Soglie: DR ≥ 30, TF ≥ 15, traffico ≥ 5.000. Nicchie ammesse: food, lifestyle, cucina. Nessuna lista mia. Competitor: `fiaschetterialievita.it`.»
+**Input:** «Cliente `mocainteractive.com`, pagina target la home, topic: digital advertising / marketing. Competitor? → l'utente fornisce `competitor-adv-1.it`, `competitor-adv-2.it`. Ambito: verticali marketing/ADV, generalisti solo se autorevoli. Mercato: Italia. Preferenza scoring? → "dai più peso al traffico organico e alla pertinenza". Budget: indicativo 300–500 €/link.»
 
 **Come procede la skill:**
-1. **Sanity check** — `check_getfluence_status`: ok.
-2. **Discovery (Ahrefs)** — `site-explorer-referring-domains` su `fiaschetterialievita.it` (DR desc, `is_spam=false`) → una decina di referring domains food/lifestyle. `serp-overview` su "panettone artigianale" / "migliori panettoni" → altri domini editoriali che rankano. Unione + dedup → ~15 domini candidati (es. `gamberorosso.it`, `dissapore.com`, `foodblog-esempio.it`, `magazinecucina-esempio.it`, …).
-3. **Availability (Getfluence)** — `search_offers` con tutti i ~15 domini in **una** chiamata, `search_type: "wide"`. Risultano a catalogo 9; 6 non compaiono → lista "non a catalogo".
-4. **Qualificazione** — filtro budget con i prezzi Getfluence (scarta 2 sopra 300 €), soglie DR/TF/traffico (scarta 1); pertinenza via `site-explorer-organic-keywords` sui restanti 6 → 4 Alta, 1 Media, 1 Bassa (esclusa); check salute sulla rosa → un dominio ha CF≫TF e traffico piatto (red flag annotata). Una delle offerte è una menzione in articolo esistente: tenuta, tipologia annotata.
-5. **Scoring** — rubrica pesata (pertinenza 40% in testa, autorità reale con traffico 30%, efficienza €/1k traffico e €/punto DR 20%, trust 10%); ordino i 5 pertinenti, i migliori 4 stanno nel budget totale (somma ≈ 940 €).
-6. **Output** — tabella dei 4 (+ il Media come alternativa), riepilogo budget (4 siti, 940 € su 1.000, media 235 €/link), elenco dei 6 non a catalogo con la nota, e suggerimento di passare i 4 siti a `guest-post-pipeline`.
+1. **Cliente (Ahrefs)** — DR, traffico, temi ("digital advertising", "seo", "email marketing"), top pages, profilo backlink.
+2. **Backlink cliente** — referring domains del cliente = lista di esclusione.
+3. **Competitor** — referring domains dei due competitor + pagine più linkate → bacino di publisher del settore.
+4. **Prospecting** — link gap (competitor meno cliente) + domini che rankano su "agenzia digital advertising" ecc. + footprint (`"scrivi per noi" marketing`, `"guest post" pubblicità`) → ~30 prospect non ancora linkati, filtrati sui verticali marketing/ADV.
+5. **Getfluence** — `search_offers` batch sui ~30 → 12 a catalogo con prezzo, 18 senza (restano in lista).
+6. **Metriche + scoring** — schede Ahrefs per prospect; ordinamento con peso extra su traffico e pertinenza (come richiesto); annotate red flag e €/1k traffico dove c'è prezzo.
+7. **Output** — analisi cliente, profilo competitor con entità del gap, tabella dei ~30 prospect ordinata, riepilogo (12 acquistabili su Getfluence, range 250–600 €) e shortlist consigliata entro 300–500 €, con handoff a `guest-post-pipeline`.
 
-Questo è il livello di trasparenza e concretezza atteso: l'utente deve poter dire "compro questi 4" e sapere esattamente perché.
+Livello atteso: l'utente deve capire **dove** sono le opportunità nuove, **quanto valgono** per la LB e **quali** può comprare subito su Getfluence.
