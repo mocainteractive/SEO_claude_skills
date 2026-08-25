@@ -34,7 +34,8 @@ Se lavori dentro un progetto Claude, controlla se ci sono **istruzioni custom** 
 ## Strumenti
 
 - **Ahrefs** (MCP `Ahrefs`) — **motore principale**: analisi del cliente, profili backlink (cliente e competitor), metriche dei prospect. Prima di usare un tool Ahrefs per la prima volta chiama `doc` per lo schema esatto. I valori monetari Ahrefs sono in **centesimi di USD** (dividi per 100). Se una risposta indica `render_with`, usa il tool di render indicato.
-- **Getfluence** (MCP `getfluence`) — **arricchimento** prezzo/disponibilità sui domini candidati. Tool: `check_getfluence_status`, `search_offers`. Se non è configurato/collegato, la skill funziona lo stesso: produce la mappa opportunità **senza** la colonna prezzo, dichiarandolo.
+- **Getfluence** (MCP `getfluence`) — **arricchimento** prezzo/disponibilità sui domini candidati. Tool: `check_getfluence_status`, `search_offers` (e, se presente, `browse_catalog` per sfogliare il catalogo per tema). Se non è configurato/collegato, la skill funziona lo stesso, dichiarandolo.
+- **Listini prezzi bundled** (`assets/listini/*.csv`) — **fonti prezzo aggiuntive** fornite dall'utente (es. listino Link Juice), incluse nella skill come knowledge locale: si leggono **da file, senza rete e senza pubblicare nulla** (nessun rischio di indicizzazione). Sono sia fonte di **prezzo** sia, opzionalmente, fonte di **candidati** (portali che vendono guest post, filtrabili per categoria). Vedi `assets/listini/_manifest.md` per l'elenco e la mappatura colonne. Leggili sempre con codice (filtra per dominio/categoria), **mai caricando l'intero CSV nel contesto**.
 - **Ricerca web** (WebSearch) — per la **ricerca di footprint** dei siti che accettano guest post (vedi Fase 4). Se non disponibile, salta quel canale e dichiaralo.
 - **Semrush** (opzionale, se collegato) — conferma incrociata su backlink/traffico/competitor. Se non c'è, usa Ahrefs.
 
@@ -84,22 +85,28 @@ Tattica ad alto rendimento (Ahrefs/Semrush): individua le **pagine dei competito
 Unisci le fonti, poi **sottrai i già-linkati**:
 - **a) Link gap competitor** — referring domains dei competitor (Fase 3) **meno** i referring domains del cliente (Fase 2). È il cuore: portali che linkano i competitor ma non ancora il cliente.
 - **b) Chi ranka sul topic** — `serp-overview` sulla keyword primaria del topic (e 1–2 correlate), `country` coerente: raccogli i domini editoriali in prima pagina non già linkati al cliente.
-- **c) Ricerca di footprint (WebSearch)** — allarga il bacino ai siti che dichiarano di accettare contributi. Query tipo: `"scrivi per noi" <settore>`, `"guest post" <settore>`, `"collabora con noi" <settore>`, `"linee guida guest post" <settore>`, adattate alla lingua/mercato. Raccogli i domini pertinenti, escludi i già-linkati.
+- **c) Ricerca di footprint (WebSearch)** — allarga il bacino ai siti che dichiarano di accettare contributi. Query tipo: `"scrivi per noi" <settore>`, `"guest post" <settore>`, `"collabora con noi" <settore>`, `"linee guida guest post" <settore>`, adattate alla lingua/mercato. Raccogli i domini pertinenti, escludi i già-linkati. Distingui gli **host editoriali** dai **marketplace/servizi di link building** (etichettali come tali) e scarta gli articoli-spiegazione (pezzi "cos'è un guest post" che non sono offerte).
+- **d) Listini bundled (opzionale, per categoria)** — dai CSV in `assets/listini/` seleziona i portali la cui **categoria/topic** combacia col settore del cliente (confronto tollerante: minuscolo, senza accenti, trim). Sono per definizione siti che accettano guest post. Escludi i già-linkati. Vedi `assets/listini/_manifest.md`. (Se l'utente vuole i listini **solo per il prezzo** e non come fonte di candidati, salta questo punto e usali solo in Fase 5.)
 
 **Segnale "accetta guest post"** per ogni candidato, da annotare:
-- **footprint esplicito** (trovato in c) → forte;
-- **presente su Getfluence** (Fase 5) → forte (vende pubblicazioni);
+- **presente in un listino** (d) o **su Getfluence** (Fase 5) → forte (vende pubblicazioni);
+- **footprint esplicito** (c) → forte;
 - **è referring domain editoriale di un competitor** (a) → medio (accetta link esterni).
 
 **Consolidamento**: normalizza (togli `http(s)://`, `www.`, path → dominio registrabile), **deduplica**, escludi cliente/competitor, social/aggregatori/marketplace non pertinenti, blocklist di progetto e — filtro chiave — **tutti i domini che già linkano il cliente**. Applica l'ambito richiesto (solo verticali o anche generalisti). Ottieni la **lista prospect**.
 
-### Fase 5 — Arricchimento Getfluence (prezzo/disponibilità)
+### Fase 5 — Arricchimento prezzi (Getfluence + listini bundled)
 
-Passa **tutta la lista prospect** a `search_offers` in **batch** (più domini in un'unica chiamata; più domini = una sola richiesta HTTP). Non fare loop di chiamate singole.
-- `domains`: array dei prospect (obbligatorio). `search_type`: `"wide"` (consigliato). `page`: da `1`, pagina se la risposta è paginata (Hydra).
-- Per i domini **a catalogo** ottieni `url`, `formatType`, **`price`** (già in €, "a partire da"), metriche (`organicTraffic`, `trustFlow`, `citationFlow`, `domainAuthority`, `authorityScore`, `domainRating`), `id`, `createdAt`; in coda eventuali **crediti API rimanenti** (annotali, avvisa se bassi).
-- I domini **non a catalogo** restano nella lista **senza prezzo** (colonna vuota / "n.d.").
-- **Rate limit / 429**: ~4 req/s + quote; su `429` non ritentare a raffica, usa backoff (2s/4s/8s) e avvisa se la quota è esaurita. Il batch è la difesa principale.
+Per ogni prospect raccogli il prezzo da **tutte le fonti disponibili** e fai il merge.
+
+**a) Getfluence** — passa **tutta la lista prospect** a `search_offers` in **batch** (più domini in un'unica chiamata). Non fare loop di chiamate singole.
+- `domains`: array dei prospect. `search_type`: `"wide"` (consigliato). `page`: da `1`, pagina se paginato (Hydra).
+- Per i domini **a catalogo**: `url`, `formatType`, **`price`** (già in €, "a partire da"), metriche (`organicTraffic`, `trustFlow`, `citationFlow`, `domainAuthority`, `authorityScore`, `domainRating`), `id`, `createdAt`; in coda eventuali **crediti API rimanenti** (annotali, avvisa se bassi).
+- **Rate limit / 429**: ~4 req/s + quote; su `429` backoff (2s/4s/8s), non ritentare a raffica. Il batch è la difesa principale.
+
+**b) Listini bundled** (`assets/listini/*.csv`) — con codice, per ogni prospect fai il **lookup per dominio** (normalizzato) su ciascun listino; se presente prendi **prezzo**, note (nofollow, requisiti) e metriche del listino (DA/TF/ZA). Formato prezzo italiano `€ 1.234,00` → numero; `DA CONCORDARE`/vuoto → **"su richiesta"**. Non caricare l'intero CSV in contesto: filtra per i domini della lista.
+
+**c) Merge** — ogni prezzo porta la sua **fonte** (Getfluence / Link Juice / …). Se un dominio ha più prezzi, mostra il **minimo** e riporta **tutte le fonti** (con relativo prezzo) in nota. Un dominio senza alcun prezzo resta in lista con prezzo **"n.d."** (né su Getfluence né nei listini ≠ scadente): è comunque un'opportunità, va contattato direttamente.
 
 ### Fase 6 — Metriche, qualificazione e scoring
 
@@ -109,7 +116,7 @@ Per ogni prospect componi la **scheda** con le metriche Ahrefs rilevanti per la 
 - **Referring domains** del prospect (`site-explorer-backlinks-stats` o il campo relativo);
 - **Pertinenza tematica** (top keyword/temi via `site-explorer-organic-keywords`) → **Alta / Media / Bassa** con motivazione di una riga;
 - **`is_spam` / red flag** e, sul link verso il competitor, se è **dofollow** (dai dati di Fase 3);
-- **Prezzo Getfluence** se presente (Fase 5).
+- **Prezzo + fonte** dal merge di Fase 5 (Getfluence e/o listini); riporta anche le metriche del listino (DA/TF/ZA) e il flag **nofollow** se presente nelle note.
 
 Applica i controlli di **salute/trust** e la **checklist red flag** del reference (§2–§3): DR alto + traffico ~0, `citationFlow` ≫ `trustFlow`, crolli di traffico, pattern "sito contenitore"/link farm. Non scartano da soli, ma abbassano la priorità o escludono se gravi.
 
@@ -138,17 +145,18 @@ Per competitor: n° referring domains, esempi di publisher rilevanti che li link
 ### 4. Opportunità di link building (tabella prospect)
 Ordinata secondo lo scoring scelto (migliore in alto). Solo domini su cui il cliente **non è ancora linkato**.
 
-| # | Dominio | Pertinenza | DR | Traffico org. | Ref. domains | Guest post | Prezzo € (Getfluence) | Cliente linkato | Note |
-|---|---------|-----------|----|--------------|--------------|-----------|-----------------------|-----------------|------|
+| # | Dominio | Pertinenza | DR | Traffico org. | Ref. domains | Guest post | Prezzo € | Fonte prezzo | Cliente linkato | Note |
+|---|---------|-----------|----|--------------|--------------|-----------|---------|--------------|-----------------|------|
 
 - **Pertinenza**: Alta/Media/Bassa + motivo (in Note se stretto). Fattore dominante di default.
-- **Guest post**: segnale di accettazione (footprint / Getfluence / linka competitor).
-- **Prezzo € (Getfluence)**: `price` se a catalogo ("a partire da"), altrimenti "n.d." (non su Getfluence, ≠ scadente).
+- **Guest post**: segnale di accettazione (listino / Getfluence / footprint / linka competitor).
+- **Prezzo €**: prezzo minimo dal merge di Fase 5 ("a partire da"); "su richiesta" se il listino dice DA CONCORDARE; "n.d." se nessuna fonte ce l'ha (≠ scadente).
+- **Fonte prezzo**: Getfluence / Link Juice / … (se più fonti, la migliore + le altre in Note).
 - **Cliente linkato**: sempre "No" per costruzione — colonna di garanzia che è un'opportunità nuova.
-- **Note**: TF/CF e red flag di salute, tipologia offerta (articolo nuovo vs menzione, follow/nofollow), fonte del prospect.
+- **Note**: TF/CF/ZA e red flag di salute, nofollow/requisiti dai listini, tipologia offerta, altre fonti prezzo, fonte del prospect.
 
 ### 5. Riepilogo e prossimi passi
-- Numeri: quanti prospect totali, quanti a catalogo Getfluence (con range prezzi), quanti verticali vs generalisti.
+- Numeri: quanti prospect totali, quanti con prezzo disponibile (per fonte: Getfluence / listini, con range prezzi), quanti verticali vs generalisti.
 - Se erano dati budget/soglie: come si colloca la lista, e una **shortlist consigliata** entro budget.
 - **Handoff a `guest-post-pipeline`** per i siti scelti (sono i "siti ospitanti candidati" da passare alla scrittura).
 
@@ -157,7 +165,8 @@ Ordinata secondo lo scoring scelto (migliore in alto). Solo domini su cui il cli
 ## Principi di qualità (tienili sempre)
 
 - **Solo opportunità nuove.** Escludi sempre i domini che già linkano il cliente: l'output è il *gap*, non l'esistente.
-- **Getfluence è arricchimento, non filtro.** I domini non a catalogo restano in lista senza prezzo; l'assenza non è un giudizio di qualità.
+- **Prezzo = arricchimento multi-fonte, non filtro.** Getfluence e i listini bundled aggiungono il prezzo dove c'è; un dominio senza prezzo resta in lista (≠ scadente). Tieni traccia della **fonte** di ogni prezzo.
+- **Dati dei listini = riservati.** I listini bundled contengono prezzi forniti da terzi: restano **locali alla skill**, non vanno pubblicati, incollati in servizi esterni o esposti oltre il necessario. Viaggiano dentro il file `.skill`: condividilo solo internamente.
 - **La pertinenza batte l'autorità nuda.** Un link in-topic su un sito medio vale più di uno fuori tema su un sito fortissimo.
 - **Metriche di terze parti con giudizio.** DR/DA/AS/TF/CF sono screening, non verdetti: incrociali con la performance reale (traffico, keyword, stabilità). DR alto + traffico ~0 = red flag. Non sommare metriche di provider diversi.
 - **Le menzioni e i nofollow hanno valore** (brand association, referral, AI Overview): non scartarli a priori.
