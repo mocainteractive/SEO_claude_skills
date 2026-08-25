@@ -2,7 +2,7 @@
 
 Questo file descrive il **catalogo prezzi dei portali** incluso nella skill come knowledge locale (letto a runtime, mai pubblicato: nessun rischio di indicizzazione). Contiene i listini di **più fornitori** uniti in un solo CSV. La skill lo usa per: (1) **prezzo** di ogni prospect e (2) confronto tra fornitori per indicare **da chi conviene comprare**.
 
-**Come leggerlo a runtime (importante):** il file ha migliaia di righe. **Non caricarlo intero nel contesto**: usa codice (analysis tool / Python) per caricarlo e **filtrarlo** — per dominio (lookup prezzo/confronto fornitori) o per categoria (fonte di candidati). Usa un vero parser CSV (celle multi-riga tra virgolette presenti).
+**Come leggerlo a runtime (importante):** usa lo script bundled **`scripts/price_lookup.py`** (`lookup` per dominio, `discover` per categoria/paese) — gestisce già tutto ciò che segue. Solo se non hai Python, filtra manualmente **senza** caricare l'intero CSV nel contesto, con un vero parser CSV (celle multi-riga tra virgolette presenti). Nota formato: in questo file il separatore **decimale è il punto** (`1305.50 €` = 1.305,50 €; `Su richiesta`/`Da concordare` = prezzo su richiesta). Alcuni valori molto bassi possono essere outlier del sorgente: verificali in fase d'ordine.
 
 ---
 
