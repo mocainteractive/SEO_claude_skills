@@ -1,26 +1,24 @@
-# Listini prezzi bundled — indice e mappatura colonne
+# Catalogo prezzi fornitori — indice e mappatura colonne
 
-Questo file elenca i **listini prezzi dei portali** inclusi nella skill come knowledge locale (letti a runtime, mai pubblicati). Per ogni listino sono indicati: etichetta della fonte, mercato/lingua, file, mappatura delle colonne e note di parsing. Quando aggiungi un nuovo listino, copia il CSV in questa cartella e aggiungi qui una voce.
+Questo file descrive il **catalogo prezzi dei portali** incluso nella skill come knowledge locale (letto a runtime, mai pubblicato: nessun rischio di indicizzazione). Contiene i listini di **più fornitori** uniti in un solo CSV. La skill lo usa per: (1) **prezzo** di ogni prospect e (2) confronto tra fornitori per indicare **da chi conviene comprare**.
 
-**Come leggere i listini a runtime (importante):** i file possono avere migliaia di righe. **Non caricarli interi nel contesto**: usa codice (analysis tool / Python / bash) per **caricarli e filtrarli** — per dominio (lookup di prezzo) o per categoria (fonte di candidati). Parsali con un vero parser CSV (celle multi-riga tra virgolette presenti).
-
-**Normalizzazione comune a tutti i listini:**
-- **Dominio**: minuscolo, togli spazi, `http(s)://`, `www.`, eventuale path → dominio registrabile. Alcune celle hanno maiuscole/spazi (es. `Gattipersiani.it`, `ANIMALI `).
-- **Prezzo**: formato italiano `€ 1.157,00` → `1157.00` (togli `€`/spazi, `.` migliaia, `,` decimali). Valori come `DA CONCORDARE` / vuoto → prezzo **"su richiesta"** (non 0, non escludere: il portale è comunque disponibile).
-- **Fonte**: usa l'etichetta indicata sotto (non il nome file).
+**Come leggerlo a runtime (importante):** il file ha migliaia di righe. **Non caricarlo intero nel contesto**: usa codice (analysis tool / Python) per caricarlo e **filtrarlo** — per dominio (lookup prezzo/confronto fornitori) o per categoria (fonte di candidati). Usa un vero parser CSV (celle multi-riga tra virgolette presenti).
 
 ---
 
-## link-juice-italiano.csv
-- **Fonte (etichetta):** Link Juice
-- **Mercato/lingua:** Italia / italiano
-- **Righe:** ~6.280 portali · **Categorie:** 44 · **Aggiornato al:** (indicare la data dell'export quando lo aggiorni)
+## comparativa-fornitori.csv
+- **Cosa contiene:** ~6.939 righe · **4 fornitori:** Link Juice (~6197), Mauxa (~355), Matteo Di Felice (~351), AdHub Media (~36).
+- **⚠️ Prime 2 righe = titolo/sottotitolo, da SALTARE.** L'intestazione vera è alla **riga 3**: `FORNITORE,SITO,PREZZO,NOTE`. Quando parsi, salta le prime 2 righe (`csv.DictReader(righe[2:])`).
 - **Mappatura colonne:**
-  - `SITO` → **dominio** (chiave di lookup/merge)
-  - `PREZZO` → **prezzo** (formato `€ 1.234,00`; può essere `DA CONCORDARE`)
-  - `CATEGORIA` → **settore** (per filtrare i candidati per tema; contiene duplicati per accenti/spazi/refusi, es. `ECONOMIA E FINANZA` vs `ECONOMIA FINANZA`, `SALUTE BENESERE BELLEZZA` vs `SALUTE BENESSERE BELLEZZA` → confronta in modo tollerante: minuscolo, senza accenti, trim)
-  - `TOPIC` → temi trattati dal sito (utile per la pertinenza fine)
-  - `INFORMAZIONI PER CLIENTE ` → **note** (attenzione allo spazio finale nel nome colonna): requisiti editoriali, `NO FOLLOW`, diciture, ecc. → estrai in particolare il flag **nofollow** e i vincoli di anchor/lunghezza
-  - `DA` → Domain Authority (Moz) · `TF` → Trust Flow (Majestic) · `ZA` → Zoom Authority (SEOZoom)
-  - `IP` → IP del server (utile solo come segnale di footprint/PBN: più domini stesso IP/blocco = possibile network)
-- **Note:** prezzi già in €. `DA CONCORDARE` = trattativa. Le metriche DA/TF/ZA del listino sono un'aggiunta; restano da incrociare con la performance reale via Ahrefs (vedi reference qualità).
+  - `FORNITORE` → **fornitore/fonte** della riga (è l'etichetta da citare: "compra da <FORNITORE>"). Un dominio può comparire per **più fornitori** a prezzi diversi → confrontali.
+  - `SITO` → **dominio** (chiave di lookup/merge; normalizza: minuscolo, togli `www.`, spazi, `http(s)://`, path).
+  - `PREZZO` → **prezzo**. Formati: `280 €` oppure formato italiano `€ 1.234,00` (togli `€`/spazi, `.`=migliaia, `,`=decimali → numero). `Da concordare` / vuoto → **"su richiesta"** (non 0, non escludere).
+  - `NOTE` → testo con **campi strutturati** `chiave: valore` separati da `;`. Estraine (chiavi viste, variano per fornitore):
+    - metriche: **DA** (Moz), **TF**/**CF** (Majestic), **DR** (Ahrefs), **AS** (Semrush), **ZA** (SEOZoom Zoom Authority);
+    - contesto: **Categoria**, **Topic**, **Paese** (IT/ES/FR/DE/UK/US/LATAM → usa per il filtro mercato), **Servizio** (es. "pubblicazione GNews");
+    - requisiti/red flag: **Info**, **Anchor accettate**, **Scrittura articolo**, **Testata registrata**, **Maggiorazione per** (settori a sovrapprezzo: gambling, finanza, ecc.), eventuale **nofollow**.
+    Regola di parsing: split su `;`, poi su primo `:`; le chiavi non sono uniformi tra fornitori → estrazione tollerante (case-insensitive), campi mancanti = vuoti.
+- **Note:** prezzi in €. Metriche del listino = aggiunta rapida, da incrociare con la performance reale via Ahrefs (vedi `references/qualita-link-building.md`). `Paese` diverso da IT segnala un portale estero: rispetta il mercato richiesto dall'utente.
+
+### Come aggiungere/aggiornare fornitori
+Se ricevi un nuovo file: se ha lo **stesso schema** (`FORNITORE,SITO,PREZZO,NOTE`), aggiungi le righe a questo CSV (o sostituiscilo) e aggiorna i conteggi qui. Se ha uno **schema diverso**, salvalo come file separato in questa cartella e aggiungi qui una voce con la sua mappatura colonne. Aggiorna la **data dell'ultimo aggiornamento**: (indicare quando sostituisci il file).
