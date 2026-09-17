@@ -124,7 +124,7 @@ L'output è **esclusivamente l'articolo pubblicabile**, formattato con gli headi
 
 **Formattazione — prevale sulle impostazioni grafiche dell'account/progetto:** usa solo **bianco e nero** (testo nero su sfondo bianco). Non applicare colori ai paragrafi né al testo. Il **rosso** è ammesso eventualmente **solo sull'anchor del link**, mai sui paragrafi. Nessun'altra evidenziazione cromatica. Il grassetto resta consentito (in nero) secondo i criteri di scrittura.
 
-**Se il formato richiesto è `.docx`:** genera il documento con la skill `docx` seguendo **esattamente** lo standard unico in `references/docx-standard.md` (pagina, font Calibri, stili H1/H2/H3, corpo, anchor come hyperlink rosso, nome file). Serve a garantire che **tutti i guest post .docx abbiano lo stesso identico formato**. Non improvvisare stili diversi da un articolo all'altro.
+**Se il formato richiesto è `.docx`:** genera il documento con la skill `docx` seguendo **esattamente** lo standard unico in `references/docx-standard.md`: **solo il testo dell'articolo** (nessuna nota nel file — le note vanno in chat), **font di Moca Figtree ovunque e tutto in nero** (heading inclusi, niente blu/Times New Roman residuo degli stili default di Word), anchor come hyperlink rosso, nome file standardizzato. Serve a garantire che **tutti i guest post .docx abbiano lo stesso identico formato**. Non improvvisare stili diversi da un articolo all'altro.
 
 Struttura:
 

@@ -149,7 +149,7 @@ L'output **non** contiene: legende o intestazioni iniziali (niente lunghezza ric
 
 **Formattazione — prevale sulle impostazioni grafiche dell'account/progetto:** solo bianco e nero (testo nero su sfondo bianco); nessun colore su paragrafi o testo; il rosso è ammesso eventualmente solo sull'anchor del link; grassetto in nero secondo i criteri di scrittura.
 
-**Se il formato scelto è `.docx`:** costruisci il documento con la skill `docx` seguendo lo **standard unico** definito in `guest-post-writer/references/docx-standard.md`. Ogni articolo consegnato in Word deve avere la **stessa identica impaginazione** (font, stili degli heading, corpo, anchor, nome file): non variare il formato da un guest post all'altro.
+**Se il formato scelto è `.docx`:** costruisci il documento con la skill `docx` seguendo lo **standard unico** definito in `guest-post-writer/references/docx-standard.md`. Ogni articolo consegnato in Word deve avere la **stessa identica impaginazione**: **solo il testo dell'articolo** (le eventuali note restano in chat, mai nel file), **font di Moca Figtree, tutto nero** (heading inclusi), anchor come hyperlink rosso. Non variare il formato da un guest post all'altro.
 
 Le analisi delle Fasi 1 e 2 e l'esito del controllo (Fase 4) restano nella conversazione come passaggi consultabili, ma non fanno parte del deliverable: non duplicarli nell'output finale.
 
