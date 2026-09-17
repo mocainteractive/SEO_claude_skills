@@ -51,7 +51,12 @@ Se una fonte non risponde, prosegui e dichiara che quei prezzi/quei candidati ma
 
 ## Domande iniziali obbligatorie
 
-Fai queste domande **sempre e rigorosamente** prima di partire. Se l'utente ne salta qualcuna, insisti (proponi i default tra parentesi ma chiedi conferma).
+**Prima di chiedere, leggi ciò che l'utente ha già fornito.** Spesso l'utente indica già nel messaggio iniziale (o nelle istruzioni/knowledge di progetto) parte di queste informazioni: dominio cliente, pagina target, topic/settore, competitor, mercato, soglie, budget, preferenze di scoring. Estrai da lì **tutte** le risposte già presenti e **considerale acquisite: non richiederle**. Poi:
+- se **tutti** gli elementi obbligatori sono già presenti, **non fare il giro di domande**: mostra un **recap compatto** di ciò che hai capito (una riga per voce) e chiedi **una sola** conferma ("confermi, o correggo qualcosa?") prima di partire;
+- se **manca solo una parte**, chiedi **in un'unica richiesta** soltanto gli elementi mancanti, elencando accanto quelli già ricavati — così l'utente vede che non ripeti domande a cui ha già risposto;
+- se un valore fornito è ambiguo o incompleto (es. "settore casa" senza specificare la pagina target, "competitor i soliti" senza URL), chiedi **solo quel chiarimento**, non l'intera domanda.
+
+Non ripetere **mai** una domanda a cui l'utente ha già risposto nel contesto. Fai queste domande **rigorosamente** solo per gli elementi non ancora risolti (proponi i default tra parentesi ma chiedi conferma).
 
 1. **Dominio del cliente** + **pagina/e target** da rafforzare (URL) e **topic/settore** di interesse.
 2. **Competitor di riferimento** (URL): **sempre richiesti esplicitamente** all'utente — sono la fonte principale del bacino di prospect. Se l'utente non li ha, proponi di individuarli tu con Ahrefs (`site-explorer-organic-competitors`) e falli confermare prima di procedere.
