@@ -1,7 +1,7 @@
 ---
 name: link-building-scouting
 description: >
-  Ricerca di opportunità di link building per un cliente, guidata da Ahrefs e arricchita con Getfluence. Analizza a fondo il dominio del cliente, mappa i suoi backlink e quelli dei competitor (che chiede sempre all'utente) e individua portali di settore (o generalisti, su richiesta) che accettano guest post e che NON linkano ancora il cliente (link gap). Per ogni prospect dà le metriche Ahrefs rilevanti per la link building e, dove il dominio è a catalogo Getfluence, anche il prezzo. È la fase di prospecting a monte di guest-post-pipeline, a cui fornisce i siti ospitanti candidati. Trigger tipici: "trova opportunità di link building per X", "scouting publisher / guest post per X", "dove prendo backlink per X", "analizza i backlink dei competitor e trovami siti nuovi", "link gap analysis per X". NON scrive l'articolo (c'è guest-post-pipeline) né valuta il tono del portale (host-site-analysis): individua DOVE ottenere link, non COSA scrivere.
+  Ricerca di opportunità di link building per un cliente, guidata da Ahrefs e arricchita con i marketplace di publisher (WhitePress, Getfluence) e un catalogo prezzi fornitori. Analizza il dominio del cliente, mappa i suoi backlink e quelli dei competitor (che chiede sempre all'utente) e individua portali di settore (o generalisti, su richiesta) che accettano guest post e che NON linkano ancora il cliente (link gap). Per ogni prospect dà le metriche Ahrefs rilevanti e, confrontando le fonti, il prezzo migliore con da chi comprarlo. È la fase di prospecting a monte di guest-post-pipeline, a cui fornisce i siti ospitanti candidati. Trigger tipici: "trova opportunità di link building per X", "scouting publisher / guest post per X", "dove prendo backlink per X", "analizza i backlink dei competitor e trovami siti nuovi", "link gap analysis per X". NON scrive l'articolo (c'è guest-post-pipeline) né valuta il tono del portale (host-site-analysis): individua DOVE ottenere link, non COSA scrivere.
 ---
 
 # Link Building Scouting
@@ -35,13 +35,17 @@ Se lavori dentro un progetto Claude, controlla se ci sono **istruzioni custom** 
 
 - **Ahrefs** (MCP `Ahrefs`) — **motore principale**: analisi del cliente, profili backlink (cliente e competitor), metriche dei prospect. Prima di usare un tool Ahrefs per la prima volta chiama `doc` per lo schema esatto. I valori monetari Ahrefs sono in **centesimi di USD** (dividi per 100). Se una risposta indica `render_with`, usa il tool di render indicato.
 - **Getfluence** (MCP `getfluence`) — fonte di **scoperta + prezzo/disponibilità**. Tool: `check_getfluence_status`, `search_offers` (verifica per dominio) e **`browse_catalog`** (sfoglia l'intero catalogo, ~10k offerte, filtrando per metriche/prezzo/dominio e ordinando per prezzo → è una vera **fonte di candidati** oltre che di prezzi). ⚠️ Verifica i **nomi esatti dei parametri** con la descrizione/`doc` del tool a runtime (tipicamente: filtri per tld/dominio, metriche minime — DR/TF/traffico —, prezzo massimo, ordinamento, paginazione; rispetta il rate limit ~4 req/s). Se non è collegato, la skill funziona lo stesso, dichiarandolo.
+- **WhitePress** (MCP `WHITEPRESS-MCP`) — marketplace di publisher: fonte di **scoperta + prezzo** con filtri **nativi** per categoria, paese, qualità, dofollow, tipo offerta, prezzo e metriche (DR/PR Ahrefs, Trust Flow, visibilità, utenti unici). Tool: `check_whitepress_status`, `list_projects`, `get_portal_filters`, `search_portals`, `get_portal_offers`, `get_balance`. È **scoped per progetto**: serve un `project_id` (da `list_projects`, che corrisponde al sito cliente). ⚠️ **Rate limit 1 richiesta/secondo**: pagina con calma. `search_portals` restituisce `best_price` + metriche per portale; `get_portal_offers` dà il dettaglio (dofollow, persistenza, prezzo per tipo). Se non collegato, la skill funziona lo stesso, dichiarandolo.
 - **Catalogo prezzi fornitori bundled** (`assets/listini/comparativa-fornitori.csv`) — listini di **più fornitori** (Link Juice, Mauxa, Matteo Di Felice, AdHub Media) uniti in un CSV incluso come knowledge locale: si legge **da file, senza rete e senza pubblicare nulla**. Serve per il **prezzo**, per **confrontare i fornitori** (stesso dominio, prezzi diversi → si indica il più conveniente) e come fonte di **candidati** (filtrabile per categoria/paese). ⚠️ Salta le prime 2 righe; metriche/paese/categoria stanno dentro `NOTE`. In questo file il separatore decimale è `.` (`1305.50 €` = 1.305,50 €).
 - **Script bundled** (`scripts/price_lookup.py`) — usa **questo** per leggere il catalogo, invece di re-implementare il parsing ogni volta: fa lookup per dominio (prezzo minimo + fornitore + alternative + metriche) e discover per categoria/paese/prezzo/metriche. Deterministico, gestisce celle multi-riga e formati prezzo. Es.: `python scripts/price_lookup.py lookup --domains a.it,b.it` · `python scripts/price_lookup.py discover --category finanza --country IT --max-price 400`. Richiede un ambiente con Python (Claude Code/Cowork); se sei in un ambiente senza esecuzione Python, applica manualmente la logica del `_manifest.md` filtrando **solo** i domini che ti servono, senza caricare l'intero CSV.
 - **Ricerca web** (WebSearch) — per la **ricerca di footprint** dei siti che accettano guest post (vedi Fase 4), nella **lingua del mercato** target. Se non disponibile, salta quel canale e dichiaralo.
 - **Semrush** (opzionale, se collegato) — conferma incrociata su backlink/traffico/competitor. Se non c'è, usa Ahrefs.
 
 ### Sanity check iniziale
-All'avvio chiama `check_getfluence_status` (se il MCP c'è). Se risponde, potrai arricchire con i prezzi; se non risponde, prosegui comunque avvisando che mancheranno i prezzi Getfluence. Non bloccare il lavoro per l'assenza di Getfluence: è arricchimento, non prerequisito.
+All'avvio verifica le fonti prezzo/scoperta disponibili, senza bloccarti se una manca (sono complementari):
+- **Getfluence**: `check_getfluence_status`.
+- **WhitePress**: `check_whitepress_status`, poi **risolvi il `project_id`** con `list_projects` cercando il progetto che corrisponde al **dominio del cliente** (match su URL/nome). Se non esiste un progetto per quel cliente, chiedi all'utente quale progetto usare (o di crearlo nel pannello WhitePress); senza `project_id` non puoi interrogare WhitePress ma puoi procedere con le altre fonti.
+Se una fonte non risponde, prosegui e dichiara che quei prezzi/quei candidati mancheranno. Nessuna di queste è un prerequisito: sono arricchimento/scoperta.
 
 ---
 
@@ -88,16 +92,17 @@ Unisci le fonti, poi **sottrai i già-linkati**:
 - **b) Chi ranka sul topic** — `serp-overview` sulla keyword primaria del topic (e 1–2 correlate), `country` coerente: raccogli i domini editoriali in prima pagina non già linkati al cliente.
 - **c) Ricerca di footprint (WebSearch)** — allarga il bacino ai siti che dichiarano di accettare contributi. Query tipo: `"scrivi per noi" <settore>`, `"guest post" <settore>`, `"collabora con noi" <settore>`, `"linee guida guest post" <settore>`, adattate alla lingua/mercato. Raccogli i domini pertinenti, escludi i già-linkati. Distingui gli **host editoriali** dai **marketplace/servizi di link building** (etichettali come tali) e scarta gli articoli-spiegazione (pezzi "cos'è un guest post" che non sono offerte).
 - **d) Catalogo fornitori (per categoria/paese)** — usa `scripts/price_lookup.py discover --category <settore> --country <mercato> [--max-price … --min-da …]` per estrarre dal catalogo i portali del tema e del mercato giusto (Categoria/Topic/Paese stanno in `NOTE`). Sono per definizione siti che accettano guest post, e arrivano **già con prezzo e fornitore**. Escludi i già-linkati. (Se l'utente vuole il catalogo **solo per il prezzo**, salta questo punto e usalo solo in Fase 5.)
-- **e) Getfluence `browse_catalog`** — sfoglia il catalogo Getfluence filtrando per **mercato** (tld/paese), metriche minime e prezzo massimo, ordinando per prezzo: ottieni altri portali che vendono pubblicazioni, **già con prezzo**. Verifica i nomi esatti dei filtri col `doc` del tool; paginando rispetta il rate limit. Escludi i già-linkati. La pertinenza tematica di questi candidati va comunque verificata con Ahrefs (Fase 6).
+- **e) Getfluence `browse_catalog`** — sfoglia il catalogo Getfluence filtrando per **mercato** (tld/paese), metriche minime e prezzo massimo, ordinando per prezzo: ottieni altri portali che vendono pubblicazioni, **già con prezzo**. Paginando rispetta il rate limit (~4/s). Escludi i già-linkati. La pertinenza tematica va comunque verificata con Ahrefs (Fase 6).
+- **f) WhitePress `search_portals`** — è la fonte di scoperta più filtrabile: prima `get_portal_filters(project_id)` per gli **ID di categoria e paese**, poi `search_portals` con `project_id`, `portal_category` (tema del cliente), `portal_country` (mercato), `portal_quality='high'`, `offer_type='publication'` (e `offer_dofollow=1` se serve dofollow), `price_min/price_max`, soglie `min_domain_rating/min_trust_flow`, `per_page` alto e paginazione. Restituisce portali **già con `best_price` e metriche**. ⚠️ **1 richiesta/secondo**. Escludi i già-linkati; la pertinenza fine si conferma con Ahrefs (Fase 6).
 
 **Segnale "accetta guest post"** per ogni candidato, da annotare:
-- **presente nel catalogo fornitori** (d) o **su Getfluence** (e/Fase 5) → forte (vende pubblicazioni);
+- **presente nel catalogo fornitori** (d), **su Getfluence** (e) o **su WhitePress** (f) → forte (vende pubblicazioni);
 - **footprint esplicito** (c) → forte;
 - **è referring domain editoriale di un competitor** (a) → medio (accetta link esterni).
 
 **Consolidamento**: normalizza (togli `http(s)://`, `www.`, path → dominio registrabile), **deduplica**, escludi cliente/competitor, social/aggregatori/marketplace non pertinenti, blocklist di progetto e — filtro chiave — **tutti i domini che già linkano il cliente**. Applica l'ambito richiesto (solo verticali o anche generalisti). Ottieni la **lista prospect**.
 
-### Fase 5 — Arricchimento prezzi (Getfluence + listini bundled)
+### Fase 5 — Arricchimento prezzi (Getfluence + WhitePress + listini bundled)
 
 Per ogni prospect raccogli il prezzo da **tutte le fonti disponibili** e fai il merge.
 
@@ -106,9 +111,11 @@ Per ogni prospect raccogli il prezzo da **tutte le fonti disponibili** e fai il 
 - Per i domini **a catalogo**: `url`, `formatType`, **`price`** (già in €, "a partire da"), metriche (`organicTraffic`, `trustFlow`, `citationFlow`, `domainAuthority`, `authorityScore`, `domainRating`), `id`, `createdAt`; in coda eventuali **crediti API rimanenti** (annotali, avvisa se bassi).
 - **Rate limit / 429**: ~4 req/s + quote; su `429` backoff (2s/4s/8s), non ritentare a raffica. Il batch è la difesa principale.
 
-**b) Catalogo fornitori bundled** — fai il lookup con `scripts/price_lookup.py lookup --domains <lista>` (o `--stdin`): per ogni dominio restituisce **prezzo minimo, fornitore, tutte le offerte** dei vari fornitori e le metriche/note (DA/TF/CF/DR/AS/ZA, Paese, nofollow). Gestisce già celle multi-riga, salto delle 2 righe di testa, formati prezzo e `Da concordare`→"su richiesta". Non caricare l'intero CSV nel contesto.
+**b) WhitePress** — per i prospect (quelli non già arrivati da Fase 4f, che hanno già il prezzo) recupera il prezzo con `search_portals(project_id, portal=<dominio>)` → `best_price` + metriche; se serve il dettaglio (dofollow, persistenza, tipo offerta) usa `get_portal_offers(project_id, portal_id)`. ⚠️ 1 richiesta/secondo: procedi in serie, non a raffica.
 
-**c) Confronto e scelta del più conveniente** — per ogni dominio metti a confronto **tutti** i prezzi disponibili: i vari **fornitori** del catalogo **+ Getfluence**. Determina il **prezzo minimo** e — requisito chiave — indica **da quale fornitore/fonte** comprarlo (es. "349 € via Mauxa"). Riporta le **alternative** (gli altri fornitori con relativo prezzo) in nota, così l'utente vede il risparmio. Considera "su richiesta"/"n.d." come non confrontabili numericamente (elencali ma non possono vincere sul prezzo). Un dominio senza alcun prezzo resta in lista con **"n.d."** (né Getfluence né catalogo ≠ scadente): opportunità da contattare direttamente.
+**c) Catalogo fornitori bundled** — fai il lookup con `scripts/price_lookup.py lookup --domains <lista>` (o `--stdin`): per ogni dominio restituisce **prezzo minimo, fornitore, tutte le offerte** dei vari fornitori e le metriche/note (DA/TF/CF/DR/AS/ZA, Paese, nofollow). Gestisce già celle multi-riga, salto delle 2 righe di testa, formati prezzo e `Da concordare`→"su richiesta". Non caricare l'intero CSV nel contesto.
+
+**d) Confronto e scelta del più conveniente** — per ogni dominio metti a confronto **tutti** i prezzi disponibili: i **fornitori** del catalogo bundled **+ Getfluence + WhitePress**. Determina il **prezzo minimo** e — requisito chiave — indica **da quale fonte/fornitore** comprarlo (es. "349 € via WhitePress", "280 € via Mauxa"). Riporta le **alternative** (le altre fonti con relativo prezzo) in nota, così l'utente vede il risparmio. Considera "su richiesta"/"n.d." come non confrontabili numericamente (elencali ma non vincono sul prezzo). Un dominio senza alcun prezzo resta in lista con **"n.d."** (nessuna fonte ≠ scadente): opportunità da contattare direttamente.
 
 ### Fase 6 — Metriche, qualificazione e scoring
 
@@ -154,12 +161,12 @@ Ordinata secondo lo scoring scelto (migliore in alto). Solo domini su cui il cli
 - **Pertinenza**: Alta/Media/Bassa + motivo (in Note se stretto). Fattore dominante di default.
 - **Guest post**: segnale di accettazione (catalogo fornitori / Getfluence / footprint / linka competitor).
 - **Miglior prezzo €**: il prezzo **minimo** tra tutte le fonti ("a partire da"); "su richiesta" se solo "Da concordare"; "n.d." se nessuna fonte ce l'ha (≠ scadente).
-- **Dove comprarlo**: la **fonte/fornitore** del prezzo minimo (es. "Mauxa", "AdHub Media", "Getfluence"). È l'indicazione operativa: da chi comprare.
+- **Dove comprarlo**: la **fonte/fornitore** del prezzo minimo (es. "WhitePress", "Getfluence", "Mauxa", "AdHub Media"). È l'indicazione operativa: da chi comprare.
 - **Cliente linkato**: sempre "No" per costruzione — garanzia che è un'opportunità nuova.
 - **Note**: **prezzi alternativi degli altri fornitori** (per mostrare il risparmio), TF/CF/ZA e red flag di salute, nofollow/requisiti/Paese dal catalogo, tipologia offerta.
 
 ### 5. Riepilogo e prossimi passi
-- Numeri: quanti prospect totali, quanti con prezzo disponibile (per fonte: Getfluence / listini, con range prezzi), quanti verticali vs generalisti.
+- Numeri: quanti prospect totali, quanti con prezzo disponibile (per fonte: WhitePress / Getfluence / catalogo fornitori, con range prezzi), quanti verticali vs generalisti.
 - Se erano dati budget/soglie: come si colloca la lista, e una **shortlist consigliata** entro budget.
 - **Handoff a `guest-post-pipeline`** per i siti scelti (sono i "siti ospitanti candidati" da passare alla scrittura).
 
@@ -187,8 +194,8 @@ Ordinata secondo lo scoring scelto (migliore in alto). Solo domini su cui il cli
 1. **Cliente (Ahrefs)** — DR, traffico, temi ("digital advertising", "seo", "email marketing"), top pages, profilo backlink.
 2. **Backlink cliente** — referring domains del cliente = lista di esclusione.
 3. **Competitor** — referring domains dei due competitor + pagine più linkate → bacino di publisher del settore.
-4. **Prospecting** — link gap (competitor meno cliente) + domini che rankano su "agenzia digital advertising" ecc. + footprint (`"scrivi per noi" marketing`, `"guest post" pubblicità`) → ~30 prospect non ancora linkati, filtrati sui verticali marketing/ADV.
-5. **Prezzi (confronto fonti)** — `search_offers` batch sui ~30 su Getfluence **e** lookup sul catalogo fornitori. Es. `notizie.it` risulta a 490 € (Getfluence), 470 € (Link Juice), 349 € (Mauxa) → **miglior prezzo 349 € via Mauxa**, alternative in nota. I domini senza alcun prezzo restano in lista come "n.d.".
+4. **Prospecting** — link gap (competitor meno cliente) + domini che rankano su "agenzia digital advertising" ecc. + footprint (`"scrivi per noi" marketing`) + scoperta su **Getfluence `browse_catalog`** (tld `it`) e **WhitePress `search_portals`** (categoria marketing, paese IT, qualità high) → ~40 prospect non ancora linkati, filtrati sui verticali marketing/ADV.
+5. **Prezzi (confronto fonti)** — Getfluence `search_offers` (batch), WhitePress `search_portals` per dominio, e lookup sul catalogo fornitori. Es. `notizie.it`: 490 € (Getfluence), 470 € (Link Juice), 349 € (Mauxa), 320 € (WhitePress) → **miglior prezzo 320 € via WhitePress**, alternative in nota. I domini senza alcun prezzo restano "n.d.".
 6. **Metriche + scoring** — schede Ahrefs per prospect; ordinamento con peso extra su traffico e pertinenza (come richiesto); annotate red flag e €/1k traffico dove c'è prezzo.
 7. **Output** — analisi cliente, profilo competitor con entità del gap, tabella dei ~30 prospect ordinata con **miglior prezzo e fornitore da usare** (alternative in nota), riepilogo (quanti con prezzo, per fonte/fornitore, range) e shortlist consigliata entro 300–500 €, con handoff a `guest-post-pipeline`.
 
