@@ -30,7 +30,12 @@ Se non sei in un progetto o non ci sono istruzioni/knowledge, prosegui con i def
 
 ## Configurazione di sessione (da chiedere SEMPRE all'inizio)
 
-Prima di avviare la Fase 1, raccogli queste informazioni in un'unica richiesta concisa. Le prime quattro sono le domande obbligatorie del flusso; le ultime due completano la configurazione.
+**Prima di chiedere, leggi ciò che l'utente ha già fornito.** Spesso l'utente indica già nel messaggio iniziale (o nelle istruzioni/knowledge di progetto) parte di queste informazioni: pagina target, anchor, portale, lingua, topic, lunghezza, formato, note, policy sui link esterni. Estrai da lì **tutte** le risposte già presenti e **considerale acquisite: non richiederle**. Poi comportati così:
+- se **tutti** gli elementi obbligatori (1–9) sono già presenti, **non fare il giro di domande**: mostra un **recap compatto** di ciò che hai capito (una riga per voce) e chiedi **una sola** conferma ("confermi, o correggo qualcosa?") prima di partire;
+- se **manca solo una parte**, chiedi **in un'unica richiesta** soltanto gli elementi mancanti, elencando accanto quelli che hai già ricavato — così l'utente vede che non stai ripetendo domande a cui ha già risposto;
+- se un valore fornito è ambiguo o incompleto (es. lunghezza "breve" senza numero, "il solito portale" senza URL), chiedi **solo quel chiarimento**, non l'intera domanda.
+
+Non ripetere **mai** una domanda a cui l'utente ha già risposto nel contesto. Raccogli gli eventuali elementi mancanti in un'unica richiesta concisa. Le prime quattro voci sono le domande obbligatorie del flusso; le altre completano la configurazione.
 
 1. **Pagina/e target da linkare**: qual è l'URL della pagina principale del cliente verso cui deve puntare il link? **Chiedi sempre anche se c'è un secondo URL da inserire o se basta quello principale.** Se c'è un secondo URL, fatti indicare **URL e anchor** anche per quello. Distingui chiaramente **URL principale** e **secondo URL**: serviranno alla regola di posizionamento in scrittura (vedi Fase 3).
 2. **Anchor text da utilizzare**: qual è il testo di ancoraggio richiesto per il link principale? Se c'è un secondo URL, associa a ciascun URL la propria anchor.
@@ -48,7 +53,7 @@ Elementi opzionali (chiedili se pertinenti, ma non sono obbligatori):
 - **Indicazioni di posizionamento** (opzionale): l'utente può indicare manualmente dove inserire il link o la menzione (es. "link nel secondo paragrafo", "menzione in un paragrafo dedicato, staccato dal link"). Se fornite, passale alla Fase 3 e rispettale.
 - **Modalità di esecuzione**: `interattiva` (default, mostra un mini‑riepilogo dopo ogni fase e chiede conferma) o `autonoma` (procede senza conferme intermedie, salvo i checkpoint obbligatori descritti sotto).
 
-Se manca uno degli elementi 1–9, chiedilo prima di procedere (le domande 7, 8 e 9 vanno sempre poste; la 7 può avere risposta "nessuna nota", la 8 ha default "solo cliente", la 9 richiede sempre un numero di parole o un intervallo). Non avviare il flusso con informazioni incomplete. In particolare, non inventare mai la pagina target, l'anchor, il portale o la lunghezza.
+Chiedi **solo** gli elementi 1–9 che non risultano già dal messaggio dell'utente o dal progetto. Gli elementi 7 (note), 8 (link esterni) e 9 (lunghezza) devono essere **risolti** prima di procedere, ma se l'utente li ha già indicati **non vanno richiesti**: usa i valori dati (la 7 può valere "nessuna nota" se l'utente non ha segnalato nulla; la 8 ha default "solo cliente" solo in assenza di indicazione; la 9 richiede comunque un numero o un intervallo di parole, quindi chiedila se manca del tutto). Non avviare il flusso con informazioni incomplete e non inventare mai la pagina target, l'anchor, il portale o la lunghezza.
 
 **Principio guida di tutto il flusso:** in caso di conflitto tra ottimizzazione SEO e qualità editoriale, privilegia sempre la qualità del testo. L'articolo deve poter essere pubblicato da un editore umano senza revisioni sostanziali, risultare originale e leggere come scritto da una persona reale.
 
@@ -143,6 +148,8 @@ L'utente riceve **esclusivamente l'articolo finale**, pronto per la pubblicazion
 L'output **non** contiene: legende o intestazioni iniziali (niente lunghezza richiesta o consegnata, niente elenco keyword, niente metadati), "Nota strategica", note al revisore, commenti, riepiloghi o l'esito del controllo. Solo l'articolo, dall'H1 alla chiusura.
 
 **Formattazione — prevale sulle impostazioni grafiche dell'account/progetto:** solo bianco e nero (testo nero su sfondo bianco); nessun colore su paragrafi o testo; il rosso è ammesso eventualmente solo sull'anchor del link; grassetto in nero secondo i criteri di scrittura.
+
+**Se il formato scelto è `.docx`:** costruisci il documento con la skill `docx` seguendo lo **standard unico** definito in `guest-post-writer/references/docx-standard.md`. Ogni articolo consegnato in Word deve avere la **stessa identica impaginazione** (font, stili degli heading, corpo, anchor, nome file): non variare il formato da un guest post all'altro.
 
 Le analisi delle Fasi 1 e 2 e l'esito del controllo (Fase 4) restano nella conversazione come passaggi consultabili, ma non fanno parte del deliverable: non duplicarli nell'output finale.
 
