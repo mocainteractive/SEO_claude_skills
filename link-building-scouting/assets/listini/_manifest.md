@@ -7,7 +7,8 @@ Questo file descrive il **catalogo prezzi dei portali** incluso nella skill come
 ---
 
 ## comparativa-fornitori.csv
-- **Cosa contiene:** ~6.939 righe · **4 fornitori:** Link Juice (~6197), Mauxa (~355), Matteo Di Felice (~351), AdHub Media (~36).
+- **Cosa contiene:** ~7.044 righe · **4 fornitori:** Link Juice (~6197), Mauxa (~355), Matteo Di Felice (~456), AdHub Media (~36).
+- **Aggiornamenti:** listino **Matteo Di Felice aggiornato il 2026-10-30** (456 portali; prezzo base = "nuovo articolo con 1 link dofollow", prezzi alternativi e metriche DA/DR/AS/ZA nelle note).
 - **⚠️ Prime 2 righe = titolo/sottotitolo, da SALTARE.** L'intestazione vera è alla **riga 3**: `FORNITORE,SITO,PREZZO,NOTE`. Quando parsi, salta le prime 2 righe (`csv.DictReader(righe[2:])`).
 - **Mappatura colonne:**
   - `FORNITORE` → **fornitore/fonte** della riga (è l'etichetta da citare: "compra da <FORNITORE>"). Un dominio può comparire per **più fornitori** a prezzi diversi → confrontali.
