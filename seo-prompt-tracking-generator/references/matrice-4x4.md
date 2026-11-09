@@ -1,6 +1,6 @@
 # MATRICE 4X4, CATEGORIE E VARIANTI DI PROMPT
 
-La matrice incrocia **4 categorie di tracking** con **4 varianti di formulazione**. Ogni keyword selezionata produce fino a 16 prompt. Le categorie misurano tipi diversi di sentiment; le varianti misurano come cambia la risposta del modello al variare della formulazione.
+La matrice incrocia **4 categorie di tracking** con **4 varianti di formulazione**. Ogni keyword selezionata produce fino a 16 prompt; il numero totale di prompt e quindi di keyword dipende dalla quantità N scelta dall'utente nello Step 0.0. Le categorie misurano tipi diversi di sentiment; le varianti misurano come cambia la risposta del modello al variare della formulazione.
 
 Segnaposto usati nei template:
 

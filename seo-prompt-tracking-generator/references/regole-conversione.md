@@ -71,7 +71,8 @@ Quando un prompt viene generato in una categoria diversa da quella primaria, l'i
 
 Verifica ogni punto. Se uno fallisce, correggi prima di consegnare.
 
-- [ ] Ogni keyword selezionata ha 16 prompt (4 categorie x 4 varianti), salvo duplicati accorpati e dichiarati.
+- [ ] Il totale dei prompt è esattamente N (Step 0.0), con la quota per categoria rispettata, salvo duplicati accorpati e dichiarati.
+- [ ] Ogni keyword lavorata ha 16 prompt (4 categorie x 4 varianti), tranne l'eventuale ultima keyword parziale.
 - [ ] Nessun prompt della categoria Problem / Solution contiene il brand o un competitor.
 - [ ] Nella categoria Comparative ogni competitor del brief compare almeno una volta.
 - [ ] Nessun prompt suggerisce la risposta o contiene giudizi a favore del brand.

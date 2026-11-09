@@ -33,7 +33,20 @@ Il destinatario dell'output è il team SEO / GEO che deve caricare i prompt in u
 
 ## FASE 0, WIZARD DI BRIEF
 
-Prima di generare qualsiasi prompt raccogli il brief. Se un'informazione è già presente nel contesto (messaggio dell'utente, file allegato, conversazione precedente) **non richiederla**: riportala nel riepilogo della Fase 0.6 per conferma. Fai le domande mancanti in un unico blocco con AskUserQuestion, oppure in chat se servono risposte libere.
+Prima di generare qualsiasi prompt raccogli il brief. La **prima domanda è sempre lo Step 0.0** (quantità di prompt), da porre da sola e prima di ogni altra. Per gli step successivi, se un'informazione è già presente nel contesto (messaggio dell'utente, file allegato, conversazione precedente) **non richiederla**: riportala nel riepilogo della Fase 0.6 per conferma. Fai le domande mancanti in un unico blocco con AskUserQuestion, oppure in chat se servono risposte libere.
+
+### STEP 0.0, QUANTITÀ DI PROMPT (SEMPRE LA PRIMA DOMANDA)
+
+Prima di qualsiasi altra domanda, e anche se l'utente ha già fornito brand, keyword o file, chiedi quanti prompt vuole generare in totale. Unica eccezione: se l'utente ha già indicato il numero nel messaggio, non richiederlo e riportalo nel riepilogo.
+
+Usa AskUserQuestion con queste opzioni (l'utente può sempre scrivere un numero diverso):
+
+- **32 prompt**: set di prova, 2 keyword con matrice completa;
+- **64 prompt**: set compatto, 4 keyword con matrice completa;
+- **160 prompt**: set standard, 10 keyword con matrice completa;
+- **400 prompt**: set esteso, 25 keyword con matrice completa.
+
+Il numero scelto, chiamato **N**, guida tutta la generazione secondo le regole della sezione "Distribuzione dei prompt" della Fase 4. Ogni keyword con la matrice completa produce 16 prompt, quindi le keyword da lavorare sono **K = N / 16, arrotondato per eccesso**.
 
 ### STEP 0.1, BRAND PRINCIPALE
 
@@ -69,11 +82,13 @@ Le keyword possono arrivare da tre fonti, anche combinate:
 
 Se l'utente non ha un file, proponi il formato `templates/keyword-input-template.csv`.
 
-**Volume da lavorare.** Ogni keyword genera fino a 16 prompt (4 categorie x 4 varianti). Se il dataset contiene più di 25 keyword, chiedi all'utente come selezionarle:
+**Selezione delle keyword.** Servono K keyword (calcolate dallo Step 0.0).
 
-- top N per click o impression (default proposto: top 25);
-- un numero bilanciato per tipo (es. 5 Brand, 5 Versus, 10 Non-Brand, 5 Long-tail);
-- lista scelta a mano dall'utente.
+- Se il dataset contiene **più di K keyword**, chiedi all'utente come selezionarle:
+  - top K per click o impression (default proposto);
+  - un numero bilanciato per tipo (es. su 10 keyword: 2 Brand, 2 Versus, 4 Non-Brand, 2 Long-tail);
+  - lista scelta a mano dall'utente.
+- Se il dataset contiene **meno di K keyword**, il numero N non è raggiungibile senza ripetere prompt. Dillo all'utente con il massimo ottenibile (keyword disponibili x 16) e chiedi se preferisce ridurre N a quel valore oppure aggiungere altre keyword.
 
 ### STEP 0.6, RIEPILOGO E CONFERMA
 
@@ -81,13 +96,14 @@ Riassumi il brief e chiedi conferma prima di procedere:
 
 ```
 BRIEF PROMPT TRACKING
+- Prompt da generare: [N] (BD [..], CV [..], PS [..], CC [..])
 - Brand: [...] (varianti: [...]) , dominio: [...]
 - Competitor: [...]
 - Settore / nicchia: [...]
 - Mercato: [...]
 - Lingua dei prompt: [...]
 - Sorgente keyword: [file / lista / GSC, periodo]
-- Keyword da lavorare: [N] (criterio di selezione: [...])
+- Keyword da lavorare: [K] (criterio di selezione: [...])
 - LLM target: ChatGPT, Perplexity, Gemini, Claude
 
 Procedo con la generazione? (sì/no)
@@ -143,7 +159,7 @@ Le regole complete di mappatura sono in `references/regole-conversione.md`.
 
 ## FASE 4, GENERAZIONE DEI PROMPT (MATRICE 4x4)
 
-Leggi `references/matrice-4x4.md` e, per ogni keyword selezionata, genera **4 prompt per ciascuna delle 4 categorie**, uno per ogni variante:
+Leggi `references/matrice-4x4.md` e, per ogni keyword selezionata, genera **4 prompt per ciascuna delle 4 categorie**, uno per ogni variante, rispettando il totale N scelto nello Step 0.0:
 
 | Variante | Formula | Scopo |
 |---|---|---|
@@ -151,6 +167,16 @@ Leggi `references/matrice-4x4.md` e, per ogni keyword selezionata, genera **4 pr
 | **V2, Raccomandazione** | Richiesta di consiglio, lista o classifica | Misura chi viene raccomandato e in che ordine |
 | **V3, Scenario / persona** | Domanda calata in un caso d'uso concreto con vincoli (budget, uso, luogo) | Misura la pertinenza percepita del brand |
 | **V4, Fonti e prova sociale** | Richiesta di opinioni, recensioni, esperienze, fonti | Misura sentiment e fonti citate (Reddit, Trustpilot, Google, stampa) |
+
+### DISTRIBUZIONE DEI PROMPT
+
+Il totale consegnato deve essere **esattamente N**, salvo duplicati accorpati da dichiarare nel riepilogo.
+
+1. **Quota per categoria.** Dividi N in parti uguali tra le 4 categorie (N / 4). Se resta un avanzo, assegna i prompt in più in quest'ordine: Problem / Solution, Comparative / Versus, Brand Discovery, Customer Care / Crisis.
+2. **Ordine delle keyword.** Lavora le K keyword in ordine di priorità (click, poi impression). Le prime keyword ricevono la matrice completa (16 prompt).
+3. **Ultima keyword parziale.** Se N non è multiplo di 16, l'ultima keyword riceve solo i prompt che mancano per arrivare a N, scegliendo le categorie che non hanno ancora raggiunto la propria quota e, dentro ogni categoria, le varianti nell'ordine V1, V2, V3, V4.
+4. **N inferiore a 16.** Usa una sola keyword per categoria, scegliendo per ciascuna categoria la keyword più coerente (vedi Fase 3), e assegna le varianti in ordine V1, V2, V3, V4 fino a esaurire la quota.
+5. **Più lingue.** Se lo Step 0.4 indica più lingue, N vale per ciascuna lingua. Dichiaralo nel riepilogo dello Step 0.6 (es. 64 prompt x 2 lingue = 128 righe).
 
 ### REGOLE NON NEGOZIABILI
 
@@ -174,7 +200,7 @@ Restituisci l'output **come testo in chat**, nell'ordine seguente. Usa `referenc
 
 ### 5.1, RIEPILOGO DEL SET
 
-Un breve blocco con: brand, competitor, lingua, numero di keyword lavorate per tipo, numero totale di prompt per categoria, keyword escluse e motivo.
+Un breve blocco con: numero di prompt richiesto (N) e consegnato, brand, competitor, lingua, numero di keyword lavorate per tipo, numero di prompt per categoria, keyword escluse e motivo.
 
 ### 5.2, TABELLA MARKDOWN
 

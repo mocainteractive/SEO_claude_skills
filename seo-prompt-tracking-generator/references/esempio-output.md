@@ -4,10 +4,11 @@ Esempio di riferimento per il **formato** dell'output. Brand e competitor sono d
 
 **Brief dell'esempio**
 
+- Prompt richiesti (Step 0.0): 16
 - Brand: Verdeluce (dominio verdeluce.it), arredamento outdoor e-commerce
 - Competitor: Giardino Plus, OutLiving
 - Mercato e lingua: Italia, italiano
-- Keyword di esempio (1 sola, per brevità): `divano da esterno resistente`, tipo Non-Brand, 140 click, 12.500 impression
+- Keyword di esempio (1 sola, coerente con N = 16): `divano da esterno resistente`, tipo Non-Brand, 140 click, 12.500 impression
 
 Un set reale contiene tutte le keyword selezionate nella Fase 0.
 
@@ -18,7 +19,7 @@ Un set reale contiene tutte le keyword selezionate nella Fase 0.
 - **Brand:** Verdeluce, **competitor:** Giardino Plus, OutLiving
 - **Lingua:** italiano, **mercato:** Italia
 - **Keyword lavorate:** 1 (Non-Brand: 1)
-- **Prompt generati:** 16 (BD 4, CV 4, PS 4, CC 4)
+- **Prompt richiesti e consegnati:** 16 su 16 (BD 4, CV 4, PS 4, CC 4)
 - **Keyword escluse:** nessuna
 
 ---
