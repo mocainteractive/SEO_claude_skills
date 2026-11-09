@@ -82,4 +82,4 @@ Verifica ogni punto. Se uno fallisce, correggi prima di consegnare.
 - [ ] Nessun prompt duplicato o quasi identico.
 - [ ] Nessun trattino lungo nei testi.
 - [ ] Lingua, valuta e fonti coerenti con il mercato.
-- [ ] Il CSV contiene tutte le righe delle tabelle, con gli stessi ID.
+- [ ] Le tabelle hanno solo le colonne Funnel / Intent, Keyword SEO, Prompt, Branded, e non è stato generato nessun CSV o file non richiesto.

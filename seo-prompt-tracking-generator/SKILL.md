@@ -1,6 +1,6 @@
 ---
 name: seo-prompt-tracking-generator
-description: "Trasforma keyword SEO (export Google Search Console, lista incollata o connettore GSC) e info su brand e competitor in prompt conversazionali per il tracking GEO e la Sentiment Analysis su ChatGPT, Perplexity, Gemini e Claude. Applica la Matrice 4x4: 4 categorie (Brand Discovery, Comparative / Versus, Problem / Solution, Customer Care / Crisis) per 4 varianti di prompt per keyword. Restituisce in chat tabella markdown e CSV pronto per i tool di AI visibility. Trigger: \"genera i prompt di tracking per il brand X\", \"trasforma queste keyword GSC in prompt per LLM\", \"prompt per monitorare il sentiment del brand su ChatGPT\", \"prompt set per GEO tracking\". Non esegue i prompt e non misura il sentiment."
+description: "Trasforma keyword SEO (export Google Search Console, lista incollata o connettore GSC) e info su brand e competitor in prompt conversazionali per il tracking GEO e la Sentiment Analysis su ChatGPT, Perplexity, Gemini e Claude. Applica la Matrice 4x4: 4 categorie (Brand Discovery, Comparative / Versus, Problem / Solution, Customer Care / Crisis) per 4 varianti di prompt per keyword. Restituisce i prompt in chat, in una tabella per categoria. Trigger: \"genera i prompt di tracking per il brand X\", \"trasforma queste keyword GSC in prompt per LLM\", \"prompt per monitorare il sentiment del brand su ChatGPT\", \"prompt set per GEO tracking\". Non esegue i prompt e non misura il sentiment."
 ---
 
 # SEO PROMPT TRACKING GENERATOR
@@ -26,7 +26,7 @@ Il destinatario dell'output è il team SEO / GEO che deve caricare i prompt in u
 |---|---|
 | `references/matrice-4x4.md` | Prima della Fase 4. Definisce le 4 categorie, le 4 varianti di prompt e i template per ciascuna cella. |
 | `references/regole-conversione.md` | Prima delle Fasi 3 e 4. Regole per classificare le keyword e trasformarle da keyword secche a prompt conversazionali, con checklist di qualità. |
-| `references/esempio-output.md` | Prima della Fase 5. Esempio completo di output (tabella + CSV) da usare come riferimento di formato. |
+| `references/esempio-output.md` | Prima della Fase 5. Esempio completo di output (riepilogo e tabelle) da usare come riferimento di formato. |
 | `templates/keyword-input-template.csv` | Da proporre all'utente se non ha un file pronto, come formato di input. |
 
 ---
@@ -202,32 +202,28 @@ Restituisci l'output **come testo in chat**, nell'ordine seguente. Usa `referenc
 
 Un breve blocco con: numero di prompt richiesto (N) e consegnato, brand, competitor, lingua, numero di keyword lavorate per tipo, numero di prompt per categoria, keyword escluse e motivo.
 
-### 5.2, TABELLA MARKDOWN
+### 5.2, TABELLE IN CHAT
 
-Una tabella per categoria (4 tabelle in totale), con le colonne:
+Una tabella markdown per categoria (4 tabelle in totale), ciascuna preceduta dal titolo della categoria in maiuscolo, con **solo** queste colonne:
 
 | Colonna | Contenuto |
 |---|---|
-| `ID` | Codice univoco: sigla categoria + progressivo (`BD-001`, `CV-001`, `PS-001`, `CC-001`) |
 | `Funnel / Intent` | Awareness, Consideration, Decision, Post-acquisto + intent (informativo, commerciale, transazionale, supporto) |
-| `Tipo KW` | Brand, Non-Brand, Versus, Long-tail |
 | `Keyword SEO` | Keyword di partenza (una o più, separate da barra verticale) |
-| `Variante` | V1, V2, V3, V4 |
 | `Prompt` | Testo del prompt |
 | `Branded` | Sì / No |
-| `Cosa monitorare` | Metrica principale: menzione, posizione nella lista, sentiment, competitor citati, fonti citate |
 
-Ordina le righe per categoria e, all'interno, per keyword con più click (o impression se i click non ci sono).
+Non aggiungere altre colonne (niente ID, tipo di keyword, variante o metrica da monitorare). Le varianti V1-V4 della Fase 4 servono solo a costruire prompt diversi tra loro e non vanno mostrate.
 
-### 5.3, BLOCCO CSV
+Ordina le righe per keyword con più click (o impression se i click non ci sono) e, per la stessa keyword, nell'ordine delle varianti V1, V2, V3, V4.
 
-Subito dopo le tabelle, un unico blocco di codice ```csv con **tutti** i prompt e le stesse colonne della tabella più `Categoria` e `Lingua`, separatore virgola, testi tra doppi apici, intestazione in prima riga. È il dataset da importare nel tool di tracking.
+**Niente CSV né file.** L'unico output è il testo in chat. Non generare blocchi CSV, file o artifact se l'utente non lo chiede esplicitamente.
 
-### 5.4, VOLUMI GRANDI
+### 5.3, VOLUMI GRANDI
 
-Se il set supera i 200 prompt, consegna le tabelle markdown e il CSV **per categoria**, in messaggi successivi, annunciando all'inizio quanti blocchi arriveranno. Non troncare mai il CSV e non usare "..." per abbreviare.
+Se il set supera i 200 prompt, consegna le tabelle **per categoria**, in messaggi successivi, annunciando all'inizio quanti blocchi arriveranno. Non troncare mai le tabelle e non usare "..." per abbreviare.
 
-### 5.5, NOTE OPERATIVE (BREVI)
+### 5.4, NOTE OPERATIVE (BREVI)
 
 Chiudi con massimo 5 punti elenco su come usare il set:
 
@@ -240,4 +236,4 @@ Chiudi con massimo 5 punti elenco su come usare il set:
 
 ## FORMATO DI CONSEGNA
 
-L'output di default è **testo in chat** (tabella + CSV). Se l'utente chiede esplicitamente un altro formato (artifact, file .csv, .xlsx, Google Sheet), chiedi conferma del formato e rispetta il brand Moca (font Figtree, palette Moca) per gli output visuali.
+L'output di default è **solo testo in chat** (riepilogo, tabelle per categoria, note operative). Genera un CSV, un file (.csv, .xlsx), un Google Sheet o un artifact **solo se l'utente lo chiede esplicitamente**; in quel caso usa le stesse colonne delle tabelle più `Categoria`, e rispetta il brand Moca (font Figtree, palette Moca) per gli output visuali.
