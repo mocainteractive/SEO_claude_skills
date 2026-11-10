@@ -78,7 +78,7 @@ Usali per un **sanity check** del budget dichiarato dall'utente, non come prezzi
 
 ## 6. Mappa criterio → strumento
 
-Con Getfluence ottieni già, per i domini a catalogo: `organicTraffic`, `trustFlow`, `citationFlow`, `domainAuthority`, `authorityScore`, `domainRating`. **Usali come primo filtro** (soglie e screening) senza spendere unità Ahrefs. Riserva Ahrefs ai controlli più profondi **sulla rosa ristretta** già passata da budget e soglie.
+Con Getfluence, **per i soli domini a catalogo**, ottieni già: `organicTraffic`, `trustFlow`, `citationFlow`, `domainAuthority`, `authorityScore`, `domainRating`. **Usale come arricchimento** (evitano una chiamata Ahrefs per quelle metriche); per i domini non a catalogo e per i controlli più profondi usa Ahrefs. Riserva le chiamate Ahrefs costose alla rosa che serve.
 
 | Criterio | Strumento e campi |
 |---|---|
